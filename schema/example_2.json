@@ -1,0 +1,31 @@
+[
+  {
+    "name": "id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "The primary key for this table."
+  },
+  {
+    "name": "creation_timestamp",
+    "type": "DATETIME",
+    "mode": "NULLABLE",
+    "description": "An example DATETIME field."
+  },
+  {
+    "name": "last_update_timestamp",
+    "type": "DATETIME",
+    "mode": "NULLABLE",
+    "description": "An example DATETIME field.",
+    "defaultValueExpression": "'example_default_value'"
+  },
+  {
+    "name": "column_a",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "column_b",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

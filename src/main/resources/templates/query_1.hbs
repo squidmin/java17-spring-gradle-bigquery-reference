@@ -1,0 +1,40 @@
+{{#*inline "whereClause" requestItem}}
+    {{#each requestItem}}
+        {{@key}} LIKE "%{{this}}%"
+        {{#unless @last}}
+            AND
+        {{/unless}}
+    {{/each}}
+{{/inline~}}
+
+{{#*inline "columnsList"}}
+    {{~#each columns}}
+        {{this}}{{#unless @last}}, {{/unless}}
+    {{~/each~}}
+{{~/inline~}}
+
+WITH
+
+{{#each requestItems}}
+    subquery_{{increment @key}} AS (
+    SELECT *
+    FROM `{{projectId}}.{{dataset}}.{{table}}`
+    WHERE
+    {{> whereClause requestItem=this}}
+    ),
+{{/each}}
+
+subquery_{{increment (sizeof requestItems)}} AS (
+{{#each requestItems}}
+    SELECT * FROM subquery_{{increment @index}}
+    {{~#unless @last}}
+        UNION ALL
+    {{/unless}}
+{{/each}}
+)
+
+SELECT
+{{> columnsList}}
+FROM subquery_{{increment (sizeof requestItems)}}
+GROUP BY
+{{> columnsList}};

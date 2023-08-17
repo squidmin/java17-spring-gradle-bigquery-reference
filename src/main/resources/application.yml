@@ -1,0 +1,53 @@
+spring:
+  jackson:
+    default-property-inclusion: non_null
+    deserialization:
+      accept-float-as-int: false
+      fail-on-numbers-for-enums: true
+      fail-on-unknown-properties: true
+    mapper:
+      allow-coercion-of-scalars: false
+  main:
+    allow-bean-definition-overriding: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+bigquery:
+  select-all: true
+  data-types:
+    - STRING
+    - DATETIME
+    - BOOL
+
+tables:
+  default:
+    schema:
+      fields:
+        - name: id
+          type: STRING
+          description: 'The primary key for the default table.'
+        - name: creation_timestamp
+          type: DATETIME
+          description: 'The time that the record was created.'
+        - name: last_update_timestamp
+          type: DATETIME
+        - name: column_a
+          type: STRING
+        - name: column_b
+          type: BOOL
+    select:
+      fields:
+        - ${tables.default.schema.fields[0].name}
+        - ${tables.default.schema.fields[1].name}
+        - ${tables.default.schema.fields[2].name}
+        - ${tables.default.schema.fields[3].name}
+    where:
+      filters:
+        - name: ${tables.default.schema.fields[0].name}
+          type: ${tables.default.schema.fields[0].type}
+        - name: ${tables.default.schema.fields[1].name}
+          type: ${tables.default.schema.fields[1].type}
