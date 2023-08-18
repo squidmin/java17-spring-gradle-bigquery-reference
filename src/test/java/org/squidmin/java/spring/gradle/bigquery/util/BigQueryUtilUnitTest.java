@@ -24,8 +24,8 @@ public class BigQueryUtilUnitTest {
     private String gcpDefaultUserDataset;
     @Autowired
     private String gcpDefaultUserTable;
-
-    private static final String queryUri = "http://fake-uri.example";
+    @Autowired
+    private String queryUri;
 
     private final BigQueryConfig bigQueryConfigMock = Mockito.mock(BigQueryConfig.class);
     private final TemplateCompiler templateCompilerMock = Mockito.mock(TemplateCompiler.class);
