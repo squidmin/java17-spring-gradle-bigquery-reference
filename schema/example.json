@@ -6,24 +6,25 @@
     "description": "The primary key for this table."
   },
   {
-    "name": "fieldA",
-    "type": "STRING",
+    "name": "creation_timestamp",
+    "type": "DATETIME",
     "mode": "NULLABLE",
-    "description": "An example field description."
+    "description": "An example DATETIME field."
   },
   {
-    "name": "fieldB",
-    "type": "STRING",
+    "name": "last_update_timestamp",
+    "type": "DATETIME",
     "mode": "NULLABLE",
-    "defaultValueExpression": "'example_default_value'"
+    "description": "An example DATETIME field.",
+    "defaultValueExpression": "'2010-03-16T00:00:00'"
   },
   {
-    "name": "fieldC",
+    "name": "column_a",
     "type": "STRING",
     "mode": "NULLABLE"
   },
   {
-    "name": "fieldD",
+    "name": "column_b",
     "type": "STRING",
     "mode": "NULLABLE"
   }

@@ -6,29 +6,30 @@
     "description": "The primary key for this table."
   },
   {
-    "name": "fieldA",
-    "type": "STRING",
+    "name": "creation_timestamp",
+    "type": "DATETIME",
     "mode": "NULLABLE",
-    "description": "An example field description."
+    "description": "An example DATETIME field."
   },
   {
-    "name": "fieldB",
-    "type": "STRING",
+    "name": "last_update_timestamp",
+    "type": "DATETIME",
     "mode": "NULLABLE",
+    "description": "An example DATETIME field.",
     "defaultValueExpression": "'example_default_value'"
   },
   {
-    "name": "fieldC",
+    "name": "column_a",
     "type": "STRING",
     "mode": "NULLABLE"
   },
   {
-    "name": "fieldD",
+    "name": "column_b",
     "type": "STRING",
     "mode": "NULLABLE"
   },
   {
-    "name": "fieldE",
+    "name": "field_added_with_update",
     "type": "FLOAT",
     "mode": "NULLABLE",
     "description": "Schema update example."

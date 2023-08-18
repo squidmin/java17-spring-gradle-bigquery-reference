@@ -8,7 +8,7 @@ import org.squidmin.java.spring.gradle.bigquery.dao.RecordExample;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequest;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
 import org.squidmin.java.spring.gradle.bigquery.dto.Query;
-import org.squidmin.java.spring.gradle.bigquery.service.BigQueryAdminClient;
+import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,9 +18,9 @@ import java.util.List;
 @Slf4j
 public class ExampleRepositoryImpl implements ExampleRepository {
 
-    private final BigQueryAdminClient bqAdminClient;
+    private final BigQueryService bqAdminClient;
 
-    public ExampleRepositoryImpl(BigQueryAdminClient bqAdminClient) {
+    public ExampleRepositoryImpl(BigQueryService bqAdminClient) {
         this.bqAdminClient = bqAdminClient;
     }
 

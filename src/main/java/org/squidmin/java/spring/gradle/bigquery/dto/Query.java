@@ -8,6 +8,6 @@ import lombok.Data;
 public class Query {
 
     private String query;
-    private String useLegacySql;
+    private boolean useLegacySql;
 
 }

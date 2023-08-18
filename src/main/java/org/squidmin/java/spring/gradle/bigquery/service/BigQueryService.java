@@ -1,9 +1,11 @@
 package org.squidmin.java.spring.gradle.bigquery.service;
 
 import autovalue.shaded.com.google.common.collect.ImmutableMap;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.bigquery.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.*;
@@ -20,8 +22,9 @@ import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.WhereField
 import org.squidmin.java.spring.gradle.bigquery.dao.RecordExample;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequest;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
-import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponseItem;
 import org.squidmin.java.spring.gradle.bigquery.dto.Query;
+import org.squidmin.java.spring.gradle.bigquery.dto.bigquery.BigQueryRestServiceResponse;
+import org.squidmin.java.spring.gradle.bigquery.dto.bigquery.error.BigQueryError;
 import org.squidmin.java.spring.gradle.bigquery.exception.CustomJobException;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
 import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
@@ -40,7 +43,8 @@ import java.util.*;
     DataTypes.class,
     Exclusions.class,
 })
-public class BigQueryAdminClient {
+@Slf4j
+public class BigQueryService {
 
     private final String gcpDefaultUserProjectId;
     private final String gcpDefaultUserDataset;
@@ -48,6 +52,8 @@ public class BigQueryAdminClient {
     private final String gcpSaProjectId;
     private final String gcpSaDataset;
     private final String gcpSaTable;
+
+    private final BigQueryUtil bigQueryUtil;
 
     private final BigQuery bigQuery;
 
@@ -58,7 +64,11 @@ public class BigQueryAdminClient {
     private final ObjectMapper mapper;
 
     @Autowired
-    public BigQueryAdminClient(BigQueryConfig bigQueryConfig, RestTemplate restTemplate) {
+    public BigQueryService(
+        BigQueryUtil bigQueryUtil,
+        BigQueryConfig bigQueryConfig,
+        RestTemplate restTemplate) {
+
         this.bigQueryConfig = bigQueryConfig;
         this.bigQuery = bigQueryConfig.getBigQueryOptionsConfig().getBigQuery();
         this.gcpDefaultUserProjectId = bigQueryConfig.getGcpDefaultUserProjectId();
@@ -67,8 +77,10 @@ public class BigQueryAdminClient {
         this.gcpSaProjectId = bigQueryConfig.getGcpSaProjectId();
         this.gcpSaDataset = bigQueryConfig.getGcpSaDataset();
         this.gcpSaTable = bigQueryConfig.getGcpSaTable();
+        this.bigQueryUtil = bigQueryUtil;
         this.restTemplate = restTemplate;
         mapper = new ObjectMapper();
+
     }
 
     /**
@@ -225,7 +237,7 @@ public class BigQueryAdminClient {
                     .build()
             );
             if (response.hasErrors()) {
-                for (Map.Entry<Long, List<BigQueryError>> entry : response.getInsertErrors().entrySet()) {
+                for (Map.Entry<Long, List<com.google.cloud.bigquery.BigQueryError>> entry : response.getInsertErrors().entrySet()) {
                     Logger.log(String.format("Response error: %s", entry.getValue()), Logger.LogType.ERROR);
                 }
                 return Collections.emptyList();
@@ -241,47 +253,150 @@ public class BigQueryAdminClient {
     }
 
     public ResponseEntity<ExampleResponse> query(Query query, String bqApiToken) throws IOException {
-        String _query = mapper.writeValueAsString(query);
-        Logger.log(String.format("QUERY == %s", _query), Logger.LogType.INFO);
-        String uri = bigQueryConfig.getQueryUri();
         HttpHeaders httpHeaders = getHttpHeaders(bqApiToken);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(query), httpHeaders);
+        log.info("{}", query.getQuery());
+        long requestTime = System.currentTimeMillis();
         try {
-            ResponseEntity<String> responseEntity = restTemplate.postForEntity(uri, request, String.class);
-            String responseBody = responseEntity.getBody();
-            if (!StringUtils.isEmpty(responseBody)) {
-                return new ResponseEntity<>(
-                    ExampleResponse.builder()
-                        .body(
-                            BigQueryUtil.toList(
-                                responseBody.getBytes(StandardCharsets.UTF_8),
-                                bigQueryConfig.getSelectFieldsDefault(),
-                                true
-                            )
-                        )
-                        .build(),
-                    HttpStatus.OK
-                );
-            } else {
-                Logger.log("Response body is empty.", Logger.LogType.ERROR);
-            }
+            return callBigQueryApi(request, requestTime);
         } catch (HttpClientErrorException e) {
-            String errorMessage = e.getMessage();
-            Logger.log(errorMessage, Logger.LogType.ERROR);
-            return new ResponseEntity<>(
-                ExampleResponse.builder()
-                    .body(Collections.singletonList(ExampleResponseItem.builder().build()))
-                    .errors(Collections.singletonList(errorMessage))
-                    .build(),
-                e.getStatusCode()
-            );
+            return handleHttpClientErrorException(e, requestTime);
+        } catch (IOException e) {
+            return handleIOException(e);
         }
-        return new ResponseEntity<>(ExampleResponse.builder().build(), HttpStatus.OK);
     }
 
-    // TODO
-    public ResponseEntity<ExampleResponse> query(ExampleRequest request, String bqApiToken) {
+    private ResponseEntity<ExampleResponse> callBigQueryApi(HttpEntity<String> request, long requestTime) throws IOException {
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(bigQueryConfig.getQueryUri(), request, String.class);
+        long responseTime = System.currentTimeMillis();
+        float duration = (responseTime - requestTime) / 1000f;
+        log.info("query(): Received response after {} seconds", String.format("%.5f", duration));
+        String responseBody = responseEntity.getBody();
+        if (HttpStatus.OK != responseEntity.getStatusCode()) {
+            return handleHttpStatusNotOk(responseEntity, responseBody);
+        }
+        BigQueryRestServiceResponse response = mapper.readValue(responseBody, BigQueryRestServiceResponse.class);
+        if (isOkBigQueryApiResponse(responseBody, response)) {
+            boolean selectAll = bigQueryConfig.isSelectAll();
+            return buildOkExampleResponse(responseBody, selectAll);
+        } else {
+            log.error("Response body is empty");
+            return new ResponseEntity<>(ExampleResponse.builder().body(new ArrayList<>()).build(), HttpStatus.ACCEPTED);
+        }
+    }
+
+    private ResponseEntity<ExampleResponse> handleHttpStatusNotOk(
+        ResponseEntity<String> bqApiResponseEntity,
+        String responseBody) throws JsonProcessingException {
+
+        ResponseEntity<ExampleResponse> exampleResponseEntity = new ResponseEntity<>(HttpStatus.OK);
+        if (HttpStatus.OK != bqApiResponseEntity.getStatusCode()) {
+            BigQueryError bqError = mapper.readValue(responseBody, BigQueryError.class);
+            ExampleResponse response = ExampleResponse.builder().errors(new ArrayList<>()).build();
+            bqError.getError().getErrors().forEach(err -> response.getErrors().add(err.toString()));
+            exampleResponseEntity = new ResponseEntity<>(response, bqApiResponseEntity.getStatusCode());
+        }
+        return exampleResponseEntity;
+
+    }
+
+    public ResponseEntity<ExampleResponse> query(ExampleRequest request, String bqApiToken) throws IOException {
+        if (request.getBody().isEmpty()) {
+            return new ResponseEntity<>(ExampleResponse.builder().build(), HttpStatus.OK);
+        }
+        ExampleResponse response = initResponse();
+        ResponseEntity<ExampleResponse> responseEntity = query(
+            Query.builder().query(buildQueryString(request)).useLegacySql(false).build(),
+            bqApiToken
+        );
+        if (!isOkExampleResponse(responseEntity)) {
+            return buildErrorExampleResponse(responseEntity);
+        } else {
+            if (null != responseEntity.getBody() && null != responseEntity.getBody().getBody()) {
+                response.getBody().addAll(responseEntity.getBody().getBody());
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+        }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    private ExampleResponse initResponse() {
+        ExampleResponse response = new ExampleResponse();
+        response.setBody(new ArrayList<>());
+        return response;
+    }
+
+    private boolean isOkExampleResponse(String responseBody, BigQueryRestServiceResponse response) {
+        return null != responseBody && null != response.getRows() && !response.getRows().isEmpty();
+    }
+
+    private boolean isOkExampleResponse(ResponseEntity<ExampleResponse> responseEntity) {
+        return HttpStatus.OK == responseEntity.getStatusCode() && null != responseEntity.getBody();
+    }
+
+    private boolean isOkBigQueryApiResponse(String responseBody, BigQueryRestServiceResponse response) {
+        return null != responseBody && null != response.getRows() && !response.getRows().isEmpty();
+    }
+
+    private ResponseEntity<ExampleResponse> handleIOException(IOException e) {
+        return new ResponseEntity<>(
+            ExampleResponse.builder()
+                .errors(Collections.singletonList(e.getMessage()))
+                .build(),
+            HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
+    private ResponseEntity<ExampleResponse> handleHttpClientErrorException(HttpClientErrorException e, long requestTime) {
+        float duration = (System.currentTimeMillis() - requestTime) / 1000f;
+        log.error("query(): Received response after {} seconds", String.format("%.5f", duration));
+        String errorMessage = e.getMessage();
+        log.error(errorMessage);
+        return buildClientErrorExampleResponse(e);
+    }
+
+    private String buildQueryString(ExampleRequest request) throws IOException {
+        return bigQueryUtil.buildQueryString(
+            "template",
+            request,
+            bigQueryConfig
+        );
+    }
+
+    private ResponseEntity<ExampleResponse> buildOkExampleResponse(String responseBody, boolean selectAll)
+        throws IOException {
+
+        return new ResponseEntity<>(
+            ExampleResponse.builder()
+                .body(
+                    BigQueryUtil.toList(
+                        responseBody.getBytes(StandardCharsets.UTF_8),
+                        bigQueryConfig.getSelectFieldsDefault(),
+                        selectAll
+                    )
+                )
+                .build(),
+            HttpStatus.OK
+        );
+
+    }
+
+    private ResponseEntity<ExampleResponse> buildErrorExampleResponse(ResponseEntity<ExampleResponse> responseEntity) {
+        return new ResponseEntity<>(
+            ExampleResponse.builder()
+                .errors(Objects.requireNonNull(responseEntity.getBody().getErrors()))
+                .build(),
+            responseEntity.getStatusCode()
+        );
+    }
+
+    private ResponseEntity<ExampleResponse> buildClientErrorExampleResponse(HttpClientErrorException e) {
+        return new ResponseEntity<>(
+            ExampleResponse.builder()
+                .errors(Collections.singletonList(e.getMessage()))
+                .build(),
+            e.getStatusCode()
+        );
     }
 
     /**
