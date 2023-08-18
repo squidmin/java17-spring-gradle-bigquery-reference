@@ -1,3 +1,8 @@
+server:
+  servlet:
+    context-path: /
+  port: 8080
+
 spring:
   jackson:
     default-property-inclusion: non_null
@@ -9,6 +14,9 @@ spring:
       allow-coercion-of-scalars: false
   main:
     allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      enabled: false
 
 management:
   endpoints:

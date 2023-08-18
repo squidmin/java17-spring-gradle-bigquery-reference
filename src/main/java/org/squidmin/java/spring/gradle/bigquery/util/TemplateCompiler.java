@@ -1,0 +1,98 @@
+package org.squidmin.java.spring.gradle.bigquery.util;
+
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
+import lombok.extern.slf4j.Slf4j;
+import org.squidmin.java.spring.gradle.bigquery.config.BigQueryConfig;
+import org.squidmin.java.spring.gradle.bigquery.config.Field;
+import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SchemaDefault;
+import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequest;
+import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequestItem;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Slf4j
+public class TemplateCompiler {
+
+    private final BigQueryTimeUtil bigQueryTimeUtil;
+
+    private final Handlebars handlebars;
+
+    public TemplateCompiler(BigQueryTimeUtil bigQueryTimeUtil) {
+        this.bigQueryTimeUtil = bigQueryTimeUtil;
+        TemplateLoader loader = new ClassPathTemplateLoader("/templates/", ".hbs");
+        handlebars = new Handlebars(loader);
+        handlebars.registerHelpers(new HelperSource());
+    }
+
+    public String compile(
+        String templateName,
+        ExampleRequest request,
+        BigQueryConfig bigQueryConfig) throws IOException {
+
+        Template template = handlebars.compile(templateName);
+        Map<String, Object> templateInput = new HashMap<>();
+        List<String> presentValues = new ArrayList<>();
+
+        // Populate presentValues (e.g., names of fields having at least one value present)
+        List<ExampleRequestItem> requestBody = request.getBody();
+        for (Field whereField : bigQueryConfig.getWhereFieldsDefault().getFilters()) {
+            for (ExampleRequestItem requestItem : requestBody) {
+                String fieldName = whereField.getName();
+                String value = requestItem.get(fieldName);
+                if (StringUtils.isNotEmpty(value) && !presentValues.contains(fieldName) || isTimestampField(fieldName)) {
+                    presentValues.add(fieldName);
+                }
+            }
+        }
+
+        // Populate filtered request data (e.g., drop nulls from ExampleRequestItem)
+        List<Map<String, String>> filteredRequestBody = new ArrayList<>();
+        for (int i = 0; i < requestBody.size(); i++) {
+            filteredRequestBody.add(new HashMap<>());
+        }
+
+        for (int i = 0; i < requestBody.size(); i++) {
+            ExampleRequestItem requestItem = requestBody.get(i);
+            for (String fieldName : presentValues) {
+                String value = requestItem.get(fieldName);
+                if (StringUtils.isNotEmpty(value) || isTimestampField(fieldName)) {
+                    filteredRequestBody.get(i).put(fieldName, value);
+                }
+            }
+        }
+
+        SchemaDefault schema = bigQueryConfig.getSchemaDefault();
+        List<String> columns = schema.getFields().stream()
+            .map(Field::getName)
+            .filter(name -> !bigQueryConfig.getExclusions().getFields().contains(name))
+            .collect(Collectors.toList());
+
+        templateInput.put("projectId", bigQueryConfig.getGcpDefaultUserProjectId());
+        templateInput.put("dataset", bigQueryConfig.getGcpDefaultUserDataset());
+        templateInput.put("table", bigQueryConfig.getGcpDefaultUserTable());
+        templateInput.put("requestItems", filteredRequestBody);
+        templateInput.put("whereFields", bigQueryConfig.getWhereFieldsDefault().getFilters());
+        templateInput.put("presentValues", presentValues);
+        templateInput.put("columns", columns);
+
+        templateInput.put("currentDateTime", bigQueryTimeUtil.getCurrentDateTime());
+        templateInput.put("currentDateTimeStart", bigQueryTimeUtil.getStartOfCurrentDateTime());
+        templateInput.put("currentDateTimeEnd", bigQueryTimeUtil.getEndOfCurrentDateTime());
+
+        return template.apply(templateInput);
+
+    }
+
+    private boolean isTimestampField(String fieldName) {
+        return List.of("creationTimestamp", "lastUpdateTimestamp").contains(fieldName);
+    }
+
+}

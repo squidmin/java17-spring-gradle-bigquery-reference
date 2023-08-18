@@ -23,7 +23,7 @@ class ActuatorTest {
     private int port;
 
     @Autowired
-    TestRestTemplate restTemplate;
+    private TestRestTemplate restTemplate;
 
     @Test
     void healthCheck() {
