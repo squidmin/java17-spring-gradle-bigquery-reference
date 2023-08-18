@@ -99,7 +99,7 @@ tasks.named('test') {
 
     systemProperty 'SCHEMA', System.getProperty('SCHEMA')
 
-//    exclude '**/BigQueryAdminClientTest.class'
+//    exclude '**/BigQueryServiceEndToEndTest.class'
 //    exclude '**/ControllerTest.class'
 
     testLogging {

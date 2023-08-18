@@ -64,11 +64,7 @@ public class BigQueryService {
     private final ObjectMapper mapper;
 
     @Autowired
-    public BigQueryService(
-        BigQueryUtil bigQueryUtil,
-        BigQueryConfig bigQueryConfig,
-        RestTemplate restTemplate) {
-
+    public BigQueryService(BigQueryUtil bigQueryUtil, BigQueryConfig bigQueryConfig, RestTemplate restTemplate) {
         this.bigQueryConfig = bigQueryConfig;
         this.bigQuery = bigQueryConfig.getBigQueryOptionsConfig().getBigQuery();
         this.gcpDefaultUserProjectId = bigQueryConfig.getGcpDefaultUserProjectId();
@@ -80,7 +76,6 @@ public class BigQueryService {
         this.bigQueryUtil = bigQueryUtil;
         this.restTemplate = restTemplate;
         mapper = new ObjectMapper();
-
     }
 
     /**

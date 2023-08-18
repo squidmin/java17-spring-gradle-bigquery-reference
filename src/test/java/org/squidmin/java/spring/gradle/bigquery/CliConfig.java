@@ -22,6 +22,9 @@ public abstract class CliConfig {
     @Autowired
     protected BigQueryConfig bigQueryConfig;
 
+    @Autowired
+    protected BigQueryService bigQueryService;
+
     protected String gcpDefaultUserProjectIdDefault;
     protected String gcpDefaultUserDatasetDefault;
     protected String gcpDefaultUserTableDefault;
@@ -40,6 +43,7 @@ public abstract class CliConfig {
     protected Schema _schemaOverride;
 
     // The default values of configured BigQuery resource properties can be overridden by the values of CLI arguments.
+    protected String GCP_ADC_ACCESS_TOKEN;
     protected String GCP_DEFAULT_USER_PROJECT_ID;
     protected String GCP_DEFAULT_USER_DATASET;
     protected String GCP_DEFAULT_USER_TABLE;
@@ -125,19 +129,20 @@ public abstract class CliConfig {
 
     private void initRunEnvironmentActiveProperties() {
         // Set integration test class level variables for active run environment.
-        GCP_DEFAULT_USER_PROJECT_ID = runEnvironment.getGcpDefaultUserProjectId();
-        GCP_DEFAULT_USER_DATASET = runEnvironment.getGcpDefaultUserDataset();
-        GCP_DEFAULT_USER_TABLE = runEnvironment.getGcpDefaultUserTable();
+        GCP_ADC_ACCESS_TOKEN = bigQueryConfig.getBigQueryOptionsConfig().getGcpAdcAccessToken();
+        GCP_DEFAULT_USER_PROJECT_ID = setEnvProperty(bigQueryConfig.getGcpDefaultUserProjectId(), runEnvironment.getGcpDefaultUserProjectId());
+        GCP_DEFAULT_USER_DATASET = setEnvProperty(bigQueryConfig.getGcpDefaultUserDataset(), runEnvironment.getGcpDefaultUserDataset());
+        GCP_DEFAULT_USER_TABLE = setEnvProperty(bigQueryConfig.getGcpDefaultUserTable(), runEnvironment.getGcpDefaultUserTable());
 
-        GCP_SA_PROJECT_ID = runEnvironment.getGcpSaProjectId();
-        GCP_SA_DATASET = runEnvironment.getGcpSaDataset();
-        GCP_SA_TABLE = runEnvironment.getGcpSaTable();
+        GCP_SA_PROJECT_ID = setEnvProperty(bigQueryConfig.getGcpSaProjectId(), runEnvironment.getGcpSaProjectId());
+        GCP_SA_DATASET = setEnvProperty(bigQueryConfig.getGcpSaDataset(), runEnvironment.getGcpSaDataset());
+        GCP_SA_TABLE = setEnvProperty(bigQueryConfig.getGcpSaTable(), runEnvironment.getGcpSaTable());
 
         SCHEMA = runEnvironment.getSchema();
     }
 
     private String setEnvProperty(String defaultValue, String overrideValue) {
-        return null != overrideValue ? overrideValue : defaultValue;
+        return StringUtils.isNotEmpty(overrideValue) ? overrideValue : defaultValue;
     }
 
 }

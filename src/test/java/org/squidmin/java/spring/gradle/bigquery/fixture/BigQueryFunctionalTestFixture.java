@@ -47,6 +47,7 @@ public abstract class BigQueryFunctionalTestFixture {
     );
 
     public enum CLI_ARG_KEYS {
+        GCP_ADC_ACCESS_TOKEN, GCP_SA_ACCESS_TOKEN,
         GCP_DEFAULT_USER_PROJECT_ID, GCP_DEFAULT_USER_DATASET, GCP_DEFAULT_USER_TABLE,
         GCP_SA_PROJECT_ID, GCP_SA_DATASET, GCP_SA_TABLE,
         SCHEMA
@@ -71,6 +72,10 @@ public abstract class BigQueryFunctionalTestFixture {
                 .columnB("asdf2")
                 .build();
         }).collect(Collectors.toList());
+
+    public static String validQueryString(String projectId, String dataset, String table) {
+        return String.format("SELECT * FROM `%s.%s.%s` LIMIT 10", projectId, dataset, table);
+    }
 
     // TODO
     public static String getCurrentDateTime() {
