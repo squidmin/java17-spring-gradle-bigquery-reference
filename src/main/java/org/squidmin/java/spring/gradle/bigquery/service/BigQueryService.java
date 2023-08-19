@@ -297,7 +297,7 @@ public class BigQueryService {
 
     private String buildQueryString(ExampleRequest request) throws IOException {
         return bigQueryUtil.buildQueryString(
-            "template",
+            "query_1",
             request,
             bigQueryConfig
         );

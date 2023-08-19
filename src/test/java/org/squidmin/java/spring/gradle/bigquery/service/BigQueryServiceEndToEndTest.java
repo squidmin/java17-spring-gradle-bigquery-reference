@@ -5,19 +5,25 @@ import com.google.cloud.bigquery.TableResult;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.squidmin.java.spring.gradle.bigquery.CliConfig;
+import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
 import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.LoggerUtil;
 
+import java.io.IOException;
 import java.util.List;
 
-@Disabled
+//@Disabled
 @Slf4j
 public class BigQueryServiceEndToEndTest extends CliConfig {
+
+    @Autowired
+    private BigQueryService bigQueryService;
 
     @BeforeEach
     void beforeEach() {
@@ -88,7 +94,7 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
 
     @Test
     void query_givenQueryString_whenCallingBigQueryViaJdk_thenReturnValidResponse() {
-        TableResult actual = bigQueryService.query(
+        TableResult tableResult = bigQueryService.query(
             GCP_ADC_ACCESS_TOKEN,
             BigQueryFunctionalTestFixture.validQueryString(
                 GCP_DEFAULT_USER_PROJECT_ID,
@@ -96,7 +102,16 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
                 GCP_DEFAULT_USER_TABLE
             )
         );
-        Assertions.assertTrue(0 < actual.getTotalRows());
+        Assertions.assertTrue(0 < tableResult.getTotalRows());
+    }
+
+    @Test
+    void query_givenQueryString_whenCallingBigQueryViaRestfulServices_thenReturnValidResponse() throws IOException {
+        ResponseEntity<ExampleResponse> responseEntity = bigQueryService.query(
+            BigQueryFunctionalTestFixture.validExampleRequest(),
+            GCP_ADC_ACCESS_TOKEN
+        );
+        log.info(responseEntity.toString());
     }
 
 }

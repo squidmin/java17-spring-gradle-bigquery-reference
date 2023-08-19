@@ -1,10 +1,15 @@
 package org.squidmin.java.spring.gradle.bigquery.config;
 
+import org.hibernate.sql.Template;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
+import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
 import org.squidmin.java.spring.gradle.bigquery.util.BigQueryTimeUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
@@ -12,6 +17,7 @@ import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 import java.io.IOException;
 
 @Configuration
+@ActiveProfiles("integration")
 public class IntegrationTestConfig {
 
     @Value("${bigquery.application-default.project-id}")
@@ -35,12 +41,14 @@ public class IntegrationTestConfig {
     @Value("${bigquery.uri.queries}")
     private String queryUri;
 
+    private RestTemplate restTemplate;
+
     private BigQueryConfig bigQueryConfig;
 
     private BigQueryUtil bigQueryUtil;
     private BigQueryTimeUtil bigQueryTimeUtil;
 
-    private TemplateCompiler templateCompiler;
+//    private TemplateCompiler templateCompiler;
 
     @Bean
     public String gcpDefaultUserProjectId() {
@@ -100,12 +108,19 @@ public class IntegrationTestConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        restTemplate = new RestTemplate();
+        return restTemplate;
     }
+
+//    @Bean
+//    public TemplateCompiler templateCompiler() {
+//        templateCompiler = new TemplateCompiler(bigQueryTimeUtil);
+//        return templateCompiler;
+//    }
 
     @Bean
     public BigQueryUtil bigQueryUtil() {
-        bigQueryUtil = new BigQueryUtil(templateCompiler);
+        bigQueryUtil = new BigQueryUtil(new TemplateCompiler(new BigQueryTimeUtil()));
         return bigQueryUtil;
     }
 
@@ -115,10 +130,5 @@ public class IntegrationTestConfig {
         return bigQueryTimeUtil;
     }
 
-    @Bean
-    public TemplateCompiler templateCompiler() {
-        templateCompiler = new TemplateCompiler(bigQueryTimeUtil);
-        return templateCompiler;
-    }
 
 }

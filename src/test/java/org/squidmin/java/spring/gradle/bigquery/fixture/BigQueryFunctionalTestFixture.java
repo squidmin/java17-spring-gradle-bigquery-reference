@@ -92,7 +92,7 @@ public abstract class BigQueryFunctionalTestFixture {
         return null;
     }
 
-    public static ExampleRequest validRequest() throws IOException {
+    public static ExampleRequest validExampleRequest() throws IOException {
         ExampleRequest request = mapper.readValue(
             TestUtil.readJson("/requests/valid_request.json"),
             ExampleRequest.class
