@@ -3,19 +3,16 @@ package org.squidmin.java.spring.gradle.bigquery;
 import com.google.cloud.bigquery.Schema;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.squidmin.java.spring.gradle.bigquery.config.BigQueryConfig;
 import org.squidmin.java.spring.gradle.bigquery.config.IntegrationTestConfig;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SchemaDefault;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
-import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
 import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
 import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.RunEnvironment;
 import org.squidmin.java.spring.gradle.bigquery.util.StringUtils;
-import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 
 @SpringBootTest(classes = {BigQueryService.class, IntegrationTestConfig.class})
 @ActiveProfiles("integration")
@@ -24,12 +21,6 @@ public abstract class CliConfig {
 
     @Autowired
     protected BigQueryConfig bigQueryConfig;
-
-//    @Autowired
-//    protected BigQueryService bigQueryService;
-//
-//    @Autowired
-//    protected TemplateCompiler templateCompiler;
 
     protected String gcpDefaultUserProjectIdDefault;
     protected String gcpDefaultUserDatasetDefault;
