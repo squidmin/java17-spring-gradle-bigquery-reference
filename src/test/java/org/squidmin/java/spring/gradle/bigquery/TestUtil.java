@@ -13,12 +13,12 @@ public class TestUtil {
         return new String(Files.readAllBytes(Paths.get(BigQueryFunctionalTestFixture.RESOURCES_BASE_PATH.concat(path))));
     }
 
-    public static String readQueryString(String path) throws IOException {
+    public static String readQueryString(String filename) throws IOException {
         return BigQueryUtil.trimWhitespace(
             new String(
                 Files.readAllBytes(
                     Paths.get(
-                        BigQueryFunctionalTestFixture.RESOURCES_BASE_PATH.concat("queries/").concat(path)
+                        BigQueryFunctionalTestFixture.RESOURCES_BASE_PATH.concat("queries/").concat(filename)
                     )
                 )
             )

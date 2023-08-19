@@ -94,7 +94,7 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
     }
 
     @Test
-    void query_givenQueryString_whenCallingBigQueryViaJdk_thenReturnValidResponse() {
+    void query_givenValidQueryString_whenCallingBigQueryViaJdk_andQueryMatchesRows_thenReturnValidResponse() {
         TableResult tableResult = bigQueryService.query(
             GCP_ADC_ACCESS_TOKEN,
             BigQueryFunctionalTestFixture.validQueryString(
@@ -107,7 +107,16 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
     }
 
     @Test
-    void query_givenQueryString_whenCallingBigQueryViaRestfulServices_thenReturnValidResponse() throws IOException {
+    void query_givenValidExampleRequest_whenCallingBigQueryViaJdk_andRequestMatchesRows_thenReturnValidResponse() throws IOException {
+        TableResult tableResult = bigQueryService.query(
+            GCP_ADC_ACCESS_TOKEN,
+            BigQueryFunctionalTestFixture.validExampleRequest()
+        );
+        Assertions.assertTrue(0 < tableResult.getTotalRows());
+    }
+
+    @Test
+    void query_givenValidExampleRequest_whenCallingBigQueryViaRestfulServices_andRequestMatchesRows_thenReturnValidResponse() throws IOException {
         ResponseEntity<ExampleResponse> responseEntity = bigQueryService.query(BigQueryFunctionalTestFixture.validExampleRequest(), GCP_ADC_ACCESS_TOKEN);
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assertions.assertNotNull(responseEntity.getBody());

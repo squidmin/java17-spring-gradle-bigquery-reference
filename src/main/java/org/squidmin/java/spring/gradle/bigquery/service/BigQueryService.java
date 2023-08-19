@@ -371,6 +371,11 @@ public class BigQueryService {
         return new EmptyTableResult(Schema.of());
     }
 
+    public TableResult query(String bqApiToken, ExampleRequest request) throws IOException {
+        String queryString = bigQueryUtil.buildQueryString("query_1", request, bigQueryConfig);
+        return query(bqApiToken, queryString);
+    }
+
     /**
      * <a href="https://cloud.google.com/bigquery/docs/running-queries#batch">Run a batch query</a>
      *
