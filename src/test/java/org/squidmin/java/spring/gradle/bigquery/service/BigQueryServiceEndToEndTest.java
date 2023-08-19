@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.squidmin.java.spring.gradle.bigquery.CliConfig;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
@@ -107,11 +108,10 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
 
     @Test
     void query_givenQueryString_whenCallingBigQueryViaRestfulServices_thenReturnValidResponse() throws IOException {
-        ResponseEntity<ExampleResponse> responseEntity = bigQueryService.query(
-            BigQueryFunctionalTestFixture.validExampleRequest(),
-            GCP_ADC_ACCESS_TOKEN
-        );
-        log.info(responseEntity.toString());
+        ResponseEntity<ExampleResponse> responseEntity = bigQueryService.query(BigQueryFunctionalTestFixture.validExampleRequest(), GCP_ADC_ACCESS_TOKEN);
+        Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        Assertions.assertNotNull(responseEntity.getBody());
+        Assertions.assertTrue(0 < responseEntity.getBody().getBody().size());
     }
 
 }

@@ -26,14 +26,14 @@ public class ExampleRequestItem {
             return id;
         } else if ("creation_timestamp".equalsIgnoreCase(fieldName)) {
             return creationTimestamp;
-        } else if ("last_update_timestamp".equalsIgnoreCase(lastUpdateTimestamp)) {
+        } else if ("last_update_timestamp".equalsIgnoreCase(fieldName)) {
             return lastUpdateTimestamp;
         } else if ("column_a".equalsIgnoreCase(fieldName)) {
             return columnA;
         } else if ("column_b".equalsIgnoreCase(fieldName)) {
             return columnB;
         } else {
-            Logger.log("Invalid field name.", Logger.LogType.ERROR);
+            Logger.log(String.format("Invalid field name: %s", fieldName), Logger.LogType.ERROR);
         }
         return null;
     }
