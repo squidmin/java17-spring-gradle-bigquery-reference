@@ -5,6 +5,7 @@ import com.google.cloud.bigquery.TableResult;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.squidmin.java.spring.gradle.bigquery.CliConfig;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
@@ -14,7 +15,7 @@ import org.squidmin.java.spring.gradle.bigquery.util.LoggerUtil;
 
 import java.util.List;
 
-//@Disabled
+@Disabled
 @Slf4j
 public class BigQueryServiceEndToEndTest extends CliConfig {
 
@@ -88,6 +89,7 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
     @Test
     void query_givenQueryString_whenCallingBigQueryViaJdk_thenReturnValidResponse() {
         TableResult actual = bigQueryService.query(
+            GCP_ADC_ACCESS_TOKEN,
             BigQueryFunctionalTestFixture.validQueryString(
                 GCP_DEFAULT_USER_PROJECT_ID,
                 GCP_DEFAULT_USER_DATASET,

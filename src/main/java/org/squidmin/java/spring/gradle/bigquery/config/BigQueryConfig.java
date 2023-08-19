@@ -1,6 +1,7 @@
 package org.squidmin.java.spring.gradle.bigquery.config;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.WhereField
     "org.squidmin.java.spring.gradle.bigquery"
 })
 @Getter
+@Setter
 @Slf4j
 public class BigQueryConfig {
 

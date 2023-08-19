@@ -32,10 +32,9 @@ public class BigQueryOptionsConfig {
     private final String gcpAdcAccessToken = System.getProperty("GCP_ADC_ACCESS_TOKEN");
     private final String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
 
-    private final BigQuery bigQuery;
+    private BigQuery bigQuery;
 
-    public BigQueryOptionsConfig(
-        @Value("${bigquery.application-default.project-id}") String gcpDefaultUserProjectId) {
+    public BigQueryOptionsConfig(@Value("${bigquery.application-default.project-id}") String gcpDefaultUserProjectId) {
 
         this.gcpDefaultUserProjectId = gcpDefaultUserProjectId;
 
@@ -77,6 +76,16 @@ public class BigQueryOptionsConfig {
             this.bigQuery = bqOptionsBuilder.build().getService();
         }
 
+    }
+
+    public void setGcpAdcAccessToken(String bqApiToken) {
+        BigQueryOptions.Builder bqOptionsBuilder = BigQueryOptions.newBuilder();
+        bqOptionsBuilder.setProjectId(gcpDefaultUserProjectId).setLocation("us");
+        this.bigQuery = bqOptionsBuilder.setCredentials(
+            GoogleCredentials.newBuilder()
+                .setAccessToken(AccessToken.newBuilder().setTokenValue(bqApiToken).build())
+                .build()
+        ).build().getService();
     }
 
 }

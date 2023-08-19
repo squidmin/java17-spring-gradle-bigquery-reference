@@ -18,10 +18,10 @@ import java.util.Map;
 @NoArgsConstructor
 public class RecordExample {
 
-//    @Id
+    //    @Id
 //    @GeneratedValue(strategy=GenerationType.AUTO)
     private String id;
-//    @Column(name="fieldA", length=50, nullable=false, unique=false)
+    //    @Column(name="fieldA", length=50, nullable=false, unique=false)
     private String creationTimestamp;
     private String lastUpdateTimestamp;
     private String columnA;
