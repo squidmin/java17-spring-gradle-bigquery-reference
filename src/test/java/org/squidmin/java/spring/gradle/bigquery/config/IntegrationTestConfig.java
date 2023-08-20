@@ -118,5 +118,4 @@ public class IntegrationTestConfig {
         return bigQueryTimeUtil;
     }
 
-
 }

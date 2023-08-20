@@ -4,6 +4,7 @@ import com.google.api.gax.paging.Page;
 import com.google.cloud.bigquery.Dataset;
 import com.google.cloud.bigquery.TableInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.squidmin.java.spring.gradle.bigquery.config.DataTypes;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
 

@@ -41,15 +41,8 @@ public class BigQueryUtil {
         ExampleRequest request,
         BigQueryConfig bigQueryConfig) throws IOException {
 
-        String s = trimWhitespace(templateCompiler.compile(templateName, request, bigQueryConfig));
-        return s;
+        return StringUtil.trimWhitespace(templateCompiler.compile(templateName, request, bigQueryConfig));
 
-    }
-
-    public static String trimWhitespace(String str) {
-        return str
-            .replaceAll("\n", " ")
-            .replaceAll("\\p{Zs}+", " ");
     }
 
     public static List<ExampleResponseItem> toList(TableResult tableResult) {

@@ -3,6 +3,7 @@ package org.squidmin.java.spring.gradle.bigquery;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.bigquery.Schema;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -13,7 +14,6 @@ import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFi
 import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
 import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.RunEnvironment;
-import org.squidmin.java.spring.gradle.bigquery.util.StringUtils;
 
 @SpringBootTest(classes = {BigQueryService.class, IntegrationTestConfig.class})
 @ActiveProfiles("integration")

@@ -1,7 +1,6 @@
 package org.squidmin.java.spring.gradle.bigquery;
 
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,7 +13,7 @@ public class TestUtil {
     }
 
     public static String readQueryString(String filename) throws IOException {
-        return BigQueryUtil.trimWhitespace(
+        return trimWhitespace(
             new String(
                 Files.readAllBytes(
                     Paths.get(

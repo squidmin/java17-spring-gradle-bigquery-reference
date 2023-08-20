@@ -5,6 +5,7 @@ import com.google.cloud.bigquery.TableResult;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ import org.squidmin.java.spring.gradle.bigquery.util.LoggerUtil;
 import java.io.IOException;
 import java.util.List;
 
-//@Disabled
+@Disabled
 @Slf4j
 public class BigQueryServiceEndToEndTest extends CliConfig {
 

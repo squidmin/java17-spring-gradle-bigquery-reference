@@ -2,6 +2,7 @@ package org.squidmin.java.spring.gradle.bigquery.util;
 
 import com.github.jknack.handlebars.Options;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
