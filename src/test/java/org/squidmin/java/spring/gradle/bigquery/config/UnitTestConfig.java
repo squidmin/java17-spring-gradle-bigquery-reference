@@ -41,7 +41,6 @@ public class UnitTestConfig {
     private final BigQueryTimeUtil bigQueryTimeUtilMock = Mockito.mock(BigQueryTimeUtil.class);
 
     private BigQueryConfig bigQueryConfig;
-    private final BigQueryOptionsConfig bigQueryOptionsConfigMock = Mockito.mock(BigQueryOptionsConfig.class);
 
     private final RestTemplate restTemplateMock = Mockito.mock(RestTemplate.class);
 
@@ -105,8 +104,7 @@ public class UnitTestConfig {
             BigQueryFunctionalTestFixture.validSelectFieldsDefault(),
             BigQueryFunctionalTestFixture.validWhereFieldsDefault(),
             BigQueryFunctionalTestFixture.validExclusions(),
-            false,
-            bigQueryOptionsConfigMock
+            false
         );
         return bigQueryConfig;
     }
@@ -127,12 +125,6 @@ public class UnitTestConfig {
     @Qualifier("restTemplateMock_unitTest")
     public RestTemplate restTemplateMock() {
         return restTemplateMock;
-    }
-
-    @Bean
-    @Qualifier("bigQueryOptionsConfigMock_unitTest")
-    public BigQueryOptionsConfig bigQueryOptionsConfigMock() {
-        return bigQueryOptionsConfigMock;
     }
 
 }

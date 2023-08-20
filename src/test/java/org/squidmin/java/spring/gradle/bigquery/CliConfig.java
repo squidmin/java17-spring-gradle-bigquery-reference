@@ -1,6 +1,7 @@
 package org.squidmin.java.spring.gradle.bigquery;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.Schema;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +23,9 @@ public abstract class CliConfig {
 
     @Autowired
     protected BigQueryConfig bigQueryConfig;
+
+    @Autowired
+    protected BigQuery bigQuery;
 
     protected String gcpDefaultUserProjectIdDefault;
     protected String gcpDefaultUserDatasetDefault;
@@ -129,7 +133,7 @@ public abstract class CliConfig {
 
     private void initRunEnvironmentActiveProperties() {
         // Set integration test class level variables for active run environment.
-        GCP_ADC_ACCESS_TOKEN = bigQueryConfig.getBigQueryOptionsConfig().getGcpAdcAccessToken();
+        GCP_ADC_ACCESS_TOKEN = bigQueryConfig.getGcpAdcAccessToken();
         GCP_DEFAULT_USER_PROJECT_ID = setEnvProperty(bigQueryConfig.getGcpDefaultUserProjectId(), runEnvironment.getGcpDefaultUserProjectId());
         GCP_DEFAULT_USER_DATASET = setEnvProperty(bigQueryConfig.getGcpDefaultUserDataset(), runEnvironment.getGcpDefaultUserDataset());
         GCP_DEFAULT_USER_TABLE = setEnvProperty(bigQueryConfig.getGcpDefaultUserTable(), runEnvironment.getGcpDefaultUserTable());

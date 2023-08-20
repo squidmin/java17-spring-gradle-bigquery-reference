@@ -1,10 +1,12 @@
 package org.squidmin.java.spring.gradle.bigquery.config;
 
+import com.google.cloud.bigquery.BigQuery;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
+import org.squidmin.java.spring.gradle.bigquery.TestUtil;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.util.BigQueryTimeUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
@@ -15,6 +17,10 @@ import java.io.IOException;
 @Configuration
 @ActiveProfiles("integration")
 public class IntegrationTestConfig {
+
+    private final String gcpSaKeyPath = System.getProperty("GCP_SA_KEY_PATH");
+    private final String gcpAdcAccessToken = System.getProperty("GCP_ADC_ACCESS_TOKEN");
+    private final String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
 
     @Value("${bigquery.application-default.project-id}")
     private String gcpDefaultUserProjectId;
@@ -40,6 +46,7 @@ public class IntegrationTestConfig {
     private RestTemplate restTemplate;
 
     private BigQueryConfig bigQueryConfig;
+    private BigQuery bigQuery;
 
     private BigQueryUtil bigQueryUtil;
     private BigQueryTimeUtil bigQueryTimeUtil;
@@ -94,10 +101,14 @@ public class IntegrationTestConfig {
             BigQueryFunctionalTestFixture.validSelectFieldsDefault(),
             BigQueryFunctionalTestFixture.validWhereFieldsDefault(),
             BigQueryFunctionalTestFixture.validExclusions(),
-            false,
-            new BigQueryOptionsConfig(gcpDefaultUserProjectId)
+            false
         );
         return bigQueryConfig;
+    }
+
+    @Bean
+    public BigQuery bigQuery() {
+        return TestUtil.getBigQueryInstance(gcpSaKeyPath, gcpAdcAccessToken, gcpSaAccessToken, gcpDefaultUserProjectId);
     }
 
     @Bean

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.config.BigQueryConfig;
-import org.squidmin.java.spring.gradle.bigquery.config.BigQueryOptionsConfig;
 import org.squidmin.java.spring.gradle.bigquery.config.DataTypes;
 import org.squidmin.java.spring.gradle.bigquery.config.Exclusions;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SchemaDefault;
@@ -63,7 +62,7 @@ public class BigQueryService {
     @Autowired
     public BigQueryService(BigQueryUtil bigQueryUtil, BigQueryConfig bigQueryConfig, RestTemplate restTemplate) {
         this.bigQueryConfig = bigQueryConfig;
-        this.bigQuery = bigQueryConfig.getBigQueryOptionsConfig().getBigQuery();
+        this.bigQuery = bigQueryConfig.getBigQuery();
         this.gcpDefaultUserProjectId = bigQueryConfig.getGcpDefaultUserProjectId();
         this.gcpDefaultUserDataset = bigQueryConfig.getGcpDefaultUserDataset();
         this.gcpDefaultUserTable = bigQueryConfig.getGcpDefaultUserTable();
@@ -338,9 +337,9 @@ public class BigQueryService {
             String jobName = "jobId_" + UUID.randomUUID();
             JobId jobId = JobId.newBuilder().setLocation("us").setJob(jobName).build();
 
-            String bigQueryApiToken = bigQueryConfig.getBigQueryOptionsConfig().getGcpAdcAccessToken();
+            String bigQueryApiToken = bigQueryConfig.getGcpAdcAccessToken();
             Logger.log(String.format("BIGQUERY API TOKEN == %s", bigQueryApiToken), Logger.LogType.CYAN);
-            bigQueryConfig.getBigQueryOptionsConfig().setGcpAdcAccessToken(bqApiToken);
+            bigQueryConfig.setGcpAdcAccessToken(bqApiToken);
 
             bigQuery.create(JobInfo.of(jobId, queryConfig));  // Create a job with job ID.
 
@@ -421,9 +420,8 @@ public class BigQueryService {
     private HttpHeaders getHttpHeaders(String bqApiToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
 
-        BigQueryOptionsConfig bigQueryOptionsConfig = bigQueryConfig.getBigQueryOptionsConfig();
-        String gcpAdcAccessToken = bigQueryOptionsConfig.getGcpAdcAccessToken();
-        String gcpSaAccessToken = bigQueryOptionsConfig.getGcpSaAccessToken();
+        String gcpAdcAccessToken = System.getProperty("GCP_ADC_ACCESS_TOKEN");
+        String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
         if (StringUtils.isNotEmpty(gcpAdcAccessToken)) {
             httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpAdcAccessToken));
         } else if (!StringUtils.isEmpty(gcpSaAccessToken)) {
