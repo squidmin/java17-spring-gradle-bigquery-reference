@@ -49,13 +49,7 @@ public class BigQueryServiceFactory {
     }
 
     private static File readServiceAccountKeyFile(String gcpSaKeyPath) {
-        File serviceAccountKey;
-        String path = "";
-        if (StringUtils.isNotEmpty(gcpSaKeyPath)) {
-            path = gcpSaKeyPath;
-        }
-        serviceAccountKey = new File(path);
-        return serviceAccountKey;
+        return new File(StringUtils.isNotEmpty(gcpSaKeyPath) ? gcpSaKeyPath : "");
     }
 
     private static boolean setServiceAccountCredentials(BigQueryOptions.Builder bqOptionsBuilder, String gcpDefaultUserProjectId, File serviceAccountKey) {
