@@ -274,7 +274,7 @@ public class BigQueryService {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     private ResponseEntity<ExampleResponse> handleIOException(IOException e) {

@@ -46,7 +46,6 @@ public class IntegrationTestConfig {
     private RestTemplate restTemplate;
 
     private BigQueryConfig bigQueryConfig;
-    private BigQuery bigQuery;
 
     private BigQueryUtil bigQueryUtil;
     private BigQueryTimeUtil bigQueryTimeUtil;
