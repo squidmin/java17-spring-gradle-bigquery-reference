@@ -1,8 +1,8 @@
 bigquery:
   application-default:
     project-id: lofty-root-378503
-    dataset: test_dataset_local
-    table: test_table_local
+    dataset: test_dataset_integration
+    table: test_table_integration
   service-account:
     project-id: ${bigquery.application-default.project-id}
     dataset: ${bigquery.application-default.dataset}

@@ -19,7 +19,13 @@ import java.nio.file.Paths;
 public class TestUtil {
 
     public static String readJson(String path) throws IOException {
-        return new String(Files.readAllBytes(Paths.get(BigQueryFunctionalTestFixture.RESOURCES_BASE_PATH.concat(path))));
+        return new String(
+            Files.readAllBytes(
+                Paths.get(
+                    BigQueryFunctionalTestFixture.RESOURCES_BASE_PATH.concat(path)
+                )
+            )
+        );
     }
 
     public static String readQueryString(String filename) throws IOException {
@@ -40,24 +46,51 @@ public class TestUtil {
             .replaceAll("\\p{Zs}+", " ");
     }
 
-    public static BigQuery getBigQueryInstance(
+    public static BigQuery defaultBigQueryInstance(
         String gcpSaKeyPath,
         String gcpAdcAccessToken,
         String gcpSaAccessToken,
         String gcpDefaultUserProjectId) {
 
-        BigQuery bigQuery;
         Logger.log(String.format("BQ JDK: GCP_SA_KEY_PATH == %s", gcpSaKeyPath), Logger.LogType.CYAN);
+        File serviceAccountKey = readServiceAccountKeyFile(gcpSaKeyPath);
+        Logger.log(String.format("GCP_ADC_ACCESS_TOKEN == %s", gcpAdcAccessToken), Logger.LogType.CYAN);
+        Logger.log(String.format("GCP_SA_ACCESS_TOKEN == %s", gcpSaAccessToken), Logger.LogType.CYAN);
+
+        BigQueryOptions.Builder bqOptionsBuilder = BigQueryOptions.newBuilder();
+        boolean isBqJdkAuthenticatedUsingSaKeyFile = setServiceAccountCredentials(
+            bqOptionsBuilder, gcpDefaultUserProjectId, serviceAccountKey
+        );
+
+        LoggerUtil.logSaKeyFileAuth(isBqJdkAuthenticatedUsingSaKeyFile);
+
+        BigQuery bigQuery;
+        if (!isBqJdkAuthenticatedUsingSaKeyFile && StringUtils.isNotEmpty(gcpAdcAccessToken)) {
+            Logger.log("Authenticated successfully using Application Default Credentials (ADC) access token.", Logger.LogType.INFO);
+            bigQuery = bqOptionsBuilder.setCredentials(
+                GoogleCredentials.newBuilder()
+                    .setAccessToken(AccessToken.newBuilder().setTokenValue(gcpAdcAccessToken).build())
+                    .build()
+            ).build().getService();
+        } else {
+            Logger.log("Was not able to authenticate using Application Default Credentials (ADC) access token.", Logger.LogType.INFO);
+            bigQuery = bqOptionsBuilder.build().getService();
+        }
+        return bigQuery;
+
+    }
+
+    private static File readServiceAccountKeyFile(String gcpSaKeyPath) {
         File serviceAccountKey;
         String path = "";
         if (StringUtils.isNotEmpty(gcpSaKeyPath)) {
             path = gcpSaKeyPath;
         }
         serviceAccountKey = new File(path);
-        Logger.log(String.format("GCP_ADC_ACCESS_TOKEN == %s", gcpAdcAccessToken), Logger.LogType.CYAN);
-        Logger.log(String.format("GCP_SA_ACCESS_TOKEN == %s", gcpSaAccessToken), Logger.LogType.CYAN);
+        return serviceAccountKey;
+    }
 
-        BigQueryOptions.Builder bqOptionsBuilder = BigQueryOptions.newBuilder();
+    private static boolean setServiceAccountCredentials(BigQueryOptions.Builder bqOptionsBuilder, String gcpDefaultUserProjectId, File serviceAccountKey) {
         bqOptionsBuilder.setProjectId(gcpDefaultUserProjectId).setLocation("us");
         GoogleCredentials credentials;
         boolean isBqJdkAuthenticatedUsingSaKeyFile;
@@ -75,22 +108,7 @@ public class TestUtil {
             }
             isBqJdkAuthenticatedUsingSaKeyFile = false;
         }
-
-        LoggerUtil.logSaKeyFileAuth(isBqJdkAuthenticatedUsingSaKeyFile);
-
-        if (!isBqJdkAuthenticatedUsingSaKeyFile && StringUtils.isNotEmpty(gcpAdcAccessToken)) {
-            Logger.log("Authenticated successfully using Application Default Credentials (ADC) access token.", Logger.LogType.INFO);
-            bigQuery = bqOptionsBuilder.setCredentials(
-                GoogleCredentials.newBuilder()
-                    .setAccessToken(AccessToken.newBuilder().setTokenValue(gcpAdcAccessToken).build())
-                    .build()
-            ).build().getService();
-        } else {
-            Logger.log("Was not able to authenticate using Application Default Credentials (ADC) access token.", Logger.LogType.INFO);
-            bigQuery = bqOptionsBuilder.build().getService();
-        }
-        return bigQuery;
-
+        return isBqJdkAuthenticatedUsingSaKeyFile;
     }
 
 }

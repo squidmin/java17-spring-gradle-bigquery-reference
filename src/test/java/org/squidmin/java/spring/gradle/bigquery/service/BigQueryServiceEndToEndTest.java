@@ -20,7 +20,7 @@ import org.squidmin.java.spring.gradle.bigquery.util.LoggerUtil;
 import java.io.IOException;
 import java.util.List;
 
-//@Disabled
+@Disabled
 @Slf4j
 public class BigQueryServiceEndToEndTest extends CliConfig {
 

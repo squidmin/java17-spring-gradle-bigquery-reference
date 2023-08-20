@@ -1,6 +1,18 @@
 {{#*inline "whereClause" requestItem}}
     {{#each requestItem}}
-        {{@key}} LIKE "%{{this}}%"
+        {{#eq @key "creation_timestamp"}}
+            {{#eq (isEmpty this) false}}
+                creation_timestamp >= CAST("{{this}}" AS DATETIME)
+            {{else}}
+            {{/eq}}
+        {{else eq @key "last_update_timestamp"}}
+            {{#eq}}
+                last_update_timestamp <= CAST("{{this}}" AS DATETIME)
+            {{else}}
+            {{/eq}}
+        {{else}}
+            {{@key}} LIKE "%{{this}}%"
+        {{/eq}}
         {{#unless @last}}
             AND
         {{/unless}}

@@ -107,7 +107,7 @@ public class IntegrationTestConfig {
 
     @Bean
     public BigQuery bigQuery() {
-        return TestUtil.getBigQueryInstance(gcpSaKeyPath, gcpAdcAccessToken, gcpSaAccessToken, gcpDefaultUserProjectId);
+        return TestUtil.defaultBigQueryInstance(gcpSaKeyPath, gcpAdcAccessToken, gcpSaAccessToken, gcpDefaultUserProjectId);
     }
 
     @Bean
