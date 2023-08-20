@@ -25,4 +25,10 @@ public class TestUtil {
         );
     }
 
+    public static String trimWhitespace(String str) {
+        return str
+            .replaceAll("\n", " ")
+            .replaceAll("\\p{Zs}+", " ");
+    }
+
 }
