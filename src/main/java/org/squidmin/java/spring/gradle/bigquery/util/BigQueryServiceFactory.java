@@ -21,12 +21,12 @@ public class BigQueryServiceFactory {
         String gcpDefaultUserProjectId) {
 
         Logger.log(String.format("BQ JDK: GCP_SA_KEY_PATH == %s", gcpSaKeyPath), Logger.LogType.CYAN);
-        File credentialsPath;
+        File serviceAccountKey;
+        String path = "";
         if (StringUtils.isNotEmpty(gcpSaKeyPath)) {
-            credentialsPath = new File(gcpSaKeyPath);
-        } else {
-            credentialsPath = new File("notfound");
+            path = gcpSaKeyPath;
         }
+        serviceAccountKey = new File(path);
         Logger.log(String.format("GCP_ADC_ACCESS_TOKEN == %s", gcpAdcAccessToken), Logger.LogType.CYAN);
         Logger.log(String.format("GCP_SA_ACCESS_TOKEN == %s", gcpSaAccessToken), Logger.LogType.CYAN);
 
@@ -34,7 +34,7 @@ public class BigQueryServiceFactory {
         bqOptionsBuilder.setProjectId(gcpDefaultUserProjectId).setLocation("us");
         GoogleCredentials credentials;
         boolean isBqJdkAuthenticatedUsingSaKeyFile;
-        try (FileInputStream stream = new FileInputStream(credentialsPath)) {
+        try (FileInputStream stream = new FileInputStream(serviceAccountKey)) {
             credentials = ServiceAccountCredentials.fromStream(stream);
             Logger.log("BQ JDK: SETTING SERVICE ACCOUNT CREDENTIALS (GOOGLE_APPLICATION_CREDENTIALS) TO BQ OPTIONS.", Logger.LogType.CYAN);
             bqOptionsBuilder.setCredentials(credentials);
