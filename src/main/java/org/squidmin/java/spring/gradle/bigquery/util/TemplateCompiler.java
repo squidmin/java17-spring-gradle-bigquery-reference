@@ -50,7 +50,7 @@ public class TemplateCompiler {
             for (ExampleRequestItem requestItem : requestBody) {
                 String fieldName = whereField.getName();
                 String value = requestItem.get(fieldName);
-                if (StringUtils.isNotEmpty(value) && !presentValues.contains(fieldName) || isTimestampField(fieldName)) {
+                if (StringUtils.isNotEmpty(value) && !presentValues.contains(fieldName)) {
                     presentValues.add(fieldName);
                 }
             }

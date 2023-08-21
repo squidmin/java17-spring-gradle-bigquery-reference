@@ -423,6 +423,9 @@ public class BigQueryService {
         String gcpAdcAccessToken = System.getProperty("GCP_ADC_ACCESS_TOKEN");
         String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
         if (StringUtils.isNotEmpty(gcpAdcAccessToken)) {
+            if (StringUtils.isNotEmpty(bqApiToken)) {
+                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(bqApiToken));
+            }
             httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpAdcAccessToken));
         } else if (!StringUtils.isEmpty(gcpSaAccessToken)) {
             httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpSaAccessToken));

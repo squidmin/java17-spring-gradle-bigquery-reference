@@ -2,6 +2,7 @@ package org.squidmin.java.spring.gradle.bigquery.repository;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.squidmin.java.spring.gradle.bigquery.dao.RecordExample;
@@ -11,6 +12,7 @@ import org.squidmin.java.spring.gradle.bigquery.dto.Query;
 import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -18,25 +20,31 @@ import java.util.List;
 @Slf4j
 public class ExampleRepositoryImpl implements ExampleRepository {
 
-    private final BigQueryService bqAdminClient;
+    private final BigQueryService bigQueryService;
 
-    public ExampleRepositoryImpl(BigQueryService bqAdminClient) {
-        this.bqAdminClient = bqAdminClient;
+    public ExampleRepositoryImpl(BigQueryService bigQueryService) {
+        this.bigQueryService = bigQueryService;
     }
 
     @Override
     public ResponseEntity<ExampleResponse> query(Query query, String bqApiToken) throws IOException {
-        return bqAdminClient.query(query, bqApiToken);
+        return bigQueryService.query(query, bqApiToken);
     }
 
     @Override
     public ResponseEntity<ExampleResponse> query(ExampleRequest request, String bqApiToken) throws IOException {
-        return bqAdminClient.query(request, bqApiToken);
+        if (request.getBody().isEmpty()) {
+            return new ResponseEntity<>(
+                ExampleResponse.builder().body(new ArrayList<>()).build(),
+                HttpStatus.OK
+            );
+        }
+        return bigQueryService.query(request, bqApiToken);
     }
 
     @Override
     public int insert(String projectId, String dataset, String table, List<RecordExample> records) {
-        int numRowsInserted = bqAdminClient.insert(projectId, dataset, table, records).size();
+        int numRowsInserted = bigQueryService.insert(projectId, dataset, table, records).size();
         return 0 < numRowsInserted ? numRowsInserted : -1;
     }
 
