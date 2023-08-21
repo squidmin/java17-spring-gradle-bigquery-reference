@@ -144,7 +144,7 @@ public class BigQueryUtil {
         public static Schema translate(String schema, DataTypes dataTypes) {
             Logger.log(String.format("Generating Schema object using CLI arg: \"%s\"...", schema), Logger.LogType.CYAN);
             List<Field> fields = new ArrayList<>();
-            List<String> _fields = Arrays.stream(schema.split(",")).collect(Collectors.toList());
+            List<String> _fields = Arrays.stream(schema.split(",")).toList();
             _fields.forEach(
                 f -> {
                     String[] split = f.split(":");
