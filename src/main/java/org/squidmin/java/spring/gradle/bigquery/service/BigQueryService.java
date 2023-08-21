@@ -427,7 +427,7 @@ public class BigQueryService {
             } else {
                 httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpAdcAccessToken));
             }
-        } else if (!StringUtils.isEmpty(gcpSaAccessToken)) {
+        } else if (StringUtils.isNotEmpty(gcpSaAccessToken)) {
             httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpSaAccessToken));
         } else {
             httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(bqApiToken));
