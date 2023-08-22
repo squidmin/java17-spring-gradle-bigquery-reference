@@ -14,8 +14,8 @@ public class ExampleRequestBodyValidator implements ConstraintValidator<ExampleR
     }
 
     @Override
-    public boolean isValid(List<ExampleRequestItem> value, ConstraintValidatorContext context) {
-        return true;
+    public boolean isValid(List<ExampleRequestItem> requestItems, ConstraintValidatorContext context) {
+        return !requestItems.stream().filter(requestItem -> !requestItem.isBlank()).toList().isEmpty();
     }
 
 }

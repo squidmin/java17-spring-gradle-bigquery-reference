@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.squidmin.java.spring.gradle.bigquery.dao.RecordExample;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequest;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
-import org.squidmin.java.spring.gradle.bigquery.dto.Query;
+import org.squidmin.java.spring.gradle.bigquery.dto.bigquery.Query;
 import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
 
 import java.io.IOException;

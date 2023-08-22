@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
+
+import java.lang.reflect.Field;
 
 @Data
 @Builder
@@ -42,6 +45,20 @@ public class ExampleRequestItem {
             Logger.log(String.format("Invalid field name: %s", fieldName), Logger.LogType.ERROR);
         }
         return null;
+    }
+
+    public boolean isBlank() {
+        for (Field field : this.getClass().getDeclaredFields()) {
+            try {
+                field.setAccessible(true);
+                if (field.get(this) != null && field.get(this) != Strings.EMPTY) {
+                    return false;
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
     }
 
 }

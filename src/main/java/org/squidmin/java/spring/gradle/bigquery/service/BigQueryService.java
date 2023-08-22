@@ -21,7 +21,7 @@ import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.WhereField
 import org.squidmin.java.spring.gradle.bigquery.dao.RecordExample;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequest;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
-import org.squidmin.java.spring.gradle.bigquery.dto.Query;
+import org.squidmin.java.spring.gradle.bigquery.dto.bigquery.Query;
 import org.squidmin.java.spring.gradle.bigquery.exception.CustomJobException;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
 import org.squidmin.java.spring.gradle.bigquery.util.BigQueryHttpUtil;
