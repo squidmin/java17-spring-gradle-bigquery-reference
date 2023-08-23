@@ -2,6 +2,7 @@ package org.squidmin.java.spring.gradle.bigquery.fixture;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.squidmin.java.spring.gradle.bigquery.TestUtil;
 import org.squidmin.java.spring.gradle.bigquery.config.DataTypes;
@@ -159,6 +160,22 @@ public abstract class BigQueryFunctionalTestFixture {
         Exclusions exclusions = new Exclusions();
         exclusions.getFields().add("excludedField");
         return exclusions;
+    }
+
+    public static HttpEntity<String> validHttpEntity(
+        String gcpDefaultUserProjectId,
+        String gcpDefaultUserDataset,
+        String gcpDefaultUserTable) {
+
+        return new HttpEntity<>(
+            BigQueryFunctionalTestFixture.validQueryString(
+                gcpDefaultUserProjectId,
+                gcpDefaultUserDataset,
+                gcpDefaultUserTable
+            ),
+            BigQueryFunctionalTestFixture.validHttpHeaders()
+        );
+
     }
 
     public static HttpHeaders validHttpHeaders() {

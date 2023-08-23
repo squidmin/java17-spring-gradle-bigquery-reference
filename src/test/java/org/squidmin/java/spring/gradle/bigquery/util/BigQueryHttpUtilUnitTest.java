@@ -57,13 +57,10 @@ public class BigQueryHttpUtilUnitTest extends UnitTest {
     @Test
     void callBigQueryApi_givenValidParameters_thenReturnHttpStatusOk() throws IOException {
         String responseFixture = BigQueryFunctionalTestFixture.validBigQueryRestServiceResponse();
-        HttpEntity<String> request = new HttpEntity<>(
-            BigQueryFunctionalTestFixture.validQueryString(
-                gcpDefaultUserProjectId,
-                gcpDefaultUserDataset,
-                gcpDefaultUserTable
-            ),
-            BigQueryFunctionalTestFixture.validHttpHeaders()
+        HttpEntity<String> request = BigQueryFunctionalTestFixture.validHttpEntity(
+            gcpDefaultUserProjectId,
+            gcpDefaultUserDataset,
+            gcpDefaultUserTable
         );
         bigQueryApiReturnsResponse(
             mapper.readValue(
