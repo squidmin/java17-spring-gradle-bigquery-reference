@@ -52,7 +52,7 @@ public class BigQueryHttpUtilUnitTest {
     }
 
     @AfterEach
-    void tearDown() {
+    void afterEach() {
         Mockito.reset(restTemplateMock);
     }
 
