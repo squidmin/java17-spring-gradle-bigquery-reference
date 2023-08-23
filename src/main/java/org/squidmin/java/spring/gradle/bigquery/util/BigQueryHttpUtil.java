@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.config.BigQueryConfig;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
@@ -16,20 +17,28 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+@Component
 @Slf4j
 public class BigQueryHttpUtil {
 
-    public static ResponseEntity<ExampleResponse> callBigQueryApi(
+    private final RestTemplate restTemplate;
+
+    public BigQueryHttpUtil(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public ResponseEntity<ExampleResponse> callBigQueryApi(
         BigQueryConfig bigQueryConfig,
         HttpEntity<String> request,
-        RestTemplate restTemplate,
-        ObjectMapper mapper,
-        long requestTime) throws IOException {
+        ObjectMapper mapper) throws IOException {
 
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(bigQueryConfig.getQueryUri(), request, String.class);
-        long responseTime = System.currentTimeMillis();
-        float duration = (responseTime - requestTime) / 1000f;
-        log.info("query(): Received response after {} seconds", String.format("%.5f", duration));
+        long requestTime = System.currentTimeMillis();
+        String queryUri = bigQueryConfig.getQueryUri();
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(queryUri, request, String.class);
+        log.info(
+            "callBigQueryApi(): Received response after {} seconds",
+            String.format("%.5f", (System.currentTimeMillis() - requestTime) / 1000f)
+        );
         String responseBody = responseEntity.getBody();
         if (HttpStatus.OK != responseEntity.getStatusCode()) {
             return handleHttpStatusNotOk(responseEntity, responseBody, mapper);

@@ -4,6 +4,7 @@ import autovalue.shaded.com.google.common.collect.ImmutableMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.bigquery.*;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.config.BigQueryConfig;
 import org.squidmin.java.spring.gradle.bigquery.config.DataTypes;
 import org.squidmin.java.spring.gradle.bigquery.config.Exclusions;
@@ -39,6 +39,7 @@ import java.util.*;
     DataTypes.class,
     Exclusions.class,
 })
+@Getter
 @Slf4j
 public class BigQueryService {
 
@@ -51,16 +52,20 @@ public class BigQueryService {
 
     private final BigQueryUtil bigQueryUtil;
 
+    private final BigQueryHttpUtil bigQueryHttpUtil;
+
     private final BigQuery bigQuery;
 
     private final BigQueryConfig bigQueryConfig;
 
-    private final RestTemplate restTemplate;
-
     private final ObjectMapper mapper;
 
     @Autowired
-    public BigQueryService(BigQueryUtil bigQueryUtil, BigQueryConfig bigQueryConfig, RestTemplate restTemplate) {
+    public BigQueryService(
+        BigQueryUtil bigQueryUtil,
+        BigQueryHttpUtil bigQueryHttpUtil,
+        BigQueryConfig bigQueryConfig) {
+
         this.bigQueryConfig = bigQueryConfig;
         this.bigQuery = bigQueryConfig.getBigQuery();
         this.gcpDefaultUserProjectId = bigQueryConfig.getGcpDefaultUserProjectId();
@@ -70,8 +75,9 @@ public class BigQueryService {
         this.gcpSaDataset = bigQueryConfig.getGcpSaDataset();
         this.gcpSaTable = bigQueryConfig.getGcpSaTable();
         this.bigQueryUtil = bigQueryUtil;
-        this.restTemplate = restTemplate;
+        this.bigQueryHttpUtil = bigQueryHttpUtil;
         mapper = new ObjectMapper();
+
     }
 
     /**
@@ -249,7 +255,7 @@ public class BigQueryService {
         log.info("{}", query.getQuery());
         long requestTime = System.currentTimeMillis();
         try {
-            return BigQueryHttpUtil.callBigQueryApi(bigQueryConfig, request, restTemplate, mapper, requestTime);
+            return bigQueryHttpUtil.callBigQueryApi(bigQueryConfig, request, mapper);
         } catch (HttpClientErrorException e) {
             return handleHttpClientErrorException(e, requestTime);
         } catch (IOException e) {

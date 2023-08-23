@@ -2,6 +2,7 @@ package org.squidmin.java.spring.gradle.bigquery.fixture;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpHeaders;
 import org.squidmin.java.spring.gradle.bigquery.TestUtil;
 import org.squidmin.java.spring.gradle.bigquery.config.DataTypes;
 import org.squidmin.java.spring.gradle.bigquery.config.Exclusions;
@@ -101,7 +102,7 @@ public abstract class BigQueryFunctionalTestFixture {
         return request;
     }
 
-    public static ExampleResponse validResponse() {
+    public static ExampleResponse validExampleResponse() {
         return ExampleResponse.builder()
             .body(
                 Collections.singletonList(
@@ -115,6 +116,10 @@ public abstract class BigQueryFunctionalTestFixture {
                 )
             )
             .build();
+    }
+
+    public static String validBigQueryRestServiceResponse() throws IOException {
+        return TestUtil.readJson("/responses/valid_bq_api_response.json");
     }
 
     public static SchemaDefault validSchemaDefault() throws IOException {
@@ -154,6 +159,12 @@ public abstract class BigQueryFunctionalTestFixture {
         Exclusions exclusions = new Exclusions();
         exclusions.getFields().add("excludedField");
         return exclusions;
+    }
+
+    public static HttpHeaders validHttpHeaders() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat("dummy_token"));
+        return httpHeaders;
     }
 
 }

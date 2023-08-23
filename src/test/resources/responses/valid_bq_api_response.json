@@ -1,0 +1,62 @@
+{
+  "kind": "bigquery#queryResponse",
+  "schema": {
+    "fields": [
+      {
+        "name": "id",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "creation_timestamp",
+        "type": "DATETIME",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "last_update_timestamp",
+        "type": "DATETIME",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "column_a",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "column_b",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      }
+    ]
+  },
+  "jobReference": {
+    "projectId": "lofty-root-378503",
+    "jobId": "job_9mHjUyjP-oQQJ3bb2mSVRlBpn2HH",
+    "location": "US"
+  },
+  "totalRows": "1",
+  "rows": [
+    {
+      "f": [
+        {
+          "v": "asdf-1234"
+        },
+        {
+          "v": "2013-06-24T00:00:00"
+        },
+        {
+          "v": "2015-04-20T00:00:00"
+        },
+        {
+          "v": "column_a_val_1"
+        },
+        {
+          "v": "column_b_val_1"
+        }
+      ]
+    }
+  ],
+  "totalBytesProcessed": "0",
+  "jobComplete": true,
+  "cacheHit": false
+}

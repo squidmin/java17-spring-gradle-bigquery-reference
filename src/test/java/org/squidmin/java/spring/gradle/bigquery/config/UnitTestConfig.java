@@ -42,6 +42,8 @@ public class UnitTestConfig {
 
     private BigQueryConfig bigQueryConfig;
 
+    private BigQueryConfig bigQueryConfigMock = Mockito.mock(BigQueryConfig.class);
+
     private final RestTemplate restTemplateMock = Mockito.mock(RestTemplate.class);
 
     private final TemplateCompiler templateCompilerMock = Mockito.mock(TemplateCompiler.class);
@@ -83,7 +85,7 @@ public class UnitTestConfig {
     }
 
     @Bean
-    @Qualifier("queryUri_unitTest")
+//    @Qualifier("queryUri_unitTest")
     public String queryUri() {
         return queryUri;
     }
@@ -107,6 +109,12 @@ public class UnitTestConfig {
             false
         );
         return bigQueryConfig;
+    }
+
+    @Bean
+    @Qualifier("bigQueryConfigMock_unitTest")
+    public BigQueryConfig bigQueryConfigMock() {
+        return bigQueryConfigMock;
     }
 
     @Bean

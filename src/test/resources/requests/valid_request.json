@@ -5,8 +5,8 @@
   "body": [
     {
       "id": "asdf-1234",
-      "columnA": "column_a_val_1",
-      "columnB": "column_b_val_1"
+      "column_a": "column_a_val_1",
+      "column_b": "column_b_val_1"
     }
   ]
 }
