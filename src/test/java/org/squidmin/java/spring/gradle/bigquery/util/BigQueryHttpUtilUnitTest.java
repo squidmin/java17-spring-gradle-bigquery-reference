@@ -79,7 +79,7 @@ public class BigQueryHttpUtilUnitTest {
             request,
             mapper
         );
-        Assertions.assertNotNull(responseEntity);
+        Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     private void bigQueryApiReturnsResponse(BigQueryRestServiceResponse response, HttpStatus httpStatus)
