@@ -41,7 +41,6 @@ public class UnitTestConfig {
     private final BigQueryTimeUtil bigQueryTimeUtilMock = Mockito.mock(BigQueryTimeUtil.class);
 
     private BigQueryConfig bigQueryConfig;
-
     private BigQueryConfig bigQueryConfigMock = Mockito.mock(BigQueryConfig.class);
 
     private final RestTemplate restTemplateMock = Mockito.mock(RestTemplate.class);
