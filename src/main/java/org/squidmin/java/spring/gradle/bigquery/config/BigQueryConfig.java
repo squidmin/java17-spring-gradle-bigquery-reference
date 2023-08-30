@@ -91,12 +91,12 @@ public class BigQueryConfig {
 
     }
 
-    public void setGcpAdcAccessToken(String bqApiToken) {
+    public void refreshGcpCredentials(String gcpToken) {
         BigQueryOptions.Builder bqOptionsBuilder = BigQueryOptions.newBuilder();
         bqOptionsBuilder.setProjectId(gcpDefaultUserProjectId).setLocation("us");
         this.bigQuery = bqOptionsBuilder.setCredentials(
             GoogleCredentials.newBuilder()
-                .setAccessToken(AccessToken.newBuilder().setTokenValue(bqApiToken).build())
+                .setAccessToken(AccessToken.newBuilder().setTokenValue(gcpToken).build())
                 .build()
         ).build().getService();
     }

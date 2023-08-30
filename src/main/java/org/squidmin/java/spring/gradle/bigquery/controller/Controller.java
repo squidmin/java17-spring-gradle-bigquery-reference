@@ -29,10 +29,10 @@ public class Controller {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<ExampleResponse> query(
-        @RequestHeader("bq-api-token") String bqApiToken,
+        @RequestHeader("gcp-token") String gcpToken,
         @Valid @RequestBody ExampleRequest request) throws IOException {
 
-        return exampleRepository.query(request, bqApiToken);
+        return exampleRepository.query(request, gcpToken);
 
     }
 

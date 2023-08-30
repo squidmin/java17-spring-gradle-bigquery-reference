@@ -25,11 +25,17 @@ management:
         include: health, info
 
 bigquery:
+  response-size-limit: 0
   select-all: true
   data-types:
     - STRING
     - DATETIME
     - BOOL
+
+gcs:
+  filename: test_large_response_upload
+  bucket:
+    name: lofty_root_example_bucket
 
 tables:
   default:

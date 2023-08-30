@@ -53,9 +53,18 @@ dependencies {
 
     implementation 'com.google.cloud:spring-cloud-gcp-starter'
 
+    // Google API client
+    implementation 'com.google.api-client:google-api-client:1.31.1'
+
     // BigQuery
     implementation platform('com.google.cloud:libraries-bom:26.11.0')
     implementation 'com.google.cloud:google-cloud-bigquery:2.24.2'
+
+    // Google Cloud Storage
+    implementation 'com.google.cloud:google-cloud-storage:2.1.5'
+
+    // JSON parsing library
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.28'

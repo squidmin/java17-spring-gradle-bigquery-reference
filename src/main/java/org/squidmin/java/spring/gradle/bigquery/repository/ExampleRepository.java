@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface ExampleRepository {
 
-    ResponseEntity<ExampleResponse> query(Query query, String bqApiToken) throws IOException;
+    ResponseEntity<ExampleResponse> query(Query query, String gcpToken) throws IOException;
 
-    ResponseEntity<ExampleResponse> query(ExampleRequest request, String bqApiToken) throws IOException;
+    ResponseEntity<ExampleResponse> query(ExampleRequest request, String gcpToken) throws IOException;
 
     int insert(String projectId, String dataset, String table, List<RecordExample> records);
 
