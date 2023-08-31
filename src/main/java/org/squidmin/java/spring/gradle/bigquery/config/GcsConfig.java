@@ -44,7 +44,6 @@ public class GcsConfig {
             .setCredentials(GoogleCredentials.fromStream(new FileInputStream(Paths.get(serviceAccountPath).toFile())))
             .build()
             .getService();
-        log.info("");
 
     }
 

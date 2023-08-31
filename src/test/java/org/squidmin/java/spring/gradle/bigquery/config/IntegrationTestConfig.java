@@ -8,6 +8,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.TestUtil;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
+import org.squidmin.java.spring.gradle.bigquery.service.GcsService;
+import org.squidmin.java.spring.gradle.bigquery.util.BigQueryHttpUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.BigQueryTimeUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
@@ -43,12 +45,22 @@ public class IntegrationTestConfig {
     @Value("${bigquery.uri.queries}")
     private String queryUri;
 
+    @Value("${gcs.bucket.name}")
+    private String gcsBucketName;
+
+    @Value("${gcs.filename}")
+    private String gcsFilename;
+
     private RestTemplate restTemplate;
 
     private BigQueryConfig bigQueryConfig;
 
     private BigQueryUtil bigQueryUtil;
+    private BigQueryHttpUtil bigQueryHttpUtil;
     private BigQueryTimeUtil bigQueryTimeUtil;
+
+    private GcsConfig gcsConfig;
+    private GcsService gcsService;
 
     @Bean
     public String gcpDefaultUserProjectId() {
@@ -123,9 +135,27 @@ public class IntegrationTestConfig {
     }
 
     @Bean
+    public BigQueryHttpUtil bigQueryHttpUtil() {
+        bigQueryHttpUtil = new BigQueryHttpUtil(restTemplate);
+        return bigQueryHttpUtil;
+    }
+
+    @Bean
     public BigQueryTimeUtil bigQueryTimeUtil() {
         bigQueryTimeUtil = new BigQueryTimeUtil();
         return bigQueryTimeUtil;
+    }
+
+    @Bean
+    public GcsConfig gcsConfig() throws IOException {
+        gcsConfig = new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename);
+        return gcsConfig;
+    }
+
+    @Bean
+    public GcsService gcsService() throws IOException {
+        gcsService = new GcsService(new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename));
+        return gcsService;
     }
 
 }

@@ -2,10 +2,7 @@ package org.squidmin.java.spring.gradle.bigquery.service;
 
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.ImpersonatedCredentials;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.squidmin.java.spring.gradle.bigquery.config.GcsConfig;
@@ -22,9 +19,24 @@ import java.util.concurrent.TimeUnit;
 public class GcsService {
 
     private final GcsConfig gcsConfig;
+    private final Storage storage;
 
     public GcsService(GcsConfig gcsConfig) {
         this.gcsConfig = gcsConfig;
+        this.storage = gcsConfig.getStorage();
+    }
+
+    public Bucket createBucket(String bucketName) {
+        if (storage.get(bucketName) != null) {
+            throw new IllegalArgumentException("Bucket " + bucketName + " already exists.");
+        }
+        Bucket bucket = storage.create(BucketInfo.of(bucketName));
+        return bucket;
+    }
+
+    public boolean bucketExists(String bucketName) {
+        Bucket bucket = storage.get(bucketName);
+        return bucket != null;
     }
 
     public URL upload(List<ExampleResponseItem> responseItems) {
@@ -34,14 +46,9 @@ public class GcsService {
             csvRows.add(getRow(responseItem));
         }
         String csvContent = String.join("\n", csvRows);
-
         BlobInfo blobInfo = buildBlobInfo();
-
-        Storage storage = gcsConfig.getStorage();
         storage.create(blobInfo, csvContent.getBytes());
-
         URL signedUrl = storage.signUrl(blobInfo, 5, TimeUnit.MINUTES, Storage.SignUrlOption.withV4Signature());
-
         return signedUrl;
     }
 

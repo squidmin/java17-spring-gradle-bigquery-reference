@@ -13,6 +13,7 @@ import org.squidmin.java.spring.gradle.bigquery.config.IntegrationTestConfig;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SchemaDefault;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
+import org.squidmin.java.spring.gradle.bigquery.service.GcsService;
 import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.RunEnvironment;
 
@@ -26,6 +27,12 @@ public abstract class CliConfig {
 
     @Autowired
     protected BigQuery bigQuery;
+
+    @Autowired
+    protected GcsService gcsConfig;
+
+    @Autowired
+    protected GcsService gcsService;
 
     protected String gcpDefaultUserProjectIdDefault;
     protected String gcpDefaultUserDatasetDefault;

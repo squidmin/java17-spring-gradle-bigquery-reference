@@ -35,7 +35,7 @@ bigquery:
 gcs:
   filename: test_large_response_upload
   bucket:
-    name: lofty_root_example_bucket
+    name: lofty_root_test_bucket
 
 tables:
   default:
