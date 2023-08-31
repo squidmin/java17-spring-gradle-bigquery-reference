@@ -34,10 +34,7 @@ WORKDIR ${APP_DIR}
 COPY . .
 
 #ENTRYPOINT ["sh", "-c", "cd ${APP_DIR} && sh"]
-#ENTRYPOINT ./gradlew bootRun -DPROFILE=${APP_PROFILE} -DPROJECT_ID
-#ENTRYPOINT ["/bin/sh", "-c", \
-#            "echo 'Starting the application...'; \
-#             /path/to/my_app"]
+ENTRYPOINT ./gradlew bootRun -DPROFILE=${APP_PROFILE} -DGCP_DEFAULT_USER_PROJECT_ID=${GCP_DEFAULT_USER_PROJECT_ID} -DGCP_ADC_ACCESS_TOKEN=${GCP_ADC_ACCESS_TOKEN}
 ENTRYPOINT ["/bin/sh", "-c", \
             "echo 'Starting the application...'; \
              ${APP_DIR}"]
