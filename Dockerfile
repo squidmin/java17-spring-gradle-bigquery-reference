@@ -1,7 +1,12 @@
-FROM eclipse-temurin:17
+# ---- Build Stage ----
+FROM gradle:8.3-jdk17 AS build
+
+# Set a volume point for temp to get a performance improvement
+#VOLUME /tmp
 
 ### Build arguments ###
-ARG APP_DIR
+ARG JAR_FILE=build/libs/*.jar
+ARG APP_DIR=/usr/local/app
 ARG APP_PROFILE
 ARG GCP_SA_KEY_PATH
 ARG GCP_ADC_ACCESS_TOKEN
@@ -28,13 +33,26 @@ ENV GCP_SA_DATASET=${GCP_SA_DATASET}
 ENV GCP_SA_TABLE=${GCP_SA_TABLE}
 ###
 
-WORKDIR ${APP_DIR}
+# Set working directory
+WORKDIR /app
 
-# Copy the project into the container.
+# Copy the source code
 COPY . .
 
-#ENTRYPOINT ["sh", "-c", "cd ${APP_DIR} && sh"]
-#ENTRYPOINT ./gradlew bootRun -DPROFILE=${APP_PROFILE} -DGCP_DEFAULT_USER_PROJECT_ID=${GCP_DEFAULT_USER_PROJECT_ID} -DGCP_ADC_ACCESS_TOKEN=${GCP_ADC_ACCESS_TOKEN}
-ENTRYPOINT ["/bin/sh", "-c", \
-            "echo 'Starting the application...'; \
-             ${APP_DIR}"]
+# Build the application
+RUN gradle clean bootJar
+
+# ---- Run Stage ----
+FROM openjdk:17-jdk-slim
+
+# Set application port
+EXPOSE 8080
+
+# Set working directory
+WORKDIR /app
+
+# Copy the executable jar from the build stage
+COPY --from=build /app/build/libs/*.jar app.jar
+
+# Run the application
+CMD ["java", "-jar", "app.jar"]
