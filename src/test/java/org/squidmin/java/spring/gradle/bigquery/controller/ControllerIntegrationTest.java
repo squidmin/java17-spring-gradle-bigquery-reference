@@ -66,7 +66,7 @@ public class ControllerIntegrationTest {
     }
 
     @Test
-    void query_test() throws Exception {
+    void query_givenValidRequest_thenReturnHttpStatusOk_andResponseBodyIsNotNull() throws Exception {
         apiReturnsResponse(BigQueryFunctionalTestFixture.validBigQueryRestServiceResponse(), HttpStatus.OK);
         ExampleRequest request = mapper.readValue(
             TestUtil.readJson("/requests/multiple_request_items.json"),
