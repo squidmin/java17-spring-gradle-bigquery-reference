@@ -1,0 +1,21 @@
+{
+  "projectId": "lofty-root-378503",
+  "dataset": "test_dataset_integration",
+  "table": "test_table_integration",
+  "body": [
+    {
+      "id": "asdf-1234",
+      "column_a": "column_a_val_1",
+      "column_b": "column_b_val_1"
+    },
+    {
+      "id": "asdf-1235"
+    },
+    {
+      "id": "asdf-1236"
+    },
+    {
+      "id": "asdf-1237"
+    }
+  ]
+}

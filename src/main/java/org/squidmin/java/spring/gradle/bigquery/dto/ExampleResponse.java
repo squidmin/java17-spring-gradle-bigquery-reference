@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -18,7 +20,18 @@ public class ExampleResponse {
 
     private List<ExampleResponseItem> body;
 
+    private String url;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> errors;
+
+    public static String getCsvHeaders() {
+        return String.join(
+            ",",
+            Arrays.stream(ExampleResponseItem.class.getDeclaredFields())
+                .map(Field::getName)
+                .toList()
+        );
+    }
 
 }

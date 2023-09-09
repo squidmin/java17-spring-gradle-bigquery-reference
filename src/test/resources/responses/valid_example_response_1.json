@@ -1,0 +1,25 @@
+{
+  "body": [
+    {
+      "id": "asdf-1234",
+      "creationTimestamp": "2013-06-24T00:00:00",
+      "lastUpdateTimestamp": "2015-04-20T00:00:00",
+      "columnA": "columnA_val_1",
+      "columnB": "columnB_val_1"
+    },
+    {
+      "id": "asdf-1235",
+      "creationTimestamp": "2013-06-24T00:00:00",
+      "lastUpdateTimestamp": "2015-04-20T00:00:00",
+      "columnA": "columnA_val_2",
+      "columnB": "columnB_val_2"
+    },
+    {
+      "id": "asdf-1236",
+      "creationTimestamp": "2013-06-24T00:00:00",
+      "lastUpdateTimestamp": "2015-04-20T00:00:00",
+      "columnA": "columnA_val_3",
+      "columnB": "columnB_val_3"
+    }
+  ]
+}

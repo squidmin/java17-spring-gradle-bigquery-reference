@@ -312,14 +312,12 @@ Example:
 <details>
 <summary>Insert rows</summary>
 
-A CLI variation of row insertion may be implemented in the future.
-
 To test row insertion, run the following command:
 
 ```shell
 ./gradlew cleanTest test \
   --no-build-cache \
-  --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryAdminClientTest.insert \
+  --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.insert \
   -DPROFILE=PROFILE_NAME \
   -DGCP_DEFAULT_USER_PROJECT_ID=GCP_DEFAULT_USER_PROJECT_ID \
   -DGCP_DEFAULT_USER_DATASET=GCP_DEFAULT_USER_DATASET \
@@ -337,7 +335,7 @@ Example using the `integration` profile:
 ```shell
 ./gradlew cleanTest test \
   --no-build-cache \
-  --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryAdminClientTest.insert \
+  --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.insert \
   -DPROFILE=integration \
   -DGCP_DEFAULT_USER_PROJECT_ID="lofty-root-378503" \
   -DGCP_DEFAULT_USER_DATASET="test_dataset_name_integration" \

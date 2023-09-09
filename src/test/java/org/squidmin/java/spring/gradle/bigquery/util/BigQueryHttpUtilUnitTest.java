@@ -66,7 +66,8 @@ public class BigQueryHttpUtilUnitTest extends UnitTest {
             mapper.readValue(
                 responseFixture,
                 new TypeReference<>() {
-                }),
+                }
+            ),
             HttpStatus.OK,
             restTemplateMock
         );

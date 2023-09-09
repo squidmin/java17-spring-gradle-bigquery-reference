@@ -17,6 +17,9 @@ import java.io.IOException;
 @Profile("integration")
 public class UnitTestConfig {
 
+    @Value("${spring.cloud.gcp.config.credentials.location}")
+    private String gcpSaKeyPath;
+
     @Value("${bigquery.application-default.project-id}")
     private String gcpDefaultUserProjectId;
 
@@ -46,6 +49,10 @@ public class UnitTestConfig {
     private final RestTemplate restTemplateMock = Mockito.mock(RestTemplate.class);
 
     private final TemplateCompiler templateCompilerMock = Mockito.mock(TemplateCompiler.class);
+
+    @Bean
+    @Qualifier("gcpSaKeyPath_unitTest")
+    public String gcpSaKeyPath() { return gcpSaKeyPath; }
 
     @Bean
     @Qualifier("gcpDefaultUserProjectId_unitTest")
@@ -93,6 +100,7 @@ public class UnitTestConfig {
     @Qualifier("bigQueryConfig_unitTest")
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
+            gcpSaKeyPath,
             gcpDefaultUserProjectId,
             gcpDefaultUserDataset,
             gcpDefaultUserTable,

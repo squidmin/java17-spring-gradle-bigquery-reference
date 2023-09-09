@@ -27,19 +27,20 @@ public class ExampleRepositoryImpl implements ExampleRepository {
     }
 
     @Override
-    public ResponseEntity<ExampleResponse> query(Query query, String bqApiToken) throws IOException {
-        return bigQueryService.query(query, bqApiToken);
+    public ResponseEntity<ExampleResponse> query(Query query, String gcpToken) throws IOException {
+        return bigQueryService.query(query, gcpToken);
     }
 
     @Override
-    public ResponseEntity<ExampleResponse> query(ExampleRequest request, String bqApiToken) throws IOException {
+    public ResponseEntity<ExampleResponse> query(ExampleRequest request, String gcpToken) throws IOException {
         if (request.getBody().isEmpty()) {
             return new ResponseEntity<>(
                 ExampleResponse.builder().body(new ArrayList<>()).build(),
                 HttpStatus.OK
             );
         }
-        return bigQueryService.query(request, bqApiToken);
+        ResponseEntity<ExampleResponse> responseEntity = bigQueryService.query(request, gcpToken);
+        return responseEntity;
     }
 
     @Override

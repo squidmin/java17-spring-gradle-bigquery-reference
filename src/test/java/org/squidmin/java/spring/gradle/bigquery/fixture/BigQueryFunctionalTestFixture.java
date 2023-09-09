@@ -119,6 +119,14 @@ public abstract class BigQueryFunctionalTestFixture {
             .build();
     }
 
+    public static ExampleResponse validExampleResponseItems() throws IOException {
+        return mapper.readValue(
+            TestUtil.readJson("/responses/valid_example_response_1.json"),
+            new TypeReference<>() {
+            }
+        );
+    }
+
     public static String validBigQueryRestServiceResponse() throws IOException {
         return TestUtil.readJson("/responses/valid_bq_api_response.json");
     }

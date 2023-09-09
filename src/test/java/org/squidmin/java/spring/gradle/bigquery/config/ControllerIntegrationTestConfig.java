@@ -1,12 +1,15 @@
 package org.squidmin.java.spring.gradle.bigquery.config;
 
 import com.google.cloud.bigquery.BigQuery;
+import lombok.extern.slf4j.Slf4j;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.WebApplicationContext;
 import org.squidmin.java.spring.gradle.bigquery.TestUtil;
 import org.squidmin.java.spring.gradle.bigquery.controller.Controller;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
@@ -23,7 +26,8 @@ import java.io.IOException;
 
 @Configuration
 @ActiveProfiles("integration")
-public class IntegrationTestConfig {
+@Slf4j
+public class ControllerIntegrationTestConfig {
 
     private final String systemArgGcpSaKeyPath = System.getProperty("GCP_SA_KEY_PATH");
     private final String gcpAdcAccessToken = System.getProperty("GCP_ADC_ACCESS_TOKEN");
@@ -69,6 +73,9 @@ public class IntegrationTestConfig {
 
     private GcsConfig gcsConfig;
     private GcsService gcsService;
+
+    @Autowired
+    private WebApplicationContext context;
 
     @Bean
     public String gcpSaKeyPath() {
@@ -171,6 +178,21 @@ public class IntegrationTestConfig {
     public GcsService gcsService() throws IOException {
         gcsService = new GcsService(new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath));
         return gcsService;
+    }
+
+    @Bean
+    public Controller controller() {
+        return new Controller(
+            new ExampleRepositoryImpl(
+                new BigQueryService(
+                    1,
+                    bigQueryUtil,
+                    bigQueryHttpUtil,
+                    bigQueryConfig,
+                    gcsService
+                )
+            )
+        );
     }
 
     @Bean

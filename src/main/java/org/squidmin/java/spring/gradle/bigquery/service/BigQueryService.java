@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.WhereField
 import org.squidmin.java.spring.gradle.bigquery.dao.RecordExample;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequest;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
+import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponseItem;
 import org.squidmin.java.spring.gradle.bigquery.dto.bigquery.Query;
 import org.squidmin.java.spring.gradle.bigquery.exception.CustomJobException;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
@@ -29,6 +31,7 @@ import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.LoggerUtil;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 @Service
@@ -50,6 +53,8 @@ public class BigQueryService {
     private final String gcpSaDataset;
     private final String gcpSaTable;
 
+    private int responseSizeLimit;
+
     private final BigQueryUtil bigQueryUtil;
 
     private final BigQueryHttpUtil bigQueryHttpUtil;
@@ -58,14 +63,18 @@ public class BigQueryService {
 
     private final BigQueryConfig bigQueryConfig;
 
+    private final GcsService gcsService;
+
     private final ObjectMapper mapper;
 
     @Autowired
-    public BigQueryService(
-        BigQueryUtil bigQueryUtil,
-        BigQueryHttpUtil bigQueryHttpUtil,
-        BigQueryConfig bigQueryConfig) {
+    public BigQueryService(@Value("${bigquery.response-size-limit}") int responseSizeLimit,
+                           BigQueryUtil bigQueryUtil,
+                           BigQueryHttpUtil bigQueryHttpUtil,
+                           BigQueryConfig bigQueryConfig,
+                           GcsService gcsService) {
 
+        this.responseSizeLimit = responseSizeLimit;
         this.bigQueryConfig = bigQueryConfig;
         this.bigQuery = bigQueryConfig.getBigQuery();
         this.gcpDefaultUserProjectId = bigQueryConfig.getGcpDefaultUserProjectId();
@@ -76,6 +85,7 @@ public class BigQueryService {
         this.gcpSaTable = bigQueryConfig.getGcpSaTable();
         this.bigQueryUtil = bigQueryUtil;
         this.bigQueryHttpUtil = bigQueryHttpUtil;
+        this.gcsService = gcsService;
         mapper = new ObjectMapper();
 
     }
@@ -249,8 +259,8 @@ public class BigQueryService {
         return Collections.emptyList();
     }
 
-    public ResponseEntity<ExampleResponse> query(Query query, String bqApiToken) throws IOException {
-        HttpHeaders httpHeaders = getHttpHeaders(bqApiToken);
+    public ResponseEntity<ExampleResponse> query(Query query, String gcpToken) throws IOException {
+        HttpHeaders httpHeaders = getHttpHeaders(gcpToken);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(query), httpHeaders);
         log.info("{}", query.getQuery());
         long requestTime = System.currentTimeMillis();
@@ -263,24 +273,35 @@ public class BigQueryService {
         }
     }
 
-    public ResponseEntity<ExampleResponse> query(ExampleRequest request, String bqApiToken) throws IOException {
+    public ResponseEntity<ExampleResponse> query(ExampleRequest request, String gcpToken) throws IOException {
         if (request.getBody().isEmpty()) {
             return new ResponseEntity<>(ExampleResponse.builder().build(), HttpStatus.OK);
         }
         ExampleResponse response = BigQueryHttpUtil.initExampleResponse();
         ResponseEntity<ExampleResponse> responseEntity = query(
             Query.builder().query(buildQueryString(request)).useLegacySql(false).build(),
-            bqApiToken
+            gcpToken
         );
         if (!BigQueryHttpUtil.isOkExampleResponse(responseEntity)) {
             return buildErrorExampleResponse(responseEntity);
         } else {
-            if (null != responseEntity.getBody() && null != responseEntity.getBody().getBody()) {
-                response.getBody().addAll(responseEntity.getBody().getBody());
+            ExampleResponse body = responseEntity.getBody();
+            if (null != body && null != body.getBody()) {
+                List<ExampleResponseItem> responseBody = body.getBody();
+                int numberOfRows = responseBody.size();
+                if (responseSizeLimit < numberOfRows) {
+                    URL url = gcsService.upload(responseBody);
+                    response.setUrl(url.toString());
+                } else {
+                    response.getBody().addAll(responseBody);
+                }
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(
+            ExampleResponse.builder().body(new ArrayList<>()).build(),
+            HttpStatus.ACCEPTED
+        );
     }
 
     private ResponseEntity<ExampleResponse> handleIOException(IOException e) {
@@ -332,7 +353,7 @@ public class BigQueryService {
      * @param query A Google SQL query string.
      * @return TableResult The rows returned from the query.
      */
-    public TableResult query(String bqApiToken, String query) {
+    public TableResult query(String gcpToken, String query) {
         try {
             // Set optional job resource properties.
             QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query)
@@ -345,7 +366,7 @@ public class BigQueryService {
 
             String bigQueryApiToken = bigQueryConfig.getGcpAdcAccessToken();
             Logger.log(String.format("BIGQUERY API TOKEN == %s", bigQueryApiToken), Logger.LogType.CYAN);
-            bigQueryConfig.setGcpAdcAccessToken(bqApiToken);
+            bigQueryConfig.refreshGcpCredentials(gcpToken);
 
             bigQuery.create(JobInfo.of(jobId, queryConfig));  // Create a job with job ID.
 
@@ -376,9 +397,9 @@ public class BigQueryService {
         return new EmptyTableResult(Schema.of());
     }
 
-    public TableResult query(String bqApiToken, ExampleRequest request) throws IOException {
+    public TableResult query(String gcpToken, ExampleRequest request) throws IOException {
         String queryString = bigQueryUtil.buildQueryString("query_1", request, bigQueryConfig);
-        return query(bqApiToken, queryString);
+        return query(gcpToken, queryString);
     }
 
     /**
@@ -423,20 +444,20 @@ public class BigQueryService {
     }
 
 
-    private HttpHeaders getHttpHeaders(String bqApiToken) {
+    private HttpHeaders getHttpHeaders(String gcpToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
         String gcpAdcAccessToken = System.getProperty("GCP_ADC_ACCESS_TOKEN");
         String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
         if (StringUtils.isNotEmpty(gcpAdcAccessToken)) {
-            if (StringUtils.isNotEmpty(bqApiToken)) {
-                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(bqApiToken));
+            if (StringUtils.isNotEmpty(gcpToken)) {
+                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpToken));
             } else {
                 httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpAdcAccessToken));
             }
         } else if (StringUtils.isNotEmpty(gcpSaAccessToken)) {
             httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpSaAccessToken));
         } else {
-            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(bqApiToken));
+            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpToken));
         }
         httpHeaders.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
