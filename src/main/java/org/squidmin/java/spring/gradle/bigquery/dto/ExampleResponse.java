@@ -26,10 +26,12 @@ public class ExampleResponse {
     private List<String> errors;
 
     public static String getCsvHeaders() {
-        List<String> fieldNames = Arrays.stream(ExampleResponseItem.class.getDeclaredFields())
-            .map(Field::getName)
-            .toList();
-        return String.join(",", fieldNames);
+        return String.join(
+            ",",
+            Arrays.stream(ExampleResponseItem.class.getDeclaredFields())
+                .map(Field::getName)
+                .toList()
+        );
     }
 
 }

@@ -1,5 +1,6 @@
 package org.squidmin.java.spring.gradle.bigquery.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,9 @@ public class ExampleRequestItem {
     private String columnA;
     @JsonProperty("column_b")
     private String columnB;
+
+    @JsonIgnore
+    private String blank;
 
 //    @FieldAConstraint
 //    private String fieldA;
