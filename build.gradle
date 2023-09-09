@@ -110,6 +110,7 @@ tasks.named('test') {
 
 //    exclude '**/BigQueryServiceEndToEndTest.class'
 //    exclude '**/GcsServiceEndToEndTest.class'
+//    exclude '**/ControllerIntegrationTest.class'
 
     testLogging {
         showStandardStreams = true
