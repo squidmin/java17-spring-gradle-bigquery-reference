@@ -34,6 +34,8 @@ ext {
 }
 
 dependencies {
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
     implementation 'org.springframework.cloud:spring-cloud-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -44,8 +46,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-context'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 
@@ -109,7 +109,7 @@ tasks.named('test') {
     systemProperty 'SCHEMA', System.getProperty('SCHEMA')
 
 //    exclude '**/BigQueryServiceEndToEndTest.class'
-//    exclude '**/ControllerTest.class'
+//    exclude '**/GcsServiceEndToEndTest.class'
 
     testLogging {
         showStandardStreams = true

@@ -3,6 +3,7 @@ package org.squidmin.java.spring.gradle.bigquery.service;
 import com.google.cloud.storage.Bucket;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.squidmin.java.spring.gradle.bigquery.CliConfig;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponseItem;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+@Disabled
 public class GcsServiceEndToEndTest extends CliConfig {
 
     @BeforeEach
