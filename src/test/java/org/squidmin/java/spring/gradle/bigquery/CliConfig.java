@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.squidmin.java.spring.gradle.bigquery.config.BigQueryConfig;
+import org.squidmin.java.spring.gradle.bigquery.config.GcsConfig;
 import org.squidmin.java.spring.gradle.bigquery.config.IntegrationTestConfig;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SchemaDefault;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
@@ -29,7 +30,7 @@ public abstract class CliConfig {
     protected BigQuery bigQuery;
 
     @Autowired
-    protected GcsService gcsConfig;
+    protected GcsConfig gcsConfig;
 
     @Autowired
     protected GcsService gcsService;

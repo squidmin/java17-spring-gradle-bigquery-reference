@@ -2,6 +2,7 @@ package org.squidmin.java.spring.gradle.bigquery.fixture;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.squidmin.java.spring.gradle.bigquery.TestUtil;
@@ -54,6 +55,9 @@ public abstract class BigQueryFunctionalTestFixture {
         GCP_SA_PROJECT_ID, GCP_SA_DATASET, GCP_SA_TABLE,
         SCHEMA
     }
+
+    @Value("${spring.cloud.gcp.project-id}")
+    private String gcpDefaultUserProjectId;
 
     public static final Supplier<List<RecordExample>> DEFAULT_ROWS = () -> IntStream.range(0, 5)
         .mapToObj(i -> {
