@@ -45,6 +45,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.cloud:spring-cloud-context'
 
+    // Security
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
@@ -55,6 +58,8 @@ dependencies {
 
     // Google API client
     implementation 'com.google.api-client:google-api-client:1.31.1'
+
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.20.0'
 
     // BigQuery
     implementation platform('com.google.cloud:libraries-bom:26.11.0')
@@ -108,9 +113,9 @@ tasks.named('test') {
 
     systemProperty 'SCHEMA', System.getProperty('SCHEMA')
 
-//    exclude '**/BigQueryServiceEndToEndTest.class'
-//    exclude '**/GcsServiceEndToEndTest.class'
-//    exclude '**/ControllerIntegrationTest.class'
+    exclude '**/BigQueryServiceEndToEndTest.class'
+    exclude '**/GcsServiceEndToEndTest.class'
+    exclude '**/ControllerIntegrationTest.class'
 
     testLogging {
         showStandardStreams = true

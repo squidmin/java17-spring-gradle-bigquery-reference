@@ -9,12 +9,16 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SchemaDefault;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SelectFieldsDefault;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.WhereFieldsDefault;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryServiceFactory;
+
+import java.io.IOException;
 
 @Configuration
 @ComponentScan(basePackages = {
@@ -104,6 +108,15 @@ public class BigQueryConfig {
                 .setAccessToken(AccessToken.newBuilder().setTokenValue(gcpToken).build())
                 .build()
         ).build().getService();
+    }
+
+    @Bean
+    @Primary
+    public GoogleCredentials googleCredentials() throws IOException {
+        GoogleCredentials googleCredentials = GoogleCredentials.getApplicationDefault()
+            .createScoped("https://www.googleapis.com/auth/cloud-platform");
+        googleCredentials.refreshIfExpired();
+        return googleCredentials;
     }
 
 }

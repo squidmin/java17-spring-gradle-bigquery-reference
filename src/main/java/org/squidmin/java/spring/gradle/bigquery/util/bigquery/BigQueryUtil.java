@@ -47,7 +47,7 @@ public class BigQueryUtil {
 
     }
 
-    public static List<ExampleResponseItem> toList(TableResult tableResult) {
+    public List<ExampleResponseItem> toList(TableResult tableResult) {
         List<ExampleResponseItem> response = new ArrayList<>();
         if (null != tableResult && 0 < tableResult.getTotalRows()) {
             tableResult.iterateAll().forEach(

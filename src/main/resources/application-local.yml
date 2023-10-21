@@ -14,3 +14,6 @@ bigquery:
     table: ${bigquery.application-default.table}
   uri:
     queries: https://bigquery.googleapis.com/bigquery/v2/projects/${bigquery.application-default.project-id}/queries
+
+gcp:
+  service-account: tekton-pipeline@lofty-root-378503.iam.gserviceaccount.com

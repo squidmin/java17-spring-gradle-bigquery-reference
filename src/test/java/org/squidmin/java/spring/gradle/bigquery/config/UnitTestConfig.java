@@ -1,5 +1,6 @@
 package org.squidmin.java.spring.gradle.bigquery.config;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -96,6 +97,8 @@ public class UnitTestConfig {
         return queryUri;
     }
 
+    private final GoogleCredentials googleCredentialsMock = Mockito.mock(GoogleCredentials.class);
+
     @Bean
     @Qualifier("bigQueryConfig_unitTest")
     public BigQueryConfig bigQueryConfig() throws IOException {
@@ -140,6 +143,12 @@ public class UnitTestConfig {
     @Qualifier("restTemplateMock_unitTest")
     public RestTemplate restTemplateMock() {
         return restTemplateMock;
+    }
+
+    @Bean
+    @Qualifier("googleCredentialsMock_unitTest")
+    public GoogleCredentials googleCredentialsMock() {
+        return googleCredentialsMock;
     }
 
 }

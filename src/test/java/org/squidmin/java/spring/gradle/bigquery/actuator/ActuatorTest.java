@@ -28,8 +28,8 @@ import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 
 import java.io.IOException;
 
+@ActiveProfiles({"integration"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("integration")
 @Slf4j
 class ActuatorTest {
 
