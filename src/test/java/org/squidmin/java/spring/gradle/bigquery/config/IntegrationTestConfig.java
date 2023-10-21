@@ -10,11 +10,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.TestUtil;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
-import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
 import org.squidmin.java.spring.gradle.bigquery.service.GcsService;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryHttpUtil;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryTimeUtil;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryHttpUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryTimeUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 
 import java.io.IOException;

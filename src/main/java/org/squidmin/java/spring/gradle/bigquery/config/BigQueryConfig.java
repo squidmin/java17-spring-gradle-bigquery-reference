@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SchemaDefault;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SelectFieldsDefault;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.WhereFieldsDefault;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryServiceFactory;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryServiceFactory;
 
 @Configuration
 @ComponentScan(basePackages = {

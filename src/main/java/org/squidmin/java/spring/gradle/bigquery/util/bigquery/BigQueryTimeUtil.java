@@ -1,4 +1,4 @@
-package org.squidmin.java.spring.gradle.bigquery.util;
+package org.squidmin.java.spring.gradle.bigquery.util.bigquery;
 
 import com.google.protobuf.Timestamp;
 import com.google.type.DateTime;

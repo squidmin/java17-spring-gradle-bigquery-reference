@@ -1,4 +1,4 @@
-package org.squidmin.java.spring.gradle.bigquery.util;
+package org.squidmin.java.spring.gradle.bigquery.logger;
 
 import com.google.api.gax.paging.Page;
 import com.google.cloud.bigquery.Dataset;
@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.squidmin.java.spring.gradle.bigquery.config.DataTypes;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
+import org.squidmin.java.spring.gradle.bigquery.util.RunEnvironment;
 
 @Slf4j
 public class LoggerUtil {

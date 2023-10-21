@@ -12,6 +12,7 @@ import org.squidmin.java.spring.gradle.bigquery.config.Field;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SchemaDefault;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequest;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequestItem;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryTimeUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;

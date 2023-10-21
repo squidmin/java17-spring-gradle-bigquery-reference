@@ -26,9 +26,9 @@ import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponseItem;
 import org.squidmin.java.spring.gradle.bigquery.dto.bigquery.Query;
 import org.squidmin.java.spring.gradle.bigquery.exception.CustomJobException;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryHttpUtil;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
-import org.squidmin.java.spring.gradle.bigquery.util.LoggerUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryHttpUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryUtil;
+import org.squidmin.java.spring.gradle.bigquery.logger.LoggerUtil;
 
 import java.io.IOException;
 import java.net.URL;

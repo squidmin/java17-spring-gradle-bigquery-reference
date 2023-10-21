@@ -1,4 +1,4 @@
-package org.squidmin.java.spring.gradle.bigquery.util;
+package org.squidmin.java.spring.gradle.bigquery.util.bigquery;
 
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -7,6 +7,7 @@ import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import org.apache.commons.lang3.StringUtils;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
+import org.squidmin.java.spring.gradle.bigquery.logger.LoggerUtil;
 
 import java.io.File;
 import java.io.FileInputStream;

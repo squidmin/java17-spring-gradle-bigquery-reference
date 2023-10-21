@@ -1,4 +1,4 @@
-package org.squidmin.java.spring.gradle.bigquery.util;
+package org.squidmin.java.spring.gradle.bigquery.util.bigquery;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.bigquery.Field;
@@ -17,6 +17,9 @@ import org.squidmin.java.spring.gradle.bigquery.dto.bigquery.BigQueryRestService
 import org.squidmin.java.spring.gradle.bigquery.dto.bigquery.BigQueryRow;
 import org.squidmin.java.spring.gradle.bigquery.dto.bigquery.BigQueryRowValue;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
+import org.squidmin.java.spring.gradle.bigquery.logger.LoggerUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.StringUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 
 import java.io.IOException;
 import java.util.ArrayList;

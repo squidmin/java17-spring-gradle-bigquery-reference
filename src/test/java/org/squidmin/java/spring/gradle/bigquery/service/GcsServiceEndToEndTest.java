@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.squidmin.java.spring.gradle.bigquery.CliConfig;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponseItem;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
-import org.squidmin.java.spring.gradle.bigquery.util.LoggerUtil;
+import org.squidmin.java.spring.gradle.bigquery.logger.LoggerUtil;
 
 import java.io.IOException;
 import java.net.URL;

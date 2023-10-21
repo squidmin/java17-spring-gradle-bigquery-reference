@@ -16,6 +16,7 @@ import org.squidmin.java.spring.gradle.bigquery.UnitTest;
 import org.squidmin.java.spring.gradle.bigquery.config.BigQueryConfig;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryHttpUtil;
 
 import java.io.IOException;
 

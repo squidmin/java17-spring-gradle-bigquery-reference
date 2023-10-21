@@ -32,8 +32,7 @@ public class BigQueryController {
         @RequestHeader("gcp-token") String gcpToken,
         @Valid @RequestBody ExampleRequest request) throws IOException {
 
-        ResponseEntity<ExampleResponse> responseEntity = exampleRepository.query(request, gcpToken);
-        return responseEntity;
+        return exampleRepository.query(request, gcpToken);
 
     }
 

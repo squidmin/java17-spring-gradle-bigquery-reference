@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryTimeUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryTimeUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 
 import java.io.IOException;

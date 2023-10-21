@@ -8,7 +8,7 @@ import com.google.cloud.bigquery.BigQueryOptions;
 import org.apache.commons.lang3.StringUtils;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
-import org.squidmin.java.spring.gradle.bigquery.util.LoggerUtil;
+import org.squidmin.java.spring.gradle.bigquery.logger.LoggerUtil;
 
 import java.io.File;
 import java.io.FileInputStream;

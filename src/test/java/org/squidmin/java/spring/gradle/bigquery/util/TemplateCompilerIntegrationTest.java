@@ -10,6 +10,7 @@ import org.squidmin.java.spring.gradle.bigquery.TestUtil;
 import org.squidmin.java.spring.gradle.bigquery.config.BigQueryConfig;
 import org.squidmin.java.spring.gradle.bigquery.config.IntegrationTestConfig;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryTimeUtil;
 
 import java.io.IOException;
 

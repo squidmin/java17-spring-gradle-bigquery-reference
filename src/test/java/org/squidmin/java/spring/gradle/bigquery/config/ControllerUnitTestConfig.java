@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.controller.BigQueryController;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.repository.ExampleRepositoryImpl;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryUtil;
 
 import java.io.IOException;
 

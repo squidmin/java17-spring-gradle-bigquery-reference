@@ -1,4 +1,4 @@
-package org.squidmin.java.spring.gradle.bigquery.util;
+package org.squidmin.java.spring.gradle.bigquery.util.bigquery;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

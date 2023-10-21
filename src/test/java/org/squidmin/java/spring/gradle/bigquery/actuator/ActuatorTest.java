@@ -21,9 +21,9 @@ import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFi
 import org.squidmin.java.spring.gradle.bigquery.repository.ExampleRepositoryImpl;
 import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
 import org.squidmin.java.spring.gradle.bigquery.service.GcsService;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryHttpUtil;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryTimeUtil;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryHttpUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryTimeUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 
 import java.io.IOException;

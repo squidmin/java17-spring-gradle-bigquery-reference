@@ -15,7 +15,7 @@ import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SchemaDefa
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
 import org.squidmin.java.spring.gradle.bigquery.service.GcsService;
-import org.squidmin.java.spring.gradle.bigquery.util.BigQueryUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.RunEnvironment;
 
 @SpringBootTest(classes = {BigQueryService.class, IntegrationTestConfig.class})
