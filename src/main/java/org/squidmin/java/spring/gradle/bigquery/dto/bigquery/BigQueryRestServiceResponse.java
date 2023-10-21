@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class BigQueryRestServiceResponse {
 
+    private String queryId;
     private String kind;
     private BigQuerySchema schema;
     private BigQueryJobReference jobReference;

@@ -109,7 +109,7 @@ public abstract class BigQueryFunctionalTestFixture {
 
     public static ExampleResponse validExampleResponse() {
         return ExampleResponse.builder()
-            .body(
+            .rows(
                 Collections.singletonList(
                     ExampleResponseItem.builder()
                         .id("1234")

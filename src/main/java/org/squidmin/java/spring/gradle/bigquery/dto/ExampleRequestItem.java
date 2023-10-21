@@ -31,9 +31,6 @@ public class ExampleRequestItem {
     @JsonIgnore
     private String blank;
 
-//    @FieldAConstraint
-//    private String fieldA;
-
     public String get(String fieldName) {
         if ("id".equalsIgnoreCase(fieldName)) {
             return id;

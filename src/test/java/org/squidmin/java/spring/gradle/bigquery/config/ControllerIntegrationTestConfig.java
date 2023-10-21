@@ -4,6 +4,7 @@ import com.google.cloud.bigquery.BigQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import org.squidmin.java.spring.gradle.bigquery.TestUtil;
-import org.squidmin.java.spring.gradle.bigquery.controller.Controller;
+import org.squidmin.java.spring.gradle.bigquery.controller.BigQueryController;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
 import org.squidmin.java.spring.gradle.bigquery.repository.ExampleRepositoryImpl;
@@ -78,47 +79,56 @@ public class ControllerIntegrationTestConfig {
     private WebApplicationContext context;
 
     @Bean
+    @Qualifier("gcpSaKeyPath_controllerIntegrationTest")
     public String gcpSaKeyPath() {
         Logger.log("gcpSaKeyPath == " + gcpSaKeyPath, Logger.LogType.CYAN);
         return gcpSaKeyPath;
     }
 
     @Bean
+    @Qualifier("gcpDefaultUserProjectId_controllerIntegrationTest")
     public String gcpDefaultUserProjectId() {
         return gcpDefaultUserProjectId;
     }
 
     @Bean
+    @Qualifier("gcpDefaultUserDataset_controllerIntegrationTest")
     public String gcpDefaultUserDataset() {
         return gcpDefaultUserDataset;
     }
 
     @Bean
+    @Qualifier("gcpDefaultUserTable_controllerIntegrationTest")
     public String gcpDefaultUserTable() {
         return gcpDefaultUserTable;
     }
 
     @Bean
+    @Qualifier("gcpSaProjectId_controllerIntegrationTest")
     public String gcpSaProjectId() {
         return gcpSaProjectId;
     }
 
     @Bean
+    @Qualifier("gcpSaDataset_controllerIntegrationTest")
     public String gcpSaDataset() {
         return gcpSaDataset;
     }
 
     @Bean
+    @Qualifier("gcpSaTable_controllerIntegrationTest")
     public String gcpSaTable() {
         return gcpSaTable;
     }
 
     @Bean
+    @Qualifier("queryUri_controllerIntegrationTest")
     public String queryUri() {
         return queryUri;
     }
 
     @Bean
+    @Qualifier("bigQueryConfig_controllerIntegrationTest")
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
             gcpSaKeyPath,
@@ -140,49 +150,57 @@ public class ControllerIntegrationTestConfig {
     }
 
     @Bean
+    @Qualifier("bigQuery_controllerIntegrationTest")
     public BigQuery bigQuery() {
         return TestUtil.defaultBigQueryInstance(gcpSaKeyPath, gcpAdcAccessToken, gcpSaAccessToken, gcpDefaultUserProjectId);
     }
 
     @Bean
+    @Qualifier("restTemplate_controllerIntegrationTest")
     public RestTemplate restTemplate() {
         restTemplate = new RestTemplate();
         return restTemplate;
     }
 
     @Bean
+    @Qualifier("bigQueryUtil_controllerIntegrationTest")
     public BigQueryUtil bigQueryUtil() {
         bigQueryUtil = new BigQueryUtil(new TemplateCompiler(new BigQueryTimeUtil()));
         return bigQueryUtil;
     }
 
     @Bean
+    @Qualifier("bigQueryHttpUtil_controllerIntegrationTest")
     public BigQueryHttpUtil bigQueryHttpUtil() {
         bigQueryHttpUtil = new BigQueryHttpUtil(restTemplate);
         return bigQueryHttpUtil;
     }
 
     @Bean
+    @Qualifier("bigQueryTimeUtil_controllerIntegrationTest")
     public BigQueryTimeUtil bigQueryTimeUtil() {
         bigQueryTimeUtil = new BigQueryTimeUtil();
         return bigQueryTimeUtil;
     }
 
     @Bean
+    @Qualifier("gcsConfig_controllerIntegrationTest")
     public GcsConfig gcsConfig() throws IOException {
         gcsConfig = new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath);
         return gcsConfig;
     }
 
     @Bean
+    @Qualifier("gcsService_controllerIntegrationTest")
     public GcsService gcsService() throws IOException {
         gcsService = new GcsService(new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath));
         return gcsService;
     }
 
     @Bean
-    public Controller controller() {
-        return new Controller(
+    @Qualifier("bigQueryController_controllerIntegrationTest")
+    public BigQueryController bigQueryController() {
+        return new BigQueryController(
             new ExampleRepositoryImpl(
                 new BigQueryService(
                     1,
@@ -196,6 +214,7 @@ public class ControllerIntegrationTestConfig {
     }
 
     @Bean
+    @Qualifier("restTemplateMock_controllerIntegrationTest")
     public RestTemplate restTemplateMock() {
         return Mockito.mock(RestTemplate.class);
     }

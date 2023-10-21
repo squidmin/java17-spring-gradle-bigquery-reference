@@ -10,14 +10,13 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.config.BigQueryConfig;
 import org.squidmin.java.spring.gradle.bigquery.config.GcsConfig;
-import org.squidmin.java.spring.gradle.bigquery.controller.Controller;
+import org.squidmin.java.spring.gradle.bigquery.controller.BigQueryController;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.repository.ExampleRepositoryImpl;
 import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
@@ -114,14 +113,12 @@ class ActuatorTest {
 
         @Bean
         public BigQueryTimeUtil bigQueryTimeUtil() {
-            BigQueryTimeUtil bigQueryTimeUtil = new BigQueryTimeUtil();
-            return bigQueryTimeUtil;
+            return new BigQueryTimeUtil();
         }
 
         @Bean
         public GcsConfig gcsConfig() throws IOException {
-            GcsConfig gcsConfig = new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath);
-            return gcsConfig;
+            return new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath);
         }
 
         @Bean
@@ -154,8 +151,8 @@ class ActuatorTest {
         }
 
         @Bean
-        public Controller controller() {
-            return new Controller(
+        public BigQueryController bigQueryController() {
+            return new BigQueryController(
                 new ExampleRepositoryImpl(
                     new BigQueryService(
                         1,
@@ -174,7 +171,6 @@ class ActuatorTest {
             return restTemplate;
         }
 
-        @Primary
         @Bean
         public TestRestTemplate testRestTemplate() {
             return new TestRestTemplate();

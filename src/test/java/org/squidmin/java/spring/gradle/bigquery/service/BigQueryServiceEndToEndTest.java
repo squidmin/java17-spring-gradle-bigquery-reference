@@ -121,7 +121,7 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
         ResponseEntity<ExampleResponse> responseEntity = bigQueryService.query(BigQueryFunctionalTestFixture.validExampleRequest(), GCP_ADC_ACCESS_TOKEN);
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assertions.assertNotNull(responseEntity.getBody());
-        Assertions.assertTrue(0 < responseEntity.getBody().getBody().size());
+        Assertions.assertTrue(0 < responseEntity.getBody().getRows().size());
     }
 
 }

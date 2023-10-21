@@ -15,11 +15,11 @@ import java.io.IOException;
 @RequestMapping("/bigquery")
 @CrossOrigin(origins = "http://localhost:4200")
 @Slf4j
-public class Controller {
+public class BigQueryController {
 
     private final ExampleRepositoryImpl exampleRepository;
 
-    public Controller(ExampleRepositoryImpl exampleRepository) {
+    public BigQueryController(ExampleRepositoryImpl exampleRepository) {
         this.exampleRepository = exampleRepository;
     }
 
@@ -32,7 +32,8 @@ public class Controller {
         @RequestHeader("gcp-token") String gcpToken,
         @Valid @RequestBody ExampleRequest request) throws IOException {
 
-        return exampleRepository.query(request, gcpToken);
+        ResponseEntity<ExampleResponse> responseEntity = exampleRepository.query(request, gcpToken);
+        return responseEntity;
 
     }
 

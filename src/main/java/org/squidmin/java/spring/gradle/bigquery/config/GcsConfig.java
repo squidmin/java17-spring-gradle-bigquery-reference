@@ -36,7 +36,7 @@ public class GcsConfig {
     public GcsConfig(@Value("${bigquery.application-default.project-id}") String gcpDefaultUserProjectId,
                      @Value("${gcs.bucket.name}") String gcsBucketName,
                      @Value("${gcs.filename}") String gcsFilename,
-                     @Value("${spring.cloud.gcp.config.credentials}") String gcpSaKeyPath) throws IOException {
+                     @Value("${spring.cloud.gcp.config.credentials.location}") String gcpSaKeyPath) throws IOException {
 
         this.gcpDefaultUserProjectId = gcpDefaultUserProjectId;
         this.gcsBucketName = gcsBucketName;

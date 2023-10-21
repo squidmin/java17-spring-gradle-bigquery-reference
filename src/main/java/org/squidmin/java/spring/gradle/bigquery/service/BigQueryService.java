@@ -274,7 +274,7 @@ public class BigQueryService {
     }
 
     public ResponseEntity<ExampleResponse> query(ExampleRequest request, String gcpToken) throws IOException {
-        if (request.getBody().isEmpty()) {
+        if (request.getSubqueries().isEmpty()) {
             return new ResponseEntity<>(ExampleResponse.builder().build(), HttpStatus.OK);
         }
         ExampleResponse response = BigQueryHttpUtil.initExampleResponse();
@@ -286,20 +286,20 @@ public class BigQueryService {
             return buildErrorExampleResponse(responseEntity);
         } else {
             ExampleResponse body = responseEntity.getBody();
-            if (null != body && null != body.getBody()) {
-                List<ExampleResponseItem> responseBody = body.getBody();
+            if (null != body && null != body.getRows()) {
+                List<ExampleResponseItem> responseBody = body.getRows();
                 int numberOfRows = responseBody.size();
                 if (responseSizeLimit < numberOfRows) {
                     URL url = gcsService.upload(responseBody);
-                    response.setUrl(url.toString());
+                    response.setQueryUrl(url.toString());
                 } else {
-                    response.getBody().addAll(responseBody);
+                    response.getRows().addAll(responseBody);
                 }
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(
-            ExampleResponse.builder().body(new ArrayList<>()).build(),
+            ExampleResponse.builder().rows(new ArrayList<>()).build(),
             HttpStatus.ACCEPTED
         );
     }
@@ -332,7 +332,7 @@ public class BigQueryService {
     private ResponseEntity<ExampleResponse> buildErrorExampleResponse(ResponseEntity<ExampleResponse> responseEntity) {
         return new ResponseEntity<>(
             ExampleResponse.builder()
-                .errors(Objects.requireNonNull(responseEntity.getBody().getErrors()))
+                .errors(responseEntity.getBody().getErrors())
                 .build(),
             responseEntity.getStatusCode()
         );

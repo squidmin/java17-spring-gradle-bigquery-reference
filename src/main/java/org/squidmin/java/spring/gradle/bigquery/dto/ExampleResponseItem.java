@@ -6,6 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,6 +26,7 @@ public class ExampleResponseItem {
     private String columnB;
 
     public void setFromBigQueryResponse(String name, String value) {
+
         if (name.equalsIgnoreCase("id")) {
             setId(value);
         } else if (name.equalsIgnoreCase("creation_timestamp")) {
@@ -33,6 +40,7 @@ public class ExampleResponseItem {
         } else {
             log.error("Value associated with name is null.");
         }
+
     }
 
 }

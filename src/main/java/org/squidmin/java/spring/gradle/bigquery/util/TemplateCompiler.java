@@ -45,7 +45,7 @@ public class TemplateCompiler {
         List<String> presentValues = new ArrayList<>();
 
         // Populate presentValues (e.g., names of fields having at least one value present)
-        List<ExampleRequestItem> requestBody = request.getBody();
+        List<ExampleRequestItem> requestBody = request.getSubqueries();
         for (Field whereField : bigQueryConfig.getWhereFieldsDefault().getFilters()) {
             for (ExampleRequestItem requestItem : requestBody) {
                 String fieldName = whereField.getName();

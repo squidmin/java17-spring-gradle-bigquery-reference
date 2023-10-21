@@ -1,6 +1,5 @@
 package org.squidmin.java.spring.gradle.bigquery;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.bigquery.BigQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,5 @@ public class IntegrationTest {
 
     @Autowired
     protected RestTemplate restTemplateMock;
-
-    protected final ObjectMapper mapper = new ObjectMapper();
 
 }

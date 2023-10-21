@@ -19,6 +19,8 @@ public class ExampleRequest {
     private String table;
 
     @ExampleRequestBodyConstraint
-    private List<ExampleRequestItem> body;
+    private List<ExampleRequestItem> subqueries;
+
+    private int limit;
 
 }

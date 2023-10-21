@@ -49,14 +49,14 @@ public class BigQueryHttpUtil {
             return buildOkExampleResponse(bigQueryConfig, responseBody, selectAll);
         } else {
             log.error("Response body is empty");
-            return new ResponseEntity<>(ExampleResponse.builder().body(new ArrayList<>()).build(), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(ExampleResponse.builder().rows(new ArrayList<>()).build(), HttpStatus.ACCEPTED);
         }
 
     }
 
     public static ExampleResponse initExampleResponse() {
         ExampleResponse response = new ExampleResponse();
-        response.setBody(new ArrayList<>());
+        response.setRows(new ArrayList<>());
         return response;
     }
 
@@ -95,7 +95,7 @@ public class BigQueryHttpUtil {
 
         return new ResponseEntity<>(
             ExampleResponse.builder()
-                .body(
+                .rows(
                     BigQueryUtil.toList(
                         responseBody.getBytes(StandardCharsets.UTF_8),
                         bigQueryConfig.getSelectFieldsDefault(),

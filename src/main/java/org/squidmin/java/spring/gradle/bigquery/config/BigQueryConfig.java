@@ -52,7 +52,7 @@ public class BigQueryConfig {
     private BigQuery bigQuery;
 
     @Autowired
-    public BigQueryConfig(@Value("${spring.cloud.gcp.config.credentials}") String gcpSaKeyPath,
+    public BigQueryConfig(@Value("${spring.cloud.gcp.config.credentials.location}") String gcpSaKeyPath,
                           @Value("${bigquery.application-default.project-id}") String gcpDefaultUserProjectId,
                           @Value("${bigquery.application-default.dataset}") String gcpDefaultUserDataset,
                           @Value("${bigquery.application-default.table}") String gcpDefaultUserTable,

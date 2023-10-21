@@ -8,7 +8,7 @@
 ```shell
 ./gradlew cleanTest test \
   --no-build-cache \
-  --tests=org.squidmin.java.spring.gradle.bigquery.controller.ControllerIntegrationTest.query_givenClientRequest_whenCalled_thenReturnOkResponse \
+  --tests=org.squidmin.java.spring.gradle.bigquery.controller.BigQueryControllerIntegrationTest.query_givenClientRequest_whenCalled_thenReturnOkResponse \
   -DPROFILE=integration \
   -DGCP_SA_KEY_PATH=$GCP_SA_KEY_PATH \
   -DGCP_ADC_ACCESS_TOKEN="$(gcloud auth application-default print-access-token)" \

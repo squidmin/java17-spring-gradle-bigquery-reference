@@ -30,7 +30,7 @@ management:
         include: health, info
 
 bigquery:
-  response-size-limit: 0
+  response-size-limit: 10
   select-all: true
   data-types:
     - STRING

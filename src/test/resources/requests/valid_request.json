@@ -2,7 +2,7 @@
   "projectId": "lofty-root-378503",
   "dataset": "test_dataset_integration",
   "table": "test_table_integration",
-  "body": [
+  "subqueries": [
     {
       "id": "asdf-1234",
       "column_a": "column_a_val_1",

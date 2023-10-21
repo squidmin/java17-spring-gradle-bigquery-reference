@@ -18,9 +18,9 @@ import java.util.List;
 @Slf4j
 public class ExampleResponse {
 
-    private List<ExampleResponseItem> body;
+    private List<ExampleResponseItem> rows;
 
-    private String url;
+    private String queryUrl;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> errors;

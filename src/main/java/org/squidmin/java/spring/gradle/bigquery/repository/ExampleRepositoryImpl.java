@@ -33,9 +33,9 @@ public class ExampleRepositoryImpl implements ExampleRepository {
 
     @Override
     public ResponseEntity<ExampleResponse> query(ExampleRequest request, String gcpToken) throws IOException {
-        if (request.getBody().isEmpty()) {
+        if (request.getSubqueries().isEmpty()) {
             return new ResponseEntity<>(
-                ExampleResponse.builder().body(new ArrayList<>()).build(),
+                ExampleResponse.builder().rows(new ArrayList<>()).build(),
                 HttpStatus.OK
             );
         }

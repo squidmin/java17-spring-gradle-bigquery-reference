@@ -33,9 +33,9 @@ import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFi
 @Disabled
 @ActiveProfiles("integration")
 @ContextConfiguration(classes = ControllerIntegrationTestConfig.class)
-@WebMvcTest(Controller.class)
+@WebMvcTest(BigQueryController.class)
 @Slf4j
-public class ControllerIntegrationTest {
+public class BigQueryControllerIntegrationTest {
 
     private final String QUERY_ENDPOINT = "/bigquery/query";
 

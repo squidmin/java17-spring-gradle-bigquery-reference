@@ -30,8 +30,7 @@ public class GcsService {
         if (storage.get(bucketName) != null) {
             throw new IllegalArgumentException("Bucket " + bucketName + " already exists.");
         }
-        Bucket bucket = storage.create(BucketInfo.of(bucketName));
-        return bucket;
+        return storage.create(BucketInfo.of(bucketName));
     }
 
     public boolean bucketExists(String bucketName) {
@@ -67,7 +66,7 @@ public class GcsService {
     }
 
     private String getRow(ExampleResponseItem responseItem) {
-        String row = String.join(
+        return String.join(
             ",",
             responseItem.getId(),
             responseItem.getCreationTimestamp(),
@@ -75,7 +74,6 @@ public class GcsService {
             responseItem.getColumnA(),
             responseItem.getColumnB()
         );
-        return row;
     }
 
     private BlobInfo buildBlobInfo() {

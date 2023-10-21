@@ -31,7 +31,7 @@ public class GcsServiceEndToEndTest extends CliConfig {
 
     @Test
     void upload_givenValidParameters_thenUploadRows() throws IOException {
-        List<ExampleResponseItem> responseItems = BigQueryFunctionalTestFixture.validExampleResponseItems().getBody();
+        List<ExampleResponseItem> responseItems = BigQueryFunctionalTestFixture.validExampleResponseItems().getRows();
         URL upload = gcsService.upload(responseItems);
         Assertions.assertTrue(upload.toString().contains("https://storage.googleapis.com/lofty_root_test_bucket/test_large_response_upload.csv?X-Goog-Algorithm="));
     }
