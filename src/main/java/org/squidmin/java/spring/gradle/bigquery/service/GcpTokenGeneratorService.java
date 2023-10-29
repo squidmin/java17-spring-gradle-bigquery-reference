@@ -24,20 +24,19 @@ public class GcpTokenGeneratorService {
 
     private static final String METADATA_FLAVOR = "Metadata-Flavor";
 
-    private final String serviceAccount;
-
     private final GoogleCredentials googleCredentials;
+
+    private final String serviceAccount;
 
     private final RestTemplate restTemplate;
 
     public GcpTokenGeneratorService(@Value("${gcp.service-account}") String serviceAccount,
-                                    GoogleCredentials googleCredentials,
                                     RestTemplate restTemplate) throws IOException {
 
         this.serviceAccount = serviceAccount;
 
-        this.googleCredentials = googleCredentials;
-        googleCredentials.refreshIfExpired();
+        this.googleCredentials = GoogleCredentials.getApplicationDefault()
+            .createScoped("https://www.googleapis.com/auth/cloud-platform");
 
         this.restTemplate = restTemplate;
 
@@ -75,14 +74,14 @@ public class GcpTokenGeneratorService {
     public String generateAccessToken() {
         String accessToken = Strings.EMPTY;
         try {
-            accessToken = generateImpersonatedCredentials(googleCredentials, serviceAccount);
+            accessToken = generateImpersonatedCredentials(serviceAccount);
         } catch (Exception e) {
             log.error("Error: {}", e.getMessage());
         }
         return accessToken;
     }
 
-    private String generateImpersonatedCredentials(GoogleCredentials googleCredentials, String serviceAccount) throws IOException {
+    private String generateImpersonatedCredentials(String serviceAccount) throws IOException {
         String accessToken = googleCredentials.refreshAccessToken().getTokenValue();
         if (googleCredentials instanceof ImpersonatedCredentials) {
             ImpersonatedCredentials targetCredentials = ImpersonatedCredentials.create(

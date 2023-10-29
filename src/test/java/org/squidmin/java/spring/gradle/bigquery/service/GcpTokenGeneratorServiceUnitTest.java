@@ -1,7 +1,5 @@
 package org.squidmin.java.spring.gradle.bigquery.service;
 
-import com.google.auth.oauth2.AccessToken;
-import com.google.auth.oauth2.GoogleCredentials;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,14 +22,8 @@ import java.io.IOException;
 @Slf4j
 public class GcpTokenGeneratorServiceUnitTest {
 
-    private static final String ACCESS_TOKEN = "access-token_1234";
-    private static final String IDENTITY_TOKEN = "identity-token_1234";
-
     @Autowired
     private String gcpDefaultUserProjectId;
-
-    @Autowired
-    private GoogleCredentials googleCredentialsMock;
 
     @Autowired
     private RestTemplate restTemplateMock;
@@ -40,31 +32,25 @@ public class GcpTokenGeneratorServiceUnitTest {
 
     @BeforeEach
     void beforeEach() throws IOException {
-        gcpTokenGeneratorService = new GcpTokenGeneratorService(
-            gcpDefaultUserProjectId,
-            googleCredentialsMock,
-            restTemplateMock
-        );
+        gcpTokenGeneratorService = new GcpTokenGeneratorService(gcpDefaultUserProjectId, restTemplateMock);
     }
 
     @Test
     void generateIdentityToken_return200OkResponseWithIdentityToken() {
+        String IDENTITY_TOKEN = "identity-token_1234";
+
         Mockito.when(
             restTemplateMock.exchange(
                 ArgumentMatchers.any(RequestEntity.class),
                 ArgumentMatchers.eq(String.class)
             )
         ).thenReturn(new ResponseEntity<>(IDENTITY_TOKEN, HttpStatus.OK));
-        String actual = gcpTokenGeneratorService.generateIdentityToken();
-        Assertions.assertEquals(IDENTITY_TOKEN, actual);
+        Assertions.assertEquals(IDENTITY_TOKEN, gcpTokenGeneratorService.generateIdentityToken());
     }
 
     @Test
-    void generateAccessToken_return200OkResponseWithAccessToken() throws IOException {
-        Mockito.when(googleCredentialsMock.refreshAccessToken())
-            .thenReturn(AccessToken.newBuilder().setTokenValue(ACCESS_TOKEN).build());
-        String actual = gcpTokenGeneratorService.generateAccessToken();
-        Assertions.assertEquals(ACCESS_TOKEN, actual);
+    void generateAccessToken_return200OkResponseWithAccessToken() {
+        Assertions.assertTrue(gcpTokenGeneratorService.generateAccessToken().contains("ya29"));
     }
 
 }
