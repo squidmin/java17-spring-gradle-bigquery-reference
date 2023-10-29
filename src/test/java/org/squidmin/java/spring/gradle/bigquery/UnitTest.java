@@ -19,10 +19,9 @@ public abstract class UnitTest {
 
     protected static final ObjectMapper mapper = new ObjectMapper();
 
-    protected static void bigQueryApiReturnsResponse(
-        BigQueryRestServiceResponse response,
-        HttpStatus httpStatus,
-        RestTemplate restTemplateMock) throws JsonProcessingException {
+    protected static void bigQueryApiReturnsResponse(BigQueryRestServiceResponse response,
+                                                     HttpStatus httpStatus,
+                                                     RestTemplate restTemplateMock) throws JsonProcessingException {
 
         Mockito.when(
             restTemplateMock.postForEntity(
@@ -34,12 +33,11 @@ public abstract class UnitTest {
 
     }
 
-    protected static void setUp(
-        BigQueryConfig bigQueryConfigMock,
-        String gcpDefaultUserProjectId,
-        String gcpDefaultUserDataset,
-        String gcpDefaultUserTable,
-        String queryUri) {
+    protected static void setUp(BigQueryConfig bigQueryConfigMock,
+                                String gcpDefaultUserProjectId,
+                                String gcpDefaultUserDataset,
+                                String gcpDefaultUserTable,
+                                String queryUri) {
 
         Mockito.when(bigQueryConfigMock.getGcpDefaultUserProjectId()).thenReturn(gcpDefaultUserProjectId);
         Mockito.when(bigQueryConfigMock.getGcpDefaultUserDataset()).thenReturn(gcpDefaultUserDataset);

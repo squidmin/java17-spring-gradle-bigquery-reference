@@ -174,10 +174,9 @@ public abstract class BigQueryFunctionalTestFixture {
         return exclusions;
     }
 
-    public static HttpEntity<String> validHttpEntity(
-        String gcpDefaultUserProjectId,
-        String gcpDefaultUserDataset,
-        String gcpDefaultUserTable) {
+    public static HttpEntity<String> validHttpEntity(String gcpDefaultUserProjectId,
+                                                     String gcpDefaultUserDataset,
+                                                     String gcpDefaultUserTable) {
 
         return new HttpEntity<>(
             BigQueryFunctionalTestFixture.validQueryString(

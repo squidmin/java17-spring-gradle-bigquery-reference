@@ -31,14 +31,15 @@ public class GcpTokenGeneratorService {
     private final RestTemplate restTemplate;
 
     public GcpTokenGeneratorService(@Value("${gcp.service-account}") String serviceAccount,
+                                    GoogleCredentials googleCredentials,
                                     RestTemplate restTemplate) throws IOException {
 
         this.serviceAccount = serviceAccount;
-        this.restTemplate = restTemplate;
 
-        this.googleCredentials = GoogleCredentials.getApplicationDefault()
-            .createScoped("https://www.googleapis.com/auth/cloud-platform");
+        this.googleCredentials = googleCredentials;
         googleCredentials.refreshIfExpired();
+
+        this.restTemplate = restTemplate;
 
     }
 
