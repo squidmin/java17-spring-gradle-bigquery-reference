@@ -1,5 +1,6 @@
 package org.squidmin.java.spring.gradle.bigquery.service;
 
+import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -22,6 +23,9 @@ import java.io.IOException;
 @SpringBootTest(classes = {UnitTestConfig.class})
 @Slf4j
 public class GcpTokenGeneratorServiceUnitTest {
+
+    private static final String ACCESS_TOKEN = "access-token_1234";
+    private static final String IDENTITY_TOKEN = "identity-token_1234";
 
     @Autowired
     private String gcpDefaultUserProjectId;
@@ -50,10 +54,17 @@ public class GcpTokenGeneratorServiceUnitTest {
                 ArgumentMatchers.any(RequestEntity.class),
                 ArgumentMatchers.eq(String.class)
             )
-        ).thenReturn(new ResponseEntity<>("asdf-1234", HttpStatus.OK));
-        String expected = "asdf-1234";
+        ).thenReturn(new ResponseEntity<>(IDENTITY_TOKEN, HttpStatus.OK));
         String actual = gcpTokenGeneratorService.generateIdentityToken();
-        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(IDENTITY_TOKEN, actual);
+    }
+
+    @Test
+    void generateAccessToken_return200OkResponseWithAccessToken() throws IOException {
+        Mockito.when(googleCredentialsMock.refreshAccessToken())
+            .thenReturn(AccessToken.newBuilder().setTokenValue(ACCESS_TOKEN).build());
+        String actual = gcpTokenGeneratorService.generateAccessToken();
+        Assertions.assertEquals(ACCESS_TOKEN, actual);
     }
 
 }
