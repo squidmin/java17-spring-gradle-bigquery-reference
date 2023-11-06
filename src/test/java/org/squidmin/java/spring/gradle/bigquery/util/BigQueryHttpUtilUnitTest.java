@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +23,16 @@ import java.io.IOException;
 @Slf4j
 public class BigQueryHttpUtilUnitTest extends UnitTest {
 
-    @Autowired
+    @Value("${bigquery.application-default.project-id}")
     private String gcpDefaultUserProjectId;
-    @Autowired
+
+    @Value("${bigquery.application-default.dataset}")
     private String gcpDefaultUserDataset;
-    @Autowired
+
+    @Value("${bigquery.application-default.table}")
     private String gcpDefaultUserTable;
-    @Autowired
+
+    @Value("${bigquery.uri.queries}")
     private String queryUri;
 
     private final BigQueryConfig bigQueryConfigMock = Mockito.mock(BigQueryConfig.class);
@@ -40,7 +43,7 @@ public class BigQueryHttpUtilUnitTest extends UnitTest {
 
     @BeforeEach
     void beforeEach() {
-        setUp(
+        UnitTest.setUp(
             bigQueryConfigMock,
             gcpDefaultUserProjectId,
             gcpDefaultUserDataset,

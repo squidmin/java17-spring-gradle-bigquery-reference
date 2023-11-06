@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.squidmin.java.spring.gradle.bigquery.dto.bigquery.BigQueryRestService
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 
 @SpringBootTest(classes = {UnitTestConfig.class})
+@Profile("integration")
 public abstract class UnitTest {
 
     protected static final ObjectMapper mapper = new ObjectMapper();

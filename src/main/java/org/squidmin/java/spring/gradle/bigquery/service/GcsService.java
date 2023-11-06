@@ -47,8 +47,7 @@ public class GcsService {
         String csvContent = String.join("\n", csvRows);
         BlobInfo blobInfo = buildBlobInfo();
         storage.create(blobInfo, csvContent.getBytes());
-        URL signedUrl = storage.signUrl(blobInfo, 5, TimeUnit.MINUTES, Storage.SignUrlOption.withV4Signature());
-        return signedUrl;
+        return storage.signUrl(blobInfo, 5, TimeUnit.MINUTES, Storage.SignUrlOption.withV4Signature());
     }
 
     private void refreshImpersonatedCredentials(String accessToken) {

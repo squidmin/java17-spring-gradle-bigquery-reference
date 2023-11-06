@@ -83,7 +83,7 @@ public class BigQueryUtilUnitTest extends UnitTest {
     }
 
     @Test
-    void testToListWithTableResult() {
+    void toList_withTableResult() {
         TableResult tableResult = Mockito.mock(TableResult.class);
         List<Field> schemaFields = List.of(
             Field.of("id", LegacySQLTypeName.STRING),
