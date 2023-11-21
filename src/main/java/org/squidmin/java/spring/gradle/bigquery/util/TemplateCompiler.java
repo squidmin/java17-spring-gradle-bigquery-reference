@@ -36,17 +36,11 @@ public class TemplateCompiler {
         handlebars.registerHelpers(new HelperSource());
     }
 
-    public String compile(
-        String templateName,
-        ExampleRequest request,
-        BigQueryConfig bigQueryConfig) throws IOException {
-
-        Template template = handlebars.compile(templateName);
-        Map<String, Object> templateInput = new HashMap<>();
-        List<String> presentValues = new ArrayList<>();
+    public void populatePresentValues(BigQueryConfig bigQueryConfig,
+                                      List<String> presentValues,
+                                      List<ExampleRequestItem> requestBody) {
 
         // Populate presentValues (e.g., names of fields having at least one value present)
-        List<ExampleRequestItem> requestBody = request.getSubqueries();
         for (Field whereField : bigQueryConfig.getWhereFieldsDefault().getFilters()) {
             for (ExampleRequestItem requestItem : requestBody) {
                 String fieldName = whereField.getName();
@@ -56,6 +50,21 @@ public class TemplateCompiler {
                 }
             }
         }
+
+    }
+
+    public String compile(
+        String templateName,
+        ExampleRequest request,
+        BigQueryConfig bigQueryConfig) throws IOException {
+
+        Template template = handlebars.compile(templateName);
+        Map<String, Object> templateInput = new HashMap<>();
+        List<String> presentValues = new ArrayList<>();
+
+        List<ExampleRequestItem> requestBody = request.getSubqueries();
+
+        populatePresentValues(bigQueryConfig, presentValues, requestBody);
 
         // Populate filtered request data (e.g., drop nulls from ExampleRequestItem)
         List<Map<String, String>> filteredRequestBody = new ArrayList<>();

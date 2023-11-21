@@ -21,14 +21,15 @@ import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SelectFiel
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.WhereFieldsDefault;
 import org.squidmin.java.spring.gradle.bigquery.dao.RecordExample;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequest;
+import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequestItem;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponseItem;
 import org.squidmin.java.spring.gradle.bigquery.dto.bigquery.Query;
 import org.squidmin.java.spring.gradle.bigquery.exception.CustomJobException;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
+import org.squidmin.java.spring.gradle.bigquery.logger.LoggerUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryHttpUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryUtil;
-import org.squidmin.java.spring.gradle.bigquery.logger.LoggerUtil;
 
 import java.io.IOException;
 import java.net.URL;
@@ -53,7 +54,8 @@ public class BigQueryService {
     private final String gcpSaDataset;
     private final String gcpSaTable;
 
-    private int responseSizeLimit;
+    private final boolean shouldUploadBqResponseToGcs = true;
+    private final int responseSizeLimit;
 
     private final BigQueryUtil bigQueryUtil;
 
@@ -277,31 +279,50 @@ public class BigQueryService {
         if (request.getSubqueries().isEmpty()) {
             return new ResponseEntity<>(ExampleResponse.builder().build(), HttpStatus.OK);
         }
+
+        final int batchSize = 200;
         ExampleResponse response = BigQueryHttpUtil.initExampleResponse();
-        ResponseEntity<ExampleResponse> responseEntity = query(
-            Query.builder().query(buildQueryString(request)).useLegacySql(false).build(),
-            gcpToken
-        );
-        if (!BigQueryHttpUtil.isOkExampleResponse(responseEntity)) {
-            return buildErrorExampleResponse(responseEntity);
-        } else {
-            ExampleResponse body = responseEntity.getBody();
-            if (null != body && null != body.getRows()) {
-                List<ExampleResponseItem> responseBody = body.getRows();
-                int numberOfRows = responseBody.size();
-                if (responseSizeLimit < numberOfRows) {
-                    URL url = gcsService.upload(responseBody);
-                    response.setQueryUrl(url.toString());
-                } else {
-                    response.getRows().addAll(responseBody);
+        for (int i = 0; i < request.getSubqueries().size(); i += batchSize) {
+            List<ExampleRequestItem> batch = request.getSubqueries().subList(
+                i,
+                Math.min(i + batchSize, request.getSubqueries().size())
+            );
+            ResponseEntity<ExampleResponse> responseEntity = query(
+                Query.builder()
+                    .query(buildQueryString(ExampleRequest.builder().subqueries(batch).build()))
+                    .useLegacySql(false)
+                    .build(),
+                gcpToken
+            );
+            if (!BigQueryHttpUtil.isOkExampleResponse(responseEntity)) {
+                return buildErrorExampleResponse(responseEntity);
+            } else {
+                ExampleResponse body = responseEntity.getBody();
+                if (null != body && null != body.getRows()) {
+                    List<ExampleResponseItem> responseBody = body.getRows();
+                    int numberOfRows = responseBody.size();
+                    if (shouldUploadBqResponseToGcs && responseSizeLimit >= numberOfRows) {
+                        URL url = gcsService.upload(responseBody);
+                        response.setQueryUrl(url.toString());
+                    } else if (responseSizeLimit < numberOfRows) {
+                        log.error("Number of rows in BQ response exceeded size limit.");
+                        log.error("TODO: Implement logic to handle this scenario.");
+                    } else {
+                        response.getRows().addAll(responseBody);
+                    }
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 }
-                return new ResponseEntity<>(response, HttpStatus.OK);
             }
         }
+
         return new ResponseEntity<>(
             ExampleResponse.builder().rows(new ArrayList<>()).build(),
             HttpStatus.ACCEPTED
         );
+    }
+
+    private void handleResponse(ResponseEntity<ExampleResponse> responseEntity, ExampleResponse response) {
+
     }
 
     private ResponseEntity<ExampleResponse> handleIOException(IOException e) {
