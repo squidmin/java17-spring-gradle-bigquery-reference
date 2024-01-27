@@ -71,11 +71,11 @@ public class LoggerUtil {
         Logger.echoHorizontalLine(Logger.LogType.CYAN);
         Logger.log(String.format("PROFILE                         %s", System.getProperty("PROFILE")), Logger.LogType.CYAN);
         Logger.log(String.format("GCP_SA_KEY_PATH                 %s", System.getProperty("GCP_SA_KEY_PATH")), Logger.LogType.CYAN);
-        String adcAccessToken = System.getProperty("GCP_ADC_ACCESS_TOKEN");
+        String adcAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
         if (StringUtils.isNotEmpty(adcAccessToken)) {
-            Logger.log(String.format("GCP_ADC_ACCESS_TOKEN            %s", adcAccessToken.substring(0, 9).concat("...")), Logger.LogType.CYAN);
+            Logger.log(String.format("GCP_ACCESS_TOKEN            %s", adcAccessToken.substring(0, 9).concat("...")), Logger.LogType.CYAN);
         } else {
-            Logger.log(String.format("GCP_ADC_ACCESS_TOKEN            %s", "Not specified"), Logger.LogType.CYAN);
+            Logger.log(String.format("GCP_ACCESS_TOKEN            %s", "Not specified"), Logger.LogType.CYAN);
         }
         String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
         if (StringUtils.isNotEmpty(gcpSaAccessToken)) {
@@ -83,9 +83,9 @@ public class LoggerUtil {
         } else {
             Logger.log(String.format("GCP_SA_ACCESS_TOKEN             %s", "Not specified"), Logger.LogType.CYAN);
         }
-        Logger.log(String.format("GCP_DEFAULT_USER_PROJECT_ID     %s", System.getProperty("GCP_DEFAULT_USER_PROJECT_ID")), Logger.LogType.CYAN);
-        Logger.log(String.format("GCP_DEFAULT_USER_DATASET        %s", System.getProperty("GCP_DEFAULT_USER_DATASET")), Logger.LogType.CYAN);
-        Logger.log(String.format("GCP_DEFAULT_USER_TABLE          %s", System.getProperty("GCP_DEFAULT_USER_TABLE")), Logger.LogType.CYAN);
+        Logger.log(String.format("GCP_DEFAULT_PROJECT_ID     %s", System.getProperty("GCP_DEFAULT_PROJECT_ID")), Logger.LogType.CYAN);
+        Logger.log(String.format("GCP_DEFAULT_DATASET        %s", System.getProperty("GCP_DEFAULT_DATASET")), Logger.LogType.CYAN);
+        Logger.log(String.format("GCP_DEFAULT_TABLE          %s", System.getProperty("GCP_DEFAULT_TABLE")), Logger.LogType.CYAN);
         Logger.log(String.format("GCP_SA_PROJECT_ID               %s", System.getProperty("GCP_SA_PROJECT_ID")), Logger.LogType.CYAN);
         Logger.log(String.format("GCP_SA_DATASET                  %s", System.getProperty("GCP_SA_DATASET")), Logger.LogType.CYAN);
         Logger.log(String.format("GCP_SA_TABLE                    %s", System.getProperty("GCP_SA_TABLE")), Logger.LogType.CYAN);

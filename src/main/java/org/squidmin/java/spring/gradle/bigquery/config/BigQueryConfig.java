@@ -108,13 +108,4 @@ public class BigQueryConfig {
         this.bigQuery = bqOptionsBuilder.setCredentials(credentials).build().getService();
     }
 
-//    @Bean
-//    @Primary
-//    public GoogleCredentials googleCredentials() throws IOException {
-//        GoogleCredentials googleCredentials = GoogleCredentials.getApplicationDefault()
-//            .createScoped("https://www.googleapis.com/auth/cloud-platform");
-//        googleCredentials.refreshIfExpired();
-//        return googleCredentials;
-//    }
-
 }

@@ -6,7 +6,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -17,6 +16,24 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
+
+      - name: Install Google Cloud SDK
+        run: |
+          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+          sudo apt-get install apt-transport-https ca-certificates gnupg
+          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+          sudo apt-get update && sudo apt-get install google-cloud-sdk
+
+      - name: Authenticate with Google Cloud
+        env:
+          GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
+        run: |
+          echo "$GCLOUD_SERVICE_KEY" | gcloud auth activate-service-account --key-file=-
+
+      - name: Generate GCP Access Token
+        run: |
+          gcloud auth print-access-token > gcp-token.txt
+          export GCP_ACCESS_TOKEN=$(cat gcp-token.txt)
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew

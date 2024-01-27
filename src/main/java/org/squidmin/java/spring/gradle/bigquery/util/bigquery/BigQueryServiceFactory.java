@@ -23,7 +23,7 @@ public class BigQueryServiceFactory {
 
         Logger.log(String.format("BQ JDK: GCP_SA_KEY_PATH == %s", gcpSaKeyPath), Logger.LogType.CYAN);
         File serviceAccountKey = readServiceAccountKeyFile(gcpSaKeyPath);
-        Logger.log(String.format("GCP_ADC_ACCESS_TOKEN == %s", gcpAdcAccessToken), Logger.LogType.CYAN);
+        Logger.log(String.format("GCP_ACCESS_TOKEN == %s", gcpAdcAccessToken), Logger.LogType.CYAN);
         Logger.log(String.format("GCP_SA_ACCESS_TOKEN == %s", gcpSaAccessToken), Logger.LogType.CYAN);
 
         BigQueryOptions.Builder bqOptionsBuilder = BigQueryOptions.newBuilder();
@@ -67,7 +67,7 @@ public class BigQueryServiceFactory {
             if (e.getMessage().contains("'type' value 'authorized_user' not recognized. Expecting 'service_account'")) {
                 Logger.log("If you're trying to use Application Default Credentials (ADC), use the command:", Logger.LogType.ERROR);
                 Logger.log("    gcloud auth application-default print-access-token", Logger.LogType.ERROR);
-                Logger.log("to generate a GCP access token and set the output of the command to the \"GCP_ADC_ACCESS_TOKEN\" environment variable.", Logger.LogType.ERROR);
+                Logger.log("to generate a GCP access token and set the output of the command to the \"GCP_ACCESS_TOKEN\" environment variable.", Logger.LogType.ERROR);
             }
             isBqJdkAuthenticatedUsingSaKeyFile = false;
         }

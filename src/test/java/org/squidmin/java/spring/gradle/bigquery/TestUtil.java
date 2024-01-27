@@ -104,7 +104,7 @@ public class TestUtil {
             if (e.getMessage().contains("'type' value 'authorized_user' not recognized. Expecting 'service_account'")) {
                 Logger.log("If you're trying to use Application Default Credentials (ADC), use the command:", Logger.LogType.ERROR);
                 Logger.log("    gcloud auth application-default print-access-token", Logger.LogType.ERROR);
-                Logger.log("to generate a GCP access token and set the output of the command to the \"GCP_ADC_ACCESS_TOKEN\" environment variable.", Logger.LogType.ERROR);
+                Logger.log("to generate a GCP access token and set the output of the command to the \"GCP_ACCESS_TOKEN\" environment variable.", Logger.LogType.ERROR);
             }
             isBqJdkAuthenticatedUsingSaKeyFile = false;
         }

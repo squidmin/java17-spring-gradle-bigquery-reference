@@ -50,8 +50,8 @@ public abstract class BigQueryFunctionalTestFixture {
     );
 
     public enum CLI_ARG_KEYS {
-        GCP_ADC_ACCESS_TOKEN, GCP_SA_ACCESS_TOKEN,
-        GCP_DEFAULT_USER_PROJECT_ID, GCP_DEFAULT_USER_DATASET, GCP_DEFAULT_USER_TABLE,
+        GCP_ACCESS_TOKEN, GCP_SA_ACCESS_TOKEN,
+        GCP_DEFAULT_PROJECT_ID, GCP_DEFAULT_DATASET, GCP_DEFAULT_TABLE,
         GCP_SA_PROJECT_ID, GCP_SA_DATASET, GCP_SA_TABLE,
         SCHEMA
     }
@@ -174,15 +174,15 @@ public abstract class BigQueryFunctionalTestFixture {
         return exclusions;
     }
 
-    public static HttpEntity<String> validHttpEntity(String gcpDefaultUserProjectId,
-                                                     String gcpDefaultUserDataset,
-                                                     String gcpDefaultUserTable) {
+    public static HttpEntity<String> validHttpEntity(String gcpDefaultProjectId,
+                                                     String gcpDefaultDataset,
+                                                     String gcpDefaultTable) {
 
         return new HttpEntity<>(
             BigQueryFunctionalTestFixture.validQueryString(
-                gcpDefaultUserProjectId,
-                gcpDefaultUserDataset,
-                gcpDefaultUserTable
+                gcpDefaultProjectId,
+                gcpDefaultDataset,
+                gcpDefaultTable
             ),
             BigQueryFunctionalTestFixture.validHttpHeaders()
         );
