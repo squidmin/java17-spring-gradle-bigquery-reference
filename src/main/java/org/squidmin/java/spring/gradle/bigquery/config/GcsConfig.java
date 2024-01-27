@@ -1,18 +1,13 @@
 package org.squidmin.java.spring.gradle.bigquery.config;
 
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Paths;
+import org.springframework.context.annotation.Profile;
 
 /**
  * Google Cloud Storage (GCS) config
@@ -20,10 +15,11 @@ import java.nio.file.Paths;
 @Configuration
 @Getter
 @Setter
+@Profile("!integration")
 @Slf4j
 public class GcsConfig {
 
-    private final String gcpDefaultUserProjectId;
+    private final String gcpDefaultProjectId;
 
     private final String gcsBucketName;
 
@@ -33,21 +29,18 @@ public class GcsConfig {
 
     private Storage storage;
 
-    public GcsConfig(@Value("${bigquery.application-default.project-id}") String gcpDefaultUserProjectId,
+    public GcsConfig(@Value("${bigquery.application-default.project-id}") String gcpDefaultProjectId,
                      @Value("${gcs.bucket.name}") String gcsBucketName,
                      @Value("${gcs.filename}") String gcsFilename,
-                     @Value("${spring.cloud.gcp.config.credentials.location}") String gcpSaKeyPath) throws IOException {
+                     @Value("${spring.cloud.gcp.config.credentials.location}") String gcpSaKeyPath,
+                     Storage storage) {
 
-        this.gcpDefaultUserProjectId = gcpDefaultUserProjectId;
+        this.gcpDefaultProjectId = gcpDefaultProjectId;
         this.gcsBucketName = gcsBucketName;
         this.gcsFilename = gcsFilename;
         final String systemArgSaKeyPath = System.getProperty("GCP_SA_KEY_PATH");
         this.gcpSaKeyPath = StringUtils.isNotEmpty(systemArgSaKeyPath) ? systemArgSaKeyPath : gcpSaKeyPath;
-        storage = StorageOptions.newBuilder()
-            .setProjectId(gcpDefaultUserProjectId)
-            .setCredentials(GoogleCredentials.fromStream(new FileInputStream(Paths.get(this.gcpSaKeyPath).toFile())))
-            .build()
-            .getService();
+        this.storage = storage;
 
     }
 

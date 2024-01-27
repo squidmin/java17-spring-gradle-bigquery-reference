@@ -3,6 +3,7 @@ package org.squidmin.java.spring.gradle.bigquery.actuator;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,16 +16,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.config.BigQueryConfig;
-import org.squidmin.java.spring.gradle.bigquery.config.GcsConfig;
 import org.squidmin.java.spring.gradle.bigquery.controller.BigQueryController;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.repository.ExampleRepositoryImpl;
 import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
 import org.squidmin.java.spring.gradle.bigquery.service.GcsService;
+import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryHttpUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryTimeUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryUtil;
-import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 
 import java.io.IOException;
 
@@ -64,13 +64,13 @@ class ActuatorTest {
         private String gcpSaKeyPath;
 
         @Value("${bigquery.application-default.project-id}")
-        private String gcpDefaultUserProjectId;
+        private String gcpDefaultProjectId;
 
         @Value("${bigquery.application-default.dataset}")
-        private String gcpDefaultUserDataset;
+        private String gcpDefaultDataset;
 
         @Value("${bigquery.application-default.table}")
-        private String gcpDefaultUserTable;
+        private String gcpDefaultTable;
 
         @Value("${bigquery.service-account.project-id}")
         private String gcpSaProjectId;
@@ -90,14 +90,12 @@ class ActuatorTest {
         @Value("${gcs.filename}")
         private String gcsFilename;
 
-        private RestTemplate restTemplate;
-
         private BigQueryConfig bigQueryConfig;
 
         private BigQueryUtil bigQueryUtil;
         private BigQueryHttpUtil bigQueryHttpUtil;
 
-        private GcsService gcsService;
+        private final GcsService gcsServiceMock = Mockito.mock(GcsService.class);
 
         @Bean
         public BigQueryUtil bigQueryUtil() {
@@ -107,7 +105,7 @@ class ActuatorTest {
 
         @Bean
         public BigQueryHttpUtil bigQueryHttpUtil() {
-            bigQueryHttpUtil = new BigQueryHttpUtil(restTemplate);
+            bigQueryHttpUtil = new BigQueryHttpUtil(new RestTemplate());
             return bigQueryHttpUtil;
         }
 
@@ -117,25 +115,12 @@ class ActuatorTest {
         }
 
         @Bean
-        public GcsConfig gcsConfig() throws IOException {
-            return new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath);
-        }
-
-        @Bean
-        public GcsService gcsService() throws IOException {
-            gcsService = new GcsService(
-                new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath)
-            );
-            return gcsService;
-        }
-
-        @Bean
         public BigQueryConfig bigQueryConfig() throws IOException {
             bigQueryConfig = new BigQueryConfig(
                 gcpSaKeyPath,
-                gcpDefaultUserProjectId,
-                gcpDefaultUserDataset,
-                gcpDefaultUserTable,
+                gcpDefaultProjectId,
+                gcpDefaultDataset,
+                gcpDefaultTable,
                 gcpSaProjectId,
                 gcpSaDataset,
                 gcpSaTable,
@@ -159,21 +144,10 @@ class ActuatorTest {
                         bigQueryUtil,
                         bigQueryHttpUtil,
                         bigQueryConfig,
-                        gcsService
+                        gcsServiceMock
                     )
                 )
             );
-        }
-
-        @Bean
-        public RestTemplate restTemplate() {
-            restTemplate = new RestTemplate();
-            return restTemplate;
-        }
-
-        @Bean
-        public TestRestTemplate testRestTemplate() {
-            return new TestRestTemplate();
         }
 
     }

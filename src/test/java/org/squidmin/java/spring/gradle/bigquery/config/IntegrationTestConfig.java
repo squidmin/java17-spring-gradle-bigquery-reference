@@ -1,6 +1,7 @@
 package org.squidmin.java.spring.gradle.bigquery.config;
 
 import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.storage.Storage;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,20 +24,20 @@ import java.io.IOException;
 public class IntegrationTestConfig {
 
     private final String systemArgGcpSaKeyPath = System.getProperty("GCP_SA_KEY_PATH");
-    private final String gcpAdcAccessToken = System.getProperty("GCP_ADC_ACCESS_TOKEN");
+    private final String gcpAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
     private final String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
 
     @Value("${spring.cloud.gcp.config.credentials.location}")
     private String gcpSaKeyPath;
 
     @Value("${bigquery.application-default.project-id}")
-    private String gcpDefaultUserProjectId;
+    private String gcpDefaultProjectId;
 
     @Value("${bigquery.application-default.dataset}")
-    private String gcpDefaultUserDataset;
+    private String gcpDefaultDataset;
 
     @Value("${bigquery.application-default.table}")
-    private String gcpDefaultUserTable;
+    private String gcpDefaultTable;
 
     @Value("${bigquery.service-account.project-id}")
     private String gcpSaProjectId;
@@ -65,31 +66,31 @@ public class IntegrationTestConfig {
     private BigQueryTimeUtil bigQueryTimeUtil;
 
     private GcsConfig gcsConfig;
+    private final Storage gcsStorageMock = Mockito.mock(Storage.class);
     private GcsService gcsService;
 
     @Bean
     @Qualifier("gcpSaKeyPath_integrationTest")
     public String gcpSaKeyPath() {
-//        Logger.log("gcpSaKeyPath == " + gcpSaKeyPath, Logger.LogType.CYAN);
         return gcpSaKeyPath;
     }
 
     @Bean
     @Qualifier("gcpDefaultUserProjectId_integrationTest")
     public String gcpDefaultUserProjectId() {
-        return gcpDefaultUserProjectId;
+        return gcpDefaultProjectId;
     }
 
     @Bean
     @Qualifier("gcpDefaultUserDataset_integrationTest")
     public String gcpDefaultUserDataset() {
-        return gcpDefaultUserDataset;
+        return gcpDefaultDataset;
     }
 
     @Bean
     @Qualifier("gcpDefaultUserTable_integrationTest")
     public String gcpDefaultUserTable() {
-        return gcpDefaultUserTable;
+        return gcpDefaultTable;
     }
 
     @Bean
@@ -121,9 +122,9 @@ public class IntegrationTestConfig {
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
             gcpSaKeyPath,
-            gcpDefaultUserProjectId,
-            gcpDefaultUserDataset,
-            gcpDefaultUserTable,
+            gcpDefaultProjectId,
+            gcpDefaultDataset,
+            gcpDefaultTable,
             gcpSaProjectId,
             gcpSaDataset,
             gcpSaTable,
@@ -141,7 +142,7 @@ public class IntegrationTestConfig {
     @Bean
     @Qualifier("bigQuery_integrationTest")
     public BigQuery bigQuery() {
-        return TestUtil.defaultBigQueryInstance(gcpSaKeyPath, gcpAdcAccessToken, gcpSaAccessToken, gcpDefaultUserProjectId);
+        return TestUtil.defaultBigQueryInstance(gcpSaKeyPath, gcpAccessToken, gcpSaAccessToken, gcpDefaultProjectId);
     }
 
     @Bean
@@ -174,15 +175,15 @@ public class IntegrationTestConfig {
 
     @Bean
     @Qualifier("gcsConfig_integrationTest")
-    public GcsConfig gcsConfig() throws IOException {
-        gcsConfig = new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath);
+    public GcsConfig gcsConfig() {
+        gcsConfig = new GcsConfig(gcpDefaultProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath, gcsStorageMock);
         return gcsConfig;
     }
 
     @Bean
     @Qualifier("gcsService_integrationTest")
-    public GcsService gcsService() throws IOException {
-        gcsService = new GcsService(new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath));
+    public GcsService gcsService() {
+        gcsService = new GcsService(new GcsConfig(gcpDefaultProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath, gcsStorageMock));
         return gcsService;
     }
 

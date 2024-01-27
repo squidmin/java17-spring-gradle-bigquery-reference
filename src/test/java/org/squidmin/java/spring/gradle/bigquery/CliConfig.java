@@ -53,10 +53,10 @@ public abstract class CliConfig {
     protected Schema _schemaOverride;
 
     // The default values of configured BigQuery resource properties can be overridden by the values of CLI arguments.
-    protected String GCP_ADC_ACCESS_TOKEN;
-    protected String GCP_DEFAULT_USER_PROJECT_ID;
-    protected String GCP_DEFAULT_USER_DATASET;
-    protected String GCP_DEFAULT_USER_TABLE;
+    protected String GCP_ACCESS_TOKEN;
+    protected String GCP_DEFAULT_PROJECT_ID;
+    protected String GCP_DEFAULT_DATASET;
+    protected String GCP_DEFAULT_TABLE;
     protected String GCP_SA_PROJECT_ID;
     protected String GCP_SA_DATASET;
     protected String GCP_SA_TABLE;
@@ -75,9 +75,9 @@ public abstract class CliConfig {
 
     protected void initRunEnvironmentDefaultValues() {
         // Class-level initializers.
-        gcpDefaultUserProjectIdDefault = bigQueryConfig.getGcpDefaultUserProjectId();
-        gcpDefaultUserDatasetDefault = bigQueryConfig.getGcpDefaultUserDataset();
-        gcpDefaultUserTableDefault = bigQueryConfig.getGcpDefaultUserTable();
+        gcpDefaultUserProjectIdDefault = bigQueryConfig.getGcpDefaultProjectId();
+        gcpDefaultUserDatasetDefault = bigQueryConfig.getGcpDefaultDataset();
+        gcpDefaultUserTableDefault = bigQueryConfig.getGcpDefaultTable();
 
         gcpSaProjectIdDefault = bigQueryConfig.getGcpSaProjectId();
         gcpSaDatasetDefault = bigQueryConfig.getGcpSaDataset();
@@ -87,9 +87,9 @@ public abstract class CliConfig {
 
         // Set default run environment properties from Spring @Configuration classes.
         runEnvironment = RunEnvironment.builder()
-            .gcpDefaultUserProjectIdDefault(bigQueryConfig.getGcpDefaultUserProjectId())
-            .gcpDefaultUserDatasetDefault(bigQueryConfig.getGcpDefaultUserDataset())
-            .gcpDefaultUserTableDefault(bigQueryConfig.getGcpDefaultUserTable())
+            .gcpDefaultUserProjectIdDefault(bigQueryConfig.getGcpDefaultProjectId())
+            .gcpDefaultUserDatasetDefault(bigQueryConfig.getGcpDefaultDataset())
+            .gcpDefaultUserTableDefault(bigQueryConfig.getGcpDefaultTable())
             .gcpSaProjectId(bigQueryConfig.getGcpSaProjectId())
             .gcpSaDataset(bigQueryConfig.getGcpSaDataset())
             .gcpSaTable(bigQueryConfig.getGcpSaTable())
@@ -141,10 +141,10 @@ public abstract class CliConfig {
 
     private void initRunEnvironmentActiveProperties() {
         // Set integration test class level variables for active run environment.
-        GCP_ADC_ACCESS_TOKEN = bigQueryConfig.getGcpAdcAccessToken();
-        GCP_DEFAULT_USER_PROJECT_ID = setEnvProperty(bigQueryConfig.getGcpDefaultUserProjectId(), runEnvironment.getGcpDefaultUserProjectId());
-        GCP_DEFAULT_USER_DATASET = setEnvProperty(bigQueryConfig.getGcpDefaultUserDataset(), runEnvironment.getGcpDefaultUserDataset());
-        GCP_DEFAULT_USER_TABLE = setEnvProperty(bigQueryConfig.getGcpDefaultUserTable(), runEnvironment.getGcpDefaultUserTable());
+        GCP_ACCESS_TOKEN = bigQueryConfig.getGcpAccessToken();
+        GCP_DEFAULT_PROJECT_ID = setEnvProperty(bigQueryConfig.getGcpDefaultProjectId(), runEnvironment.getGcpDefaultUserProjectId());
+        GCP_DEFAULT_DATASET = setEnvProperty(bigQueryConfig.getGcpDefaultDataset(), runEnvironment.getGcpDefaultUserDataset());
+        GCP_DEFAULT_TABLE = setEnvProperty(bigQueryConfig.getGcpDefaultTable(), runEnvironment.getGcpDefaultUserTable());
 
         GCP_SA_PROJECT_ID = setEnvProperty(bigQueryConfig.getGcpSaProjectId(), runEnvironment.getGcpSaProjectId());
         GCP_SA_DATASET = setEnvProperty(bigQueryConfig.getGcpSaDataset(), runEnvironment.getGcpSaDataset());

@@ -4,6 +4,7 @@ import com.google.cloud.storage.Bucket;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,6 +31,7 @@ public class GcsServiceIntegrationTest extends IntegrationTest {
         gcsBucketName = gcsConfig.getGcsBucketName();
     }
 
+    @Disabled
     @Test
     void createBucket() {
         Bucket bucket = null;

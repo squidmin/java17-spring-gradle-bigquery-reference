@@ -2,9 +2,9 @@
 
 ./gradlew cleanTest test \
   --no-build-cache \
-  --tests=org.squidmin.spring.rest.springrestlabs.service.BigQueryAdminClientIntegrationTest.createTableWithCustomSchema \
-  -Dprofile=integration \
-  -DprojectId="lofty-root-378503" \
-  -DdatasetName="test_dataset_name_integration" \
-  -DtableName="test_table_name_integration" \
-  -Dschema="id,string;fieldA,string;fieldB,string"
+  --tests=org.squidmin.spring.rest.springrestlabs.service.BigQueryServiceEndToEndTest.createTableWithCustomSchema \
+  -DPROFILE=integration \
+  -DPROJECT_ID="lofty-root-378503" \
+  -DDATASET_NAME="test_dataset_integration" \
+  -DTABLE_NAME="test_table_integration" \
+  -DSCHEMA="id,string;fieldA,string;fieldB,string"

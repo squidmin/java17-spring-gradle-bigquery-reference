@@ -2,7 +2,7 @@
 
 ./gradlew cleanTest test \
   --no-build-cache \
-  --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryAdminClientIntegrationTest.createDataset \
-  -Dprofile=integration \
-  -DprojectId="lofty-root-378503" \
-  -DdatasetName="test_dataset_name_integration"
+  --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.createDataset \
+  -DPROFILE=integration \
+  -DGCP_DEFAULT_PROJECT_ID="lofty-root-378503" \
+  -DGCP_DEFAULT_DATASET="test_dataset_name_integration"

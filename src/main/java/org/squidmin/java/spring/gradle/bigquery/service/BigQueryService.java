@@ -79,9 +79,9 @@ public class BigQueryService {
         this.responseSizeLimit = responseSizeLimit;
         this.bigQueryConfig = bigQueryConfig;
         this.bigQuery = bigQueryConfig.getBigQuery();
-        this.gcpDefaultUserProjectId = bigQueryConfig.getGcpDefaultUserProjectId();
-        this.gcpDefaultUserDataset = bigQueryConfig.getGcpDefaultUserDataset();
-        this.gcpDefaultUserTable = bigQueryConfig.getGcpDefaultUserTable();
+        this.gcpDefaultUserProjectId = bigQueryConfig.getGcpDefaultProjectId();
+        this.gcpDefaultUserDataset = bigQueryConfig.getGcpDefaultDataset();
+        this.gcpDefaultUserTable = bigQueryConfig.getGcpDefaultTable();
         this.gcpSaProjectId = bigQueryConfig.getGcpSaProjectId();
         this.gcpSaDataset = bigQueryConfig.getGcpSaDataset();
         this.gcpSaTable = bigQueryConfig.getGcpSaTable();
@@ -276,17 +276,15 @@ public class BigQueryService {
     }
 
     public ResponseEntity<ExampleResponse> query(ExampleRequest request, String gcpToken) throws IOException {
-        if (request.getSubqueries().isEmpty()) {
+        List<ExampleRequestItem> subqueries = request.getSubqueries();
+        if (subqueries.isEmpty()) {
             return new ResponseEntity<>(ExampleResponse.builder().build(), HttpStatus.OK);
         }
 
         final int batchSize = 200;
         ExampleResponse response = BigQueryHttpUtil.initExampleResponse();
-        for (int i = 0; i < request.getSubqueries().size(); i += batchSize) {
-            List<ExampleRequestItem> batch = request.getSubqueries().subList(
-                i,
-                Math.min(i + batchSize, request.getSubqueries().size())
-            );
+        for (int i = 0; i < subqueries.size(); i += batchSize) {
+            List<ExampleRequestItem> batch = subqueries.subList(i, Math.min(i + batchSize, subqueries.size()));
             ResponseEntity<ExampleResponse> responseEntity = query(
                 Query.builder()
                     .query(buildQueryString(ExampleRequest.builder().subqueries(batch).build()))
@@ -351,12 +349,12 @@ public class BigQueryService {
     }
 
     private ResponseEntity<ExampleResponse> buildErrorExampleResponse(ResponseEntity<ExampleResponse> responseEntity) {
-        return new ResponseEntity<>(
-            ExampleResponse.builder()
-                .errors(responseEntity.getBody().getErrors())
-                .build(),
-            responseEntity.getStatusCode()
-        );
+        ExampleResponse.ExampleResponseBuilder responseBuilder = ExampleResponse.builder();
+        ExampleResponse responseBody = responseEntity.getBody();
+        if (null != responseBody) {
+            responseBuilder.errors(responseBody.getErrors());
+        }
+        return new ResponseEntity<>(responseBuilder.build(), responseEntity.getStatusCode());
     }
 
     private ResponseEntity<ExampleResponse> buildClientErrorExampleResponse(HttpClientErrorException e) {
@@ -385,7 +383,7 @@ public class BigQueryService {
             String jobName = "jobId_" + UUID.randomUUID();
             JobId jobId = JobId.newBuilder().setLocation("us").setJob(jobName).build();
 
-            String bigQueryApiToken = bigQueryConfig.getGcpAdcAccessToken();
+            String bigQueryApiToken = bigQueryConfig.getGcpAccessToken();
             Logger.log(String.format("BIGQUERY API TOKEN == %s", bigQueryApiToken), Logger.LogType.CYAN);
             bigQueryConfig.refreshGcpCredentials(gcpToken);
 
@@ -467,7 +465,7 @@ public class BigQueryService {
 
     private HttpHeaders getHttpHeaders(String gcpToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        String gcpAdcAccessToken = System.getProperty("GCP_ADC_ACCESS_TOKEN");
+        String gcpAdcAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
         String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
         if (StringUtils.isNotEmpty(gcpAdcAccessToken)) {
             if (StringUtils.isNotEmpty(gcpToken)) {

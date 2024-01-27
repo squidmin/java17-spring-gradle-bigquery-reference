@@ -88,9 +88,9 @@ public class TemplateCompiler {
             .filter(name -> !bigQueryConfig.getExclusions().getFields().contains(name))
             .collect(Collectors.toList());
 
-        templateInput.put("projectId", bigQueryConfig.getGcpDefaultUserProjectId());
-        templateInput.put("dataset", bigQueryConfig.getGcpDefaultUserDataset());
-        templateInput.put("table", bigQueryConfig.getGcpDefaultUserTable());
+        templateInput.put("projectId", bigQueryConfig.getGcpDefaultProjectId());
+        templateInput.put("dataset", bigQueryConfig.getGcpDefaultDataset());
+        templateInput.put("table", bigQueryConfig.getGcpDefaultTable());
         templateInput.put("requestItems", filteredRequestBody);
         templateInput.put("whereFields", bigQueryConfig.getWhereFieldsDefault().getFilters());
         templateInput.put("presentValues", presentValues);

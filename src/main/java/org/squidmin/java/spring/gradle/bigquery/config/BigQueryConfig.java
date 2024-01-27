@@ -30,14 +30,14 @@ import java.io.IOException;
 public class BigQueryConfig {
 
     private final String systemArgGcpSaKeyPath = System.getProperty("GCP_SA_KEY_PATH");
-    private final String gcpAdcAccessToken = System.getProperty("GCP_ADC_ACCESS_TOKEN");
+    private final String gcpAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
     private final String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
 
     private final String gcpSaKeyPath;
 
-    private final String gcpDefaultUserProjectId;
-    private final String gcpDefaultUserDataset;
-    private final String gcpDefaultUserTable;
+    private final String gcpDefaultProjectId;
+    private final String gcpDefaultDataset;
+    private final String gcpDefaultTable;
 
     private final String gcpSaProjectId;
     private final String gcpSaDataset;
@@ -57,9 +57,9 @@ public class BigQueryConfig {
 
     @Autowired
     public BigQueryConfig(@Value("${spring.cloud.gcp.config.credentials.location}") String gcpSaKeyPath,
-                          @Value("${bigquery.application-default.project-id}") String gcpDefaultUserProjectId,
-                          @Value("${bigquery.application-default.dataset}") String gcpDefaultUserDataset,
-                          @Value("${bigquery.application-default.table}") String gcpDefaultUserTable,
+                          @Value("${bigquery.application-default.project-id}") String gcpDefaultProjectId,
+                          @Value("${bigquery.application-default.dataset}") String gcpDefaultDataset,
+                          @Value("${bigquery.application-default.table}") String gcpDefaultTable,
                           @Value("${bigquery.service-account.project-id}") String gcpSaProjectId,
                           @Value("${bigquery.service-account.dataset}") String gcpSaDataset,
                           @Value("${bigquery.service-account.table}") String gcpSaTable,
@@ -73,9 +73,9 @@ public class BigQueryConfig {
 
         this.gcpSaKeyPath = gcpSaKeyPath;
 
-        this.gcpDefaultUserProjectId = gcpDefaultUserProjectId;
-        this.gcpDefaultUserDataset = gcpDefaultUserDataset;
-        this.gcpDefaultUserTable = gcpDefaultUserTable;
+        this.gcpDefaultProjectId = gcpDefaultProjectId;
+        this.gcpDefaultDataset = gcpDefaultDataset;
+        this.gcpDefaultTable = gcpDefaultTable;
 
         this.gcpSaProjectId = gcpSaProjectId;
         this.gcpSaDataset = gcpSaDataset;
@@ -93,16 +93,16 @@ public class BigQueryConfig {
 
         this.bigQuery = BigQueryServiceFactory.defaultInstance(
             gcpSaKeyPath,
-            gcpAdcAccessToken,
+            gcpAccessToken,
             gcpSaAccessToken,
-            gcpDefaultUserProjectId
+            gcpDefaultProjectId
         );
 
     }
 
     public void refreshGcpCredentials(String gcpToken) {
         BigQueryOptions.Builder bqOptionsBuilder = BigQueryOptions.newBuilder();
-        bqOptionsBuilder.setProjectId(gcpDefaultUserProjectId).setLocation("us");
+        bqOptionsBuilder.setProjectId(gcpDefaultProjectId).setLocation("us");
         this.bigQuery = bqOptionsBuilder.setCredentials(
             GoogleCredentials.newBuilder()
                 .setAccessToken(AccessToken.newBuilder().setTokenValue(gcpToken).build())
