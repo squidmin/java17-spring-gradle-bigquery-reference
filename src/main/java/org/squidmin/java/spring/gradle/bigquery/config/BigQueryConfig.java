@@ -9,10 +9,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SchemaDefault;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SelectFieldsDefault;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.WhereFieldsDefault;
@@ -100,23 +98,23 @@ public class BigQueryConfig {
 
     }
 
-    public void refreshGcpCredentials(String gcpToken) {
+    public void setGcpCredentials(String gcpToken) throws IOException {
         BigQueryOptions.Builder bqOptionsBuilder = BigQueryOptions.newBuilder();
         bqOptionsBuilder.setProjectId(gcpDefaultProjectId).setLocation("us");
-        this.bigQuery = bqOptionsBuilder.setCredentials(
-            GoogleCredentials.newBuilder()
-                .setAccessToken(AccessToken.newBuilder().setTokenValue(gcpToken).build())
-                .build()
-        ).build().getService();
+        GoogleCredentials credentials = GoogleCredentials.newBuilder()
+            .setAccessToken(AccessToken.newBuilder().setTokenValue(gcpToken).build())
+            .build();
+        credentials.refreshIfExpired();
+        this.bigQuery = bqOptionsBuilder.setCredentials(credentials).build().getService();
     }
 
-    @Bean
-    @Primary
-    public GoogleCredentials googleCredentials() throws IOException {
-        GoogleCredentials googleCredentials = GoogleCredentials.getApplicationDefault()
-            .createScoped("https://www.googleapis.com/auth/cloud-platform");
-        googleCredentials.refreshIfExpired();
-        return googleCredentials;
-    }
+//    @Bean
+//    @Primary
+//    public GoogleCredentials googleCredentials() throws IOException {
+//        GoogleCredentials googleCredentials = GoogleCredentials.getApplicationDefault()
+//            .createScoped("https://www.googleapis.com/auth/cloud-platform");
+//        googleCredentials.refreshIfExpired();
+//        return googleCredentials;
+//    }
 
 }

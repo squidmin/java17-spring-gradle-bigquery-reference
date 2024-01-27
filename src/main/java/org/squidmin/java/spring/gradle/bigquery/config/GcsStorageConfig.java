@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import java.io.IOException;
+
 @Configuration
 @Profile("!integration")
 public class GcsStorageConfig {
@@ -16,9 +18,10 @@ public class GcsStorageConfig {
 
     private final GoogleCredentials googleCredentials;
 
-    public GcsStorageConfig(@Value("${bigquery.application-default.project-id}") String projectId, GoogleCredentials googleCredentials) {
+    public GcsStorageConfig(@Value("${bigquery.application-default.project-id}") String projectId) throws IOException {
         this.projectId = projectId;
-        this.googleCredentials = googleCredentials;
+        googleCredentials = GoogleCredentials.getApplicationDefault()
+            .createScoped("https://www.googleapis.com/auth/cloud-platform");
     }
 
     @Bean

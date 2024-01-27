@@ -320,7 +320,6 @@ public class BigQueryService {
     }
 
     private void handleResponse(ResponseEntity<ExampleResponse> responseEntity, ExampleResponse response) {
-
     }
 
     private ResponseEntity<ExampleResponse> handleIOException(IOException e) {
@@ -372,7 +371,7 @@ public class BigQueryService {
      * @param query A Google SQL query string.
      * @return TableResult The rows returned from the query.
      */
-    public TableResult query(String gcpToken, String query) {
+    public TableResult query(String gcpToken, String query) throws IOException {
         try {
             // Set optional job resource properties.
             QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query)
@@ -383,9 +382,9 @@ public class BigQueryService {
             String jobName = "jobId_" + UUID.randomUUID();
             JobId jobId = JobId.newBuilder().setLocation("us").setJob(jobName).build();
 
-            String bigQueryApiToken = bigQueryConfig.getGcpAccessToken();
-            Logger.log(String.format("BIGQUERY API TOKEN == %s", bigQueryApiToken), Logger.LogType.CYAN);
-            bigQueryConfig.refreshGcpCredentials(gcpToken);
+//            String bigQueryApiToken = bigQueryConfig.getGcpAccessToken();
+//            Logger.log(String.format("BIGQUERY API TOKEN == %s", bigQueryApiToken), Logger.LogType.CYAN);
+            bigQueryConfig.setGcpCredentials(gcpToken);
 
             bigQuery.create(JobInfo.of(jobId, queryConfig));  // Create a job with job ID.
 

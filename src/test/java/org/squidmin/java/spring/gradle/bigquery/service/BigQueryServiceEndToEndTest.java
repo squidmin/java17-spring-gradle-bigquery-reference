@@ -95,7 +95,7 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
     }
 
     @Test
-    void query_givenValidQueryString_whenCallingBigQueryViaJdk_andQueryMatchesRows_thenReturnValidResponse() {
+    void query_givenValidQueryString_whenCallingBigQueryViaJdk_andQueryMatchesRows_thenReturnValidResponse() throws IOException {
         TableResult tableResult = bigQueryService.query(
             GCP_ACCESS_TOKEN,
             BigQueryFunctionalTestFixture.validQueryString(
