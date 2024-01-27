@@ -8,6 +8,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    container:
+      image: google/cloud-sdk:latest
+
     steps:
       - uses: actions/checkout@v2
 
@@ -16,29 +19,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-
-      - name: Configure Google Cloud SDK repository
-        run: |
-          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-          sudo apt-get update
-
-      - name: Install/Update Google Cloud SDK
-        run: |
-          if ! gcloud --version; then
-            echo "Installing Google Cloud SDK..."
-            echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-            sudo apt-get install apt-transport-https ca-certificates gnupg
-            curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-            sudo apt-get update && sudo apt-get install google-cloud-sdk
-          else
-            echo "Google Cloud SDK already installed. Updating..."
-            sudo apt-get update && sudo apt-get upgrade google-cloud-sdk
-          fi
-
-      - name: Verify Google Cloud SDK Installation
-        run: |
-          gcloud --version || echo "Google Cloud SDK not found"
 
       - name: Authenticate with Google Cloud
         env:
