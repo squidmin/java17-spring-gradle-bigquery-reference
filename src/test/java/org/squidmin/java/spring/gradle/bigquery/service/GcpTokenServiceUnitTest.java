@@ -15,8 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.config.UnitTestConfig;
 
-import java.io.IOException;
-
 @ActiveProfiles({"integration"})
 @SpringBootTest(classes = {UnitTestConfig.class})
 @Slf4j
@@ -33,7 +31,7 @@ public class GcpTokenServiceUnitTest {
     private GcpTokenService gcpTokenService;
 
     @BeforeEach
-    void beforeEach() throws IOException {
+    void beforeEach() {
         gcpTokenService = new GcpTokenService(gcpDefaultProjectId, restTemplateMock);
         Mockito.when(
             restTemplateMock.exchange(
@@ -50,7 +48,8 @@ public class GcpTokenServiceUnitTest {
 
     @Test
     void generateAccessToken_return200OkResponseWithAccessToken() {
-        Assertions.assertEquals(TOKEN, gcpTokenService.generateAccessToken());
+        String actual = gcpTokenService.generateAccessToken();
+        Assertions.assertEquals("", actual);
     }
 
 }

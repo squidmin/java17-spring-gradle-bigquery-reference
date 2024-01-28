@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -20,6 +21,8 @@ public class GcpTokenService {
 
     private static final String METADATA_SERVER_BASE_URL =
         "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity";
+
+    private static final String SCOPE = "https://www.googleapis.com/auth/cloud-platform";
 
     private static final String AUDIENCE = "java17-spring-gradle-bigquery-reference";
 
@@ -32,19 +35,17 @@ public class GcpTokenService {
     private final RestTemplate restTemplate;
 
     public GcpTokenService(@Value("${gcp.service-account}") String serviceAccount,
-                           RestTemplate restTemplate) throws IOException {
+                           RestTemplate restTemplate) {
 
         this.serviceAccount = serviceAccount;
 
-//        this.googleCredentials = GoogleCredentials.getApplicationDefault()
-//            .createScoped("https://www.googleapis.com/auth/cloud-platform");
         AccessToken gcpAccessToken = AccessToken.newBuilder()
             .setTokenValue(System.getProperty("GCP_ACCESS_TOKEN"))
             .build();
         this.googleCredentials = GoogleCredentials.newBuilder()
             .setAccessToken(gcpAccessToken)
             .build()
-            .createScoped("https://www.googleapis.com/auth/cloud-platform");
+            .createScoped(SCOPE);
 
         this.restTemplate = restTemplate;
 
@@ -96,12 +97,12 @@ public class GcpTokenService {
                 googleCredentials,
                 serviceAccount,
                 null,
-                null,
+                List.of(SCOPE),
                 1800
             );
             accessToken = targetCredentials.refreshAccessToken().getTokenValue();
         } else {
-            log.error("ADC is not a service account. Unable to authenticate.");
+            log.error("ADC is not associated with a service account. Unable to authenticate.");
         }
         return accessToken;
     }
