@@ -52,9 +52,8 @@ public class TestUtil {
         String gcpSaAccessToken,
         String gcpDefaultProjectId) {
 
-        String credentialsPath = System.getProperty("GOOGLE_APPLICATION_CREDENTIALS");
-        Logger.log(String.format("BQ JDK: GCP_SA_KEY_PATH == %s", credentialsPath), Logger.LogType.CYAN);
-        File serviceAccountKey = readServiceAccountKeyFile(credentialsPath);
+        Logger.log(String.format("BQ JDK: GCP_SA_KEY_PATH == %s", gcpSaKeyPath), Logger.LogType.CYAN);
+        File serviceAccountKey = readServiceAccountKeyFile(gcpSaKeyPath);
         Logger.log(String.format("GCP_ACCESS_TOKEN == %s", StringUtils.isNotEmpty(gcpAccessToken) ? gcpAccessToken.substring(0, 16) + "..." : ""), Logger.LogType.CYAN);
         Logger.log(String.format("GCP_SA_ACCESS_TOKEN == %s", StringUtils.isNotEmpty(gcpSaAccessToken) ? gcpSaAccessToken.substring(0, 16) + "..." : ""), Logger.LogType.CYAN);
 
@@ -97,7 +96,7 @@ public class TestUtil {
         boolean isBqJdkAuthenticatedUsingSaKeyFile;
         try (FileInputStream stream = new FileInputStream(serviceAccountKey)) {
             credentials = ServiceAccountCredentials.fromStream(stream);
-            Logger.log("BQ JDK: SETTING SERVICE ACCOUNT CREDENTIALS (GOOGLE_APPLICATION_CREDENTIALS) TO BQ OPTIONS.", Logger.LogType.CYAN);
+            Logger.log("BQ JDK: Setting service account credentials (GOOGLE_APPLICATION_CREDENTIALS) to BQ options.", Logger.LogType.CYAN);
             bqOptionsBuilder.setCredentials(credentials);
             isBqJdkAuthenticatedUsingSaKeyFile = true;
         } catch (IOException e) {
