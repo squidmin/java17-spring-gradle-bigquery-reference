@@ -1,5 +1,6 @@
 package org.squidmin.java.spring.gradle.bigquery.service;
 
+import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ImpersonatedCredentials;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,14 @@ public class GcpTokenGeneratorService {
 
         this.serviceAccount = serviceAccount;
 
-        this.googleCredentials = GoogleCredentials.getApplicationDefault()
+//        this.googleCredentials = GoogleCredentials.getApplicationDefault()
+//            .createScoped("https://www.googleapis.com/auth/cloud-platform");
+        AccessToken gcpAccessToken = AccessToken.newBuilder()
+            .setTokenValue(System.getProperty("GCP_ACCESS_TOKEN"))
+            .build();
+        this.googleCredentials = GoogleCredentials.newBuilder()
+            .setAccessToken(gcpAccessToken)
+            .build()
             .createScoped("https://www.googleapis.com/auth/cloud-platform");
 
         this.restTemplate = restTemplate;
