@@ -1,5 +1,6 @@
 # java17-spring-gradle-bigquery-reference
 
+[![Java CI with Gradle](https://github.com/squidmin/java17-spring-gradle-bigquery-reference/actions/workflows/spring-boot-ci.yml/badge.svg)](https://github.com/squidmin/java17-spring-gradle-bigquery-reference/actions/workflows/spring-boot-ci.yml)
 
 <details>
 <summary>About</summary>
