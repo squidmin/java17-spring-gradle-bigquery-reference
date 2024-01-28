@@ -70,11 +70,13 @@ public class ControllerIntegrationTestConfig {
     private String gcsFilename;
 
     private RestTemplate restTemplate;
+    private final RestTemplate restTemplateMock = Mockito.mock(RestTemplate.class);
 
     private BigQueryConfig bigQueryConfig;
 
     private BigQueryUtil bigQueryUtil;
     private BigQueryHttpUtil bigQueryHttpUtil;
+    private BigQueryHttpUtil bigQueryHttpUtilMock = Mockito.mock(BigQueryHttpUtil.class);
     private BigQueryTimeUtil bigQueryTimeUtil;
 
     private GcpTokenService gcpTokenService;
@@ -184,7 +186,7 @@ public class ControllerIntegrationTestConfig {
     @Bean
     @Qualifier("bigQueryHttpUtil_controllerIntegrationTest")
     public BigQueryHttpUtil bigQueryHttpUtil() {
-        bigQueryHttpUtil = new BigQueryHttpUtil(restTemplate);
+        bigQueryHttpUtil = new BigQueryHttpUtil(restTemplateMock);
         return bigQueryHttpUtil;
     }
 
@@ -225,9 +227,15 @@ public class ControllerIntegrationTestConfig {
     }
 
     @Bean
+    @Qualifier("gcsServiceMock_controllerIntegrationnTest")
+    public GcsService gcsServiceMock() {
+        return gcsServiceMock;
+    }
+
+    @Bean
     @Qualifier("restTemplateMock_controllerIntegrationTest")
     public RestTemplate restTemplateMock() {
-        return Mockito.mock(RestTemplate.class);
+        return restTemplateMock;
     }
 
 }
