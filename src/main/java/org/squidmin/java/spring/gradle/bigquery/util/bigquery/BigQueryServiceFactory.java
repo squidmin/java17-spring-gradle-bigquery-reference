@@ -17,14 +17,14 @@ public class BigQueryServiceFactory {
 
     public static BigQuery defaultInstance(
         String gcpSaKeyPath,
-        String gcpAdcAccessToken,
+        String gcpAccessToken,
         String gcpSaAccessToken,
         String gcpDefaultUserProjectId) {
 
         Logger.log(String.format("BQ JDK: GCP_SA_KEY_PATH == %s", gcpSaKeyPath), Logger.LogType.CYAN);
         File serviceAccountKey = readServiceAccountKeyFile(gcpSaKeyPath);
-        Logger.log(String.format("GCP_ACCESS_TOKEN == %s", gcpAdcAccessToken.substring(0, 16) + "..."), Logger.LogType.CYAN);
-        Logger.log(String.format("GCP_SA_ACCESS_TOKEN == %s", gcpSaAccessToken.substring(0, 16) + "..."), Logger.LogType.CYAN);
+        Logger.log(String.format("GCP_ACCESS_TOKEN == %s", StringUtils.isNotEmpty(gcpAccessToken) ? gcpAccessToken.substring(0, 16) + "..." : ""), Logger.LogType.CYAN);
+        Logger.log(String.format("GCP_SA_ACCESS_TOKEN == %s", StringUtils.isNotEmpty(gcpSaAccessToken) ? gcpSaAccessToken.substring(0, 16) + "..." : ""), Logger.LogType.CYAN);
 
         BigQueryOptions.Builder bqOptionsBuilder = BigQueryOptions.newBuilder();
         boolean isBqJdkAuthenticatedUsingSaKeyFile = setServiceAccountCredentials(
@@ -34,11 +34,11 @@ public class BigQueryServiceFactory {
         LoggerUtil.logSaKeyFileAuth(isBqJdkAuthenticatedUsingSaKeyFile);
 
         BigQuery bigQuery;
-        if (!isBqJdkAuthenticatedUsingSaKeyFile && StringUtils.isNotEmpty(gcpAdcAccessToken)) {
+        if (!isBqJdkAuthenticatedUsingSaKeyFile && StringUtils.isNotEmpty(gcpAccessToken)) {
             Logger.log("Authenticated successfully using Application Default Credentials (ADC) access token.", Logger.LogType.INFO);
             bigQuery = bqOptionsBuilder.setCredentials(
                 GoogleCredentials.newBuilder()
-                    .setAccessToken(AccessToken.newBuilder().setTokenValue(gcpAdcAccessToken).build())
+                    .setAccessToken(AccessToken.newBuilder().setTokenValue(gcpAccessToken).build())
                     .build()
             ).build().getService();
         } else {
