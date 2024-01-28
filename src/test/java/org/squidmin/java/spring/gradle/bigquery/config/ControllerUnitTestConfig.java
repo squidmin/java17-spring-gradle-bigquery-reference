@@ -18,6 +18,8 @@ import java.io.IOException;
 @ActiveProfiles("integration")
 public class ControllerUnitTestConfig {
 
+    private final String googleApplicationCredentialsPath = System.getProperty("GOOGLE_APPLICATION_CREDENTIALS");
+
     @Value("${spring.cloud.gcp.config.credentials.location}")
     private String gcpSaKeyPath;
 
@@ -103,6 +105,7 @@ public class ControllerUnitTestConfig {
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
 //            gcpSaKeyPath,
+            googleApplicationCredentialsPath,
             gcpDefaultUserProjectId,
             gcpDefaultUserDataset,
             gcpDefaultUserTable,

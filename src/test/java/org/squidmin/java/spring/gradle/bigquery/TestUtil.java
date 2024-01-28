@@ -47,7 +47,7 @@ public class TestUtil {
     }
 
     public static BigQuery defaultBigQueryInstance(
-//        String gcpSaKeyPath,
+        String gcpSaKeyPath,
         String gcpAccessToken,
         String gcpSaAccessToken,
         String gcpDefaultProjectId) {

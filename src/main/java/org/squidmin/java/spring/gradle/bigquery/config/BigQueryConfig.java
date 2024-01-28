@@ -31,7 +31,7 @@ public class BigQueryConfig {
     private final String gcpAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
     private final String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
 
-//    private final String gcpSaKeyPath;
+    private final String gcpSaKeyPath;
 
     private final String gcpDefaultProjectId;
     private final String gcpDefaultDataset;
@@ -55,22 +55,23 @@ public class BigQueryConfig {
 
     @Autowired
     public BigQueryConfig(
-//        @Value("${spring.cloud.gcp.config.credentials.location}") String gcpSaKeyPath,
-                          @Value("${bigquery.application-default.project-id}") String gcpDefaultProjectId,
-                          @Value("${bigquery.application-default.dataset}") String gcpDefaultDataset,
-                          @Value("${bigquery.application-default.table}") String gcpDefaultTable,
-                          @Value("${bigquery.service-account.project-id}") String gcpSaProjectId,
-                          @Value("${bigquery.service-account.dataset}") String gcpSaDataset,
-                          @Value("${bigquery.service-account.table}") String gcpSaTable,
-                          @Value("${bigquery.uri.queries}") String queryUri,
-                          SchemaDefault schemaDefault,
-                          DataTypes dataTypes,
-                          SelectFieldsDefault selectFieldsDefault,
-                          WhereFieldsDefault whereFieldsDefault,
-                          Exclusions exclusions,
-                          @Value("${bigquery.select-all}") boolean selectAll) {
+        @Value("${spring.cloud.gcp.config.credentials.location}") String gcpSaKeyPath,
+        @Value("${bigquery.application-default.project-id}") String gcpDefaultProjectId,
+        @Value("${bigquery.application-default.dataset}") String gcpDefaultDataset,
+        @Value("${bigquery.application-default.table}") String gcpDefaultTable,
+        @Value("${bigquery.service-account.project-id}") String gcpSaProjectId,
+        @Value("${bigquery.service-account.dataset}") String gcpSaDataset,
+        @Value("${bigquery.service-account.table}") String gcpSaTable,
+        @Value("${bigquery.uri.queries}") String queryUri,
+        SchemaDefault schemaDefault,
+        DataTypes dataTypes,
+        SelectFieldsDefault selectFieldsDefault,
+        WhereFieldsDefault whereFieldsDefault,
+        Exclusions exclusions,
+        @Value("${bigquery.select-all}") boolean selectAll) {
 
 //        this.gcpSaKeyPath = gcpSaKeyPath;
+        this.gcpSaKeyPath = systemArgGcpSaKeyPath;
 
         this.gcpDefaultProjectId = gcpDefaultProjectId;
         this.gcpDefaultDataset = gcpDefaultDataset;

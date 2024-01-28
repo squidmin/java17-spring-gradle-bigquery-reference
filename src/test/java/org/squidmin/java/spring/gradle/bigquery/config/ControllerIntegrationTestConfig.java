@@ -88,7 +88,7 @@ public class ControllerIntegrationTestConfig {
     @Qualifier("gcpSaKeyPath_controllerIntegrationTest")
     public String gcpSaKeyPath() {
 //        Logger.log("gcpSaKeyPath == " + gcpSaKeyPath, Logger.LogType.CYAN);
-        return gcpSaKeyPath;
+        return systemArgGcpSaKeyPath;
     }
 
     @Bean
@@ -138,6 +138,7 @@ public class ControllerIntegrationTestConfig {
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
 //            gcpSaKeyPath,
+            systemArgGcpSaKeyPath,
             gcpDefaultProjectId,
             gcpDefaultDataset,
             gcpDefaultTable,
@@ -160,6 +161,7 @@ public class ControllerIntegrationTestConfig {
     public BigQuery bigQuery() {
         return TestUtil.defaultBigQueryInstance(
 //            gcpSaKeyPath,
+            systemArgGcpSaKeyPath,
             gcpAccessToken,
             gcpSaAccessToken,
             gcpDefaultProjectId

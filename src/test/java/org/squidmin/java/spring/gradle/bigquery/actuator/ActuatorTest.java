@@ -63,6 +63,8 @@ class ActuatorTest {
         @Value("${spring.cloud.gcp.config.credentials.location}")
         private String gcpSaKeyPath;
 
+        private final String systemArgGcpSaKeyPath = System.getProperty("GOOGLE_APPLICATION_CREDENTIALS");
+
         @Value("${bigquery.application-default.project-id}")
         private String gcpDefaultProjectId;
 
@@ -118,6 +120,7 @@ class ActuatorTest {
         public BigQueryConfig bigQueryConfig() throws IOException {
             bigQueryConfig = new BigQueryConfig(
 //                gcpSaKeyPath,
+                systemArgGcpSaKeyPath,
                 gcpDefaultProjectId,
                 gcpDefaultDataset,
                 gcpDefaultTable,

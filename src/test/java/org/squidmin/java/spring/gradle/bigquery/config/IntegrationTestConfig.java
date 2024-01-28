@@ -27,8 +27,8 @@ public class IntegrationTestConfig {
     private final String gcpAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
     private final String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
 
-//    @Value("${spring.cloud.gcp.config.credentials.location}")
-//    private String gcpSaKeyPath;
+    @Value("${spring.cloud.gcp.config.credentials.location}")
+    private String gcpSaKeyPath;
 
     @Value("${bigquery.application-default.project-id}")
     private String gcpDefaultProjectId;
@@ -122,6 +122,7 @@ public class IntegrationTestConfig {
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
 //            gcpSaKeyPath,
+            googleApplicationCredentialsPath,
             gcpDefaultProjectId,
             gcpDefaultDataset,
             gcpDefaultTable,
@@ -144,6 +145,7 @@ public class IntegrationTestConfig {
     public BigQuery bigQuery() {
         return TestUtil.defaultBigQueryInstance(
 //            gcpSaKeyPath,
+            googleApplicationCredentialsPath,
             gcpAccessToken,
             gcpSaAccessToken,
             gcpDefaultProjectId
