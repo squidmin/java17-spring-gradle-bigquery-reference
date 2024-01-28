@@ -40,4 +40,6 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew clean build -DPROFILE=integration -DGCP_ACCESS_TOKEN="$GCP_ACCESS_TOKEN"
+        run: |
+          export GCP_ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
+          ./gradlew clean build -DPROFILE=integration -DGCP_ACCESS_TOKEN="$GCP_ACCESS_TOKEN"
