@@ -22,6 +22,8 @@ import java.io.IOException;
 @Slf4j
 public class GcpTokenServiceUnitTest {
 
+    private static final String TOKEN = "test_token";
+
     @Autowired
     private String gcpDefaultProjectId;
 
@@ -33,23 +35,22 @@ public class GcpTokenServiceUnitTest {
     @BeforeEach
     void beforeEach() throws IOException {
         gcpTokenService = new GcpTokenService(gcpDefaultProjectId, restTemplateMock);
-    }
-
-    @Test
-    void generateIdentityToken_return200OkResponseWithIdentityToken() {
-        String IDENTITY_TOKEN = "identity_token";
         Mockito.when(
             restTemplateMock.exchange(
                 ArgumentMatchers.any(RequestEntity.class),
                 ArgumentMatchers.eq(String.class)
             )
-        ).thenReturn(new ResponseEntity<>(IDENTITY_TOKEN, HttpStatus.OK));
-        Assertions.assertEquals(IDENTITY_TOKEN, gcpTokenService.generateIdentityToken());
+        ).thenReturn(new ResponseEntity<>(TOKEN, HttpStatus.OK));
+    }
+
+    @Test
+    void generateIdentityToken_return200OkResponseWithIdentityToken() {
+        Assertions.assertEquals(TOKEN, gcpTokenService.generateIdentityToken());
     }
 
     @Test
     void generateAccessToken_return200OkResponseWithAccessToken() {
-        Assertions.assertTrue(gcpTokenService.generateAccessToken().contains("ya29"));
+        Assertions.assertEquals(TOKEN, gcpTokenService.generateAccessToken());
     }
 
 }
