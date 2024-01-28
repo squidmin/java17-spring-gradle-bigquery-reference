@@ -1,6 +1,7 @@
 package org.squidmin.java.spring.gradle.bigquery.actuator;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -119,8 +120,7 @@ class ActuatorTest {
         @Bean
         public BigQueryConfig bigQueryConfig() throws IOException {
             bigQueryConfig = new BigQueryConfig(
-//                gcpSaKeyPath,
-                systemArgGcpSaKeyPath,
+                StringUtils.isEmpty(systemArgGcpSaKeyPath) ? gcpSaKeyPath : systemArgGcpSaKeyPath,
                 gcpDefaultProjectId,
                 gcpDefaultDataset,
                 gcpDefaultTable,

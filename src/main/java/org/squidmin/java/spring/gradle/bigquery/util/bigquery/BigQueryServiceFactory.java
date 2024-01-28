@@ -16,7 +16,7 @@ import java.io.IOException;
 public class BigQueryServiceFactory {
 
     public static BigQuery defaultInstance(
-//        String gcpSaKeyPath,
+        String gcpSaKeyPath,
         String gcpAccessToken,
         String gcpSaAccessToken,
         String gcpDefaultUserProjectId) {
