@@ -18,7 +18,7 @@ import org.squidmin.java.spring.gradle.bigquery.controller.BigQueryController;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.repository.ExampleRepositoryImpl;
 import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
-import org.squidmin.java.spring.gradle.bigquery.service.GcpTokenGeneratorService;
+import org.squidmin.java.spring.gradle.bigquery.service.GcpTokenService;
 import org.squidmin.java.spring.gradle.bigquery.service.GcsService;
 import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryHttpUtil;
@@ -77,7 +77,7 @@ public class ControllerIntegrationTestConfig {
     private BigQueryHttpUtil bigQueryHttpUtil;
     private BigQueryTimeUtil bigQueryTimeUtil;
 
-    private GcpTokenGeneratorService gcpTokenGeneratorService;
+    private GcpTokenService gcpTokenService;
 
     private final GcsService gcsServiceMock = Mockito.mock(GcsService.class);
     private final Storage gcsStorageMock = Mockito.mock(Storage.class);
@@ -197,9 +197,9 @@ public class ControllerIntegrationTestConfig {
 
     @Bean
     @Qualifier("gcpTokenGeneratorService_controllerIntegrationTest")
-    public GcpTokenGeneratorService gcpTokenGeneratorService() throws IOException {
-        gcpTokenGeneratorService = new GcpTokenGeneratorService(gcpServiceAccount, new RestTemplate());
-        return gcpTokenGeneratorService;
+    public GcpTokenService gcpTokenGeneratorService() throws IOException {
+        gcpTokenService = new GcpTokenService(gcpServiceAccount, new RestTemplate());
+        return gcpTokenService;
     }
 
     @Bean

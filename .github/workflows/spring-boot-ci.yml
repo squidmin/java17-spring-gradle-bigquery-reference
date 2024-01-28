@@ -17,8 +17,7 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      # Setup Google Cloud SDK (skip if already installed in the environment)
-      - name: Setup Google Cloud SDK
+      - name: Setup Google Cloud SDK # Setup Google Cloud SDK (skip if already installed in the environment)
         run: |
           if ! gcloud --version; then
             curl -sSL https://sdk.cloud.google.com | bash
@@ -34,9 +33,6 @@ jobs:
           gcloud auth activate-service-account --key-file=gcloud-service-key.json
           export GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcloud-service-key.json
           export GCP_ACCESS_TOKEN=$(gcloud auth print-access-token)
-
-      # Use GCP_ACCESS_TOKEN as needed for your tasks
-      # For example, set it as an environment variable for other steps or use it directly
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew

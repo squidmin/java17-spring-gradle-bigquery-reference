@@ -20,37 +20,36 @@ import java.io.IOException;
 @ActiveProfiles({"integration"})
 @SpringBootTest(classes = {UnitTestConfig.class})
 @Slf4j
-public class GcpTokenGeneratorServiceUnitTest {
+public class GcpTokenServiceUnitTest {
 
     @Autowired
-    private String gcpDefaultUserProjectId;
+    private String gcpDefaultProjectId;
 
     @Autowired
     private RestTemplate restTemplateMock;
 
-    private GcpTokenGeneratorService gcpTokenGeneratorService;
+    private GcpTokenService gcpTokenService;
 
     @BeforeEach
     void beforeEach() throws IOException {
-        gcpTokenGeneratorService = new GcpTokenGeneratorService(gcpDefaultUserProjectId, restTemplateMock);
+        gcpTokenService = new GcpTokenService(gcpDefaultProjectId, restTemplateMock);
     }
 
     @Test
     void generateIdentityToken_return200OkResponseWithIdentityToken() {
-        String IDENTITY_TOKEN = "identity-token_1234";
-
+        String IDENTITY_TOKEN = "identity_token";
         Mockito.when(
             restTemplateMock.exchange(
                 ArgumentMatchers.any(RequestEntity.class),
                 ArgumentMatchers.eq(String.class)
             )
         ).thenReturn(new ResponseEntity<>(IDENTITY_TOKEN, HttpStatus.OK));
-        Assertions.assertEquals(IDENTITY_TOKEN, gcpTokenGeneratorService.generateIdentityToken());
+        Assertions.assertEquals(IDENTITY_TOKEN, gcpTokenService.generateIdentityToken());
     }
 
     @Test
     void generateAccessToken_return200OkResponseWithAccessToken() {
-        Assertions.assertTrue(gcpTokenGeneratorService.generateAccessToken().contains("ya29"));
+        Assertions.assertTrue(gcpTokenService.generateAccessToken().contains("ya29"));
     }
 
 }

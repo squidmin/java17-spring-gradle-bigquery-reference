@@ -16,7 +16,7 @@ import java.util.Collections;
 
 @Service
 @Slf4j
-public class GcpTokenGeneratorService {
+public class GcpTokenService {
 
     private static final String METADATA_SERVER_BASE_URL =
         "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity";
@@ -31,8 +31,8 @@ public class GcpTokenGeneratorService {
 
     private final RestTemplate restTemplate;
 
-    public GcpTokenGeneratorService(@Value("${gcp.service-account}") String serviceAccount,
-                                    RestTemplate restTemplate) throws IOException {
+    public GcpTokenService(@Value("${gcp.service-account}") String serviceAccount,
+                           RestTemplate restTemplate) throws IOException {
 
         this.serviceAccount = serviceAccount;
 

@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.squidmin.java.spring.gradle.bigquery.IntegrationTest;
 import org.squidmin.java.spring.gradle.bigquery.config.GcsConfig;
 import org.squidmin.java.spring.gradle.bigquery.config.UnitTestConfig;
+import org.squidmin.java.spring.gradle.bigquery.exception.GcsServiceException;
 
 @ActiveProfiles({"integration"})
 @ContextConfiguration(classes = {UnitTestConfig.class})
@@ -33,7 +34,7 @@ public class GcsServiceIntegrationTest extends IntegrationTest {
 
     @Disabled
     @Test
-    void createBucket() {
+    void createBucket() throws GcsServiceException {
         Bucket bucket = null;
         if (!gcsService.bucketExists(gcsBucketName)) {
             bucket = gcsService.createBucket(gcsBucketName);

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -29,7 +28,7 @@ import org.squidmin.java.spring.gradle.bigquery.config.GcsConfig;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequest;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
-import org.squidmin.java.spring.gradle.bigquery.service.GcpTokenGeneratorService;
+import org.squidmin.java.spring.gradle.bigquery.service.GcpTokenService;
 import org.squidmin.java.spring.gradle.bigquery.util.Constants;
 
 //@Disabled
@@ -55,7 +54,7 @@ public class BigQueryControllerIntegrationTest {
     private RestTemplate restTemplateMock;
 
     @Autowired
-    private GcpTokenGeneratorService gcpTokenGeneratorService;
+    private GcpTokenService gcpTokenService;
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -91,7 +90,7 @@ public class BigQueryControllerIntegrationTest {
         return mockMvc.perform(
             MockMvcRequestBuilders
                 .post(endpoint)
-                .header(Constants.HttpHeaders.GCP_ACCESS_TOKEN, gcpTokenGeneratorService.generateAccessToken())
+                .header(Constants.HttpHeaders.GCP_ACCESS_TOKEN, gcpTokenService.generateAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(content)

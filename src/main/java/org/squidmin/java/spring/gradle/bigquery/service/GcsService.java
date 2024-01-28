@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.squidmin.java.spring.gradle.bigquery.config.GcsConfig;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponseItem;
+import org.squidmin.java.spring.gradle.bigquery.exception.GcsServiceException;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,9 +27,9 @@ public class GcsService {
         this.storage = gcsConfig.getStorage();
     }
 
-    public Bucket createBucket(String bucketName) {
+    public Bucket createBucket(String bucketName) throws GcsServiceException {
         if (storage.get(bucketName) != null) {
-            throw new IllegalArgumentException("Bucket " + bucketName + " already exists.");
+            throw new GcsServiceException("Bucket " + bucketName + " already exists.");
         }
         return storage.create(BucketInfo.of(bucketName));
     }
