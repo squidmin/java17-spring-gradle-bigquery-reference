@@ -28,16 +28,16 @@ import java.util.List;
 public class BigQueryUtilUnitTest extends UnitTest {
 
     @Autowired
-    @Qualifier("gcpDefaultUserProjectId_unitTest")
-    private String gcpDefaultUserProjectId;
+    @Qualifier("gcpDefaultProjectId_unitTest")
+    private String gcpDefaultProjectId;
 
     @Autowired
-    @Qualifier("gcpDefaultUserDataset_unitTest")
-    private String gcpDefaultUserDataset;
+    @Qualifier("gcpDefaultDataset_unitTest")
+    private String gcpDefaultDataset;
 
     @Autowired
-    @Qualifier("gcpDefaultUserTable_unitTest")
-    private String gcpDefaultUserTable;
+    @Qualifier("gcpDefaultTable_unitTest")
+    private String gcpDefaultTable;
 
     @Autowired
     @Qualifier("queryUri_unitTest")
@@ -52,9 +52,9 @@ public class BigQueryUtilUnitTest extends UnitTest {
     public void beforeEach() {
         setUp(
             bigQueryConfigMock,
-            gcpDefaultUserProjectId,
-            gcpDefaultUserDataset,
-            gcpDefaultUserTable,
+            gcpDefaultProjectId,
+            gcpDefaultDataset,
+            gcpDefaultTable,
             queryUri
         );
         bigQueryUtil = new BigQueryUtil(templateCompilerMock);

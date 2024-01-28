@@ -76,20 +76,20 @@ public class IntegrationTestConfig {
 //    }
 
     @Bean
-    @Qualifier("gcpDefaultUserProjectId_integrationTest")
-    public String gcpDefaultUserProjectId() {
+    @Qualifier("gcpDefaultProjectId_integrationTest")
+    public String gcpDefaultProjectId() {
         return gcpDefaultProjectId;
     }
 
     @Bean
-    @Qualifier("gcpDefaultUserDataset_integrationTest")
-    public String gcpDefaultUserDataset() {
+    @Qualifier("gcpDefaultDataset_integrationTest")
+    public String gcpDefaultDataset() {
         return gcpDefaultDataset;
     }
 
     @Bean
-    @Qualifier("gcpDefaultUserTable_integrationTest")
-    public String gcpDefaultUserTable() {
+    @Qualifier("gcpDefaultTable_integrationTest")
+    public String gcpDefaultTable() {
         return gcpDefaultTable;
     }
 

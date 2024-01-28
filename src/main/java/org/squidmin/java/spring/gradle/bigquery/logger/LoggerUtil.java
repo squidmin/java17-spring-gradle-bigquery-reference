@@ -6,7 +6,6 @@ import com.google.cloud.bigquery.TableInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.squidmin.java.spring.gradle.bigquery.config.DataTypes;
-import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
 import org.squidmin.java.spring.gradle.bigquery.util.RunEnvironment;
 
 @Slf4j
@@ -19,9 +18,9 @@ public class LoggerUtil {
         if (profileOption == ProfileOption.DEFAULT) {
             Logger.log("--- BigQuery default properties ---", Logger.LogType.CYAN);
             logBqProperties(
-                runEnvironment.getGcpDefaultUserProjectIdDefault(),
-                runEnvironment.getGcpDefaultUserDatasetDefault(),
-                runEnvironment.getGcpDefaultUserTableDefault(),
+                runEnvironment.getGcpDefaultProjectIdDefault(),
+                runEnvironment.getGcpDefaultDatasetDefault(),
+                runEnvironment.getGcpDefaultTableDefault(),
                 runEnvironment.getGcpSaProjectIdDefault(),
                 runEnvironment.getGcpSaDatasetDefault(),
                 runEnvironment.getGcpSaTableDefault()
@@ -29,9 +28,9 @@ public class LoggerUtil {
         } else if (profileOption == ProfileOption.OVERRIDDEN) {
             Logger.log("--- BigQuery overridden properties ---", Logger.LogType.CYAN);
             logBqProperties(
-                runEnvironment.getGcpDefaultUserProjectIdOverride(),
-                runEnvironment.getGcpDefaultUserDatasetOverride(),
-                runEnvironment.getGcpDefaultUserTableOverride(),
+                runEnvironment.getGcpDefaultProjectIdOverride(),
+                runEnvironment.getGcpDefaultDatasetOverride(),
+                runEnvironment.getGcpDefaultTableOverride(),
                 runEnvironment.getGcpSaProjectIdOverride(),
                 runEnvironment.getGcpSaDatasetOverride(),
                 runEnvironment.getGcpSaTableOverride()
@@ -39,9 +38,9 @@ public class LoggerUtil {
         } else if (profileOption == ProfileOption.ACTIVE) {
             Logger.log("BigQuery resource properties currently configured:", Logger.LogType.CYAN);
             logBqProperties(
-                runEnvironment.getGcpDefaultUserProjectId(),
-                runEnvironment.getGcpDefaultUserDataset(),
-                runEnvironment.getGcpDefaultUserTable(),
+                runEnvironment.getGcpDefaultProjectId(),
+                runEnvironment.getGcpDefaultDataset(),
+                runEnvironment.getGcpDefaultTable(),
                 runEnvironment.getGcpSaProjectId(),
                 runEnvironment.getGcpSaDataset(),
                 runEnvironment.getGcpSaTable()
@@ -53,12 +52,12 @@ public class LoggerUtil {
     }
 
     public static void logBqProperties(
-        String gcpDefaultUserProjectId, String gcpDefaultUserDataset, String gcpDefaultUserTable,
+        String gcpDefaultProjectId, String gcpDefaultDataset, String gcpDefaultTable,
         String gcpSaProjectId, String gcpSaDataset, String gcpSaTable) {
 
-        Logger.log(String.format("Default Project ID: %s", gcpDefaultUserProjectId), Logger.LogType.INFO);
-        Logger.log(String.format("Default Dataset name: %s", gcpDefaultUserDataset), Logger.LogType.INFO);
-        Logger.log(String.format("Default Table name: %s", gcpDefaultUserTable), Logger.LogType.INFO);
+        Logger.log(String.format("Default Project ID: %s", gcpDefaultProjectId), Logger.LogType.INFO);
+        Logger.log(String.format("Default Dataset name: %s", gcpDefaultDataset), Logger.LogType.INFO);
+        Logger.log(String.format("Default Table name: %s", gcpDefaultTable), Logger.LogType.INFO);
 
         Logger.log(String.format("Service account Project ID: %s", gcpSaProjectId), Logger.LogType.INFO);
         Logger.log(String.format("Service account Dataset name: %s", gcpSaDataset), Logger.LogType.INFO);

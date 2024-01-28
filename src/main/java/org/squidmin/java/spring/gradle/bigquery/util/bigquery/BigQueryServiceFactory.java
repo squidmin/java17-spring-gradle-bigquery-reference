@@ -53,8 +53,8 @@ public class BigQueryServiceFactory {
         return new File(StringUtils.isNotEmpty(gcpSaKeyPath) ? gcpSaKeyPath : "");
     }
 
-    private static boolean setServiceAccountCredentials(BigQueryOptions.Builder bqOptionsBuilder, String gcpDefaultUserProjectId, File serviceAccountKey) {
-        bqOptionsBuilder.setProjectId(gcpDefaultUserProjectId).setLocation("us");
+    private static boolean setServiceAccountCredentials(BigQueryOptions.Builder bqOptionsBuilder, String gcpDefaultProjectId, File serviceAccountKey) {
+        bqOptionsBuilder.setProjectId(gcpDefaultProjectId).setLocation("us");
         GoogleCredentials credentials;
         boolean isBqJdkAuthenticatedUsingSaKeyFile;
         try (FileInputStream stream = new FileInputStream(serviceAccountKey)) {

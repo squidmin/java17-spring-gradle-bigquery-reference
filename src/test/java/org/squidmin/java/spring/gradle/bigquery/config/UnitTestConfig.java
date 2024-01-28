@@ -24,13 +24,13 @@ public class UnitTestConfig {
     private final String systemArgGcpSaKeyPath = System.getProperty("GOOGLE_APPLICATION_CREDENTIALS");
 
     @Value("${bigquery.application-default.project-id}")
-    private String gcpDefaultUserProjectId;
+    private String gcpDefaultProjectId;
 
     @Value("${bigquery.application-default.dataset}")
-    private String gcpDefaultUserDataset;
+    private String gcpDefaultDataset;
 
     @Value("${bigquery.application-default.table}")
-    private String gcpDefaultUserTable;
+    private String gcpDefaultTable;
 
     @Value("${bigquery.service-account.project-id}")
     private String gcpSaProjectId;
@@ -58,21 +58,21 @@ public class UnitTestConfig {
     public String gcpSaKeyPath() { return gcpSaKeyPath; }
 
     @Bean
-    @Qualifier("gcpDefaultUserProjectId_unitTest")
-    public String gcpDefaultUserProjectId() {
-        return gcpDefaultUserProjectId;
+    @Qualifier("gcpDefaultProjectId_unitTest")
+    public String gcpDefaultProjectId() {
+        return gcpDefaultProjectId;
     }
 
     @Bean
-    @Qualifier("gcpDefaultUserDataset_unitTest")
-    public String gcpDefaultUserDataset() {
-        return gcpDefaultUserDataset;
+    @Qualifier("gcpDefaultDataset_unitTest")
+    public String gcpDefaultDataset() {
+        return gcpDefaultDataset;
     }
 
     @Bean
-    @Qualifier("gcpDefaultUserTable_unitTest")
-    public String gcpDefaultUserTable() {
-        return gcpDefaultUserTable;
+    @Qualifier("gcpDefaultTable_unitTest")
+    public String gcpDefaultTable() {
+        return gcpDefaultTable;
     }
 
     @Bean
@@ -107,9 +107,9 @@ public class UnitTestConfig {
         bigQueryConfig = new BigQueryConfig(
 //            gcpSaKeyPath,
             systemArgGcpSaKeyPath,
-            gcpDefaultUserProjectId,
-            gcpDefaultUserDataset,
-            gcpDefaultUserTable,
+            gcpDefaultProjectId,
+            gcpDefaultDataset,
+            gcpDefaultTable,
             gcpSaProjectId,
             gcpSaDataset,
             gcpSaTable,

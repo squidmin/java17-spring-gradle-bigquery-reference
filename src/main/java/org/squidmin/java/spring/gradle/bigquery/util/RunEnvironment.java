@@ -9,9 +9,9 @@ import lombok.Data;
 public class RunEnvironment {
 
     // Default profile values
-    private String gcpDefaultUserProjectIdDefault;
-    private String gcpDefaultUserDatasetDefault;
-    private String gcpDefaultUserTableDefault;
+    private String gcpDefaultProjectIdDefault;
+    private String gcpDefaultDatasetDefault;
+    private String gcpDefaultTableDefault;
 
     private String gcpSaProjectIdDefault;
     private String gcpSaDatasetDefault;
@@ -19,9 +19,9 @@ public class RunEnvironment {
     //
 
     // Overridden values
-    private String gcpDefaultUserProjectIdOverride;
-    private String gcpDefaultUserDatasetOverride;
-    private String gcpDefaultUserTableOverride;
+    private String gcpDefaultProjectIdOverride;
+    private String gcpDefaultDatasetOverride;
+    private String gcpDefaultTableOverride;
 
     private String gcpSaProjectIdOverride;
     private String gcpSaDatasetOverride;
@@ -29,9 +29,9 @@ public class RunEnvironment {
     //
 
     // Active profile values
-    private String gcpDefaultUserProjectId;
-    private String gcpDefaultUserDataset;
-    private String gcpDefaultUserTable;
+    private String gcpDefaultProjectId;
+    private String gcpDefaultDataset;
+    private String gcpDefaultTable;
 
     private String gcpSaProjectId;
     private String gcpSaDataset;

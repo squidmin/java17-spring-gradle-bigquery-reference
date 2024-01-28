@@ -24,13 +24,13 @@ public class ControllerUnitTestConfig {
     private String gcpSaKeyPath;
 
     @Value("${bigquery.application-default.project-id}")
-    private String gcpDefaultUserProjectId;
+    private String gcpDefaultProjectId;
 
     @Value("${bigquery.application-default.dataset}")
-    private String gcpDefaultUserDataset;
+    private String gcpDefaultDataset;
 
     @Value("${bigquery.application-default.table}")
-    private String gcpDefaultUserTable;
+    private String gcpDefaultTable;
 
     @Value("${bigquery.service-account.project-id}")
     private String gcpSaProjectId;
@@ -60,18 +60,18 @@ public class ControllerUnitTestConfig {
     }
 
     @Bean
-    public String gcpDefaultUserProjectId() {
-        return gcpDefaultUserProjectId;
+    public String gcpDefaultProjectId() {
+        return gcpDefaultProjectId;
     }
 
     @Bean
-    public String gcpDefaultUserDataset() {
-        return gcpDefaultUserDataset;
+    public String gcpDefaultDataset() {
+        return gcpDefaultDataset;
     }
 
     @Bean
-    public String gcpDefaultUserTable() {
-        return gcpDefaultUserTable;
+    public String gcpDefaultTable() {
+        return gcpDefaultTable;
     }
 
     @Bean
@@ -106,9 +106,9 @@ public class ControllerUnitTestConfig {
         bigQueryConfig = new BigQueryConfig(
 //            gcpSaKeyPath,
             googleApplicationCredentialsPath,
-            gcpDefaultUserProjectId,
-            gcpDefaultUserDataset,
-            gcpDefaultUserTable,
+            gcpDefaultProjectId,
+            gcpDefaultDataset,
+            gcpDefaultTable,
             gcpSaProjectId,
             gcpSaDataset,
             gcpSaTable,

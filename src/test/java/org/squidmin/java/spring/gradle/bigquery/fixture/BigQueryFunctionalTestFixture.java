@@ -57,7 +57,7 @@ public abstract class BigQueryFunctionalTestFixture {
     }
 
     @Value("${spring.cloud.gcp.project-id}")
-    private String gcpDefaultUserProjectId;
+    private String gcpDefaultProjectId;
 
     public static final Supplier<List<RecordExample>> DEFAULT_ROWS = () -> IntStream.range(0, 5)
         .mapToObj(i -> {

@@ -47,9 +47,9 @@ import java.util.*;
 @Slf4j
 public class BigQueryService {
 
-    private final String gcpDefaultUserProjectId;
-    private final String gcpDefaultUserDataset;
-    private final String gcpDefaultUserTable;
+    private final String gcpDefaultProjectId;
+    private final String gcpDefaultDataset;
+    private final String gcpDefaultTable;
     private final String gcpSaProjectId;
     private final String gcpSaDataset;
     private final String gcpSaTable;
@@ -79,9 +79,9 @@ public class BigQueryService {
         this.responseSizeLimit = responseSizeLimit;
         this.bigQueryConfig = bigQueryConfig;
         this.bigQuery = bigQueryConfig.getBigQuery();
-        this.gcpDefaultUserProjectId = bigQueryConfig.getGcpDefaultProjectId();
-        this.gcpDefaultUserDataset = bigQueryConfig.getGcpDefaultDataset();
-        this.gcpDefaultUserTable = bigQueryConfig.getGcpDefaultTable();
+        this.gcpDefaultProjectId = bigQueryConfig.getGcpDefaultProjectId();
+        this.gcpDefaultDataset = bigQueryConfig.getGcpDefaultDataset();
+        this.gcpDefaultTable = bigQueryConfig.getGcpDefaultTable();
         this.gcpSaProjectId = bigQueryConfig.getGcpSaProjectId();
         this.gcpSaDataset = bigQueryConfig.getGcpSaDataset();
         this.gcpSaTable = bigQueryConfig.getGcpSaTable();
@@ -98,19 +98,19 @@ public class BigQueryService {
     public List<String> listDatasets() {
         List<String> datasetsList = new ArrayList<>();
         try {
-            Page<Dataset> datasets = bigQuery.listDatasets(gcpDefaultUserProjectId, BigQuery.DatasetListOption.pageSize(100));
+            Page<Dataset> datasets = bigQuery.listDatasets(gcpDefaultProjectId, BigQuery.DatasetListOption.pageSize(100));
             if (null == datasets) {
                 Logger.log(
-                    String.format("Dataset \"%s\" does not contain any models.", gcpDefaultUserDataset),
+                    String.format("Dataset \"%s\" does not contain any models.", gcpDefaultDataset),
                     Logger.LogType.ERROR
                 );
                 return new ArrayList<>();
             }
             datasets.iterateAll().forEach(dataset -> datasetsList.add(dataset.getFriendlyName()));
-            LoggerUtil.logDatasets(gcpDefaultUserProjectId, datasets);
+            LoggerUtil.logDatasets(gcpDefaultProjectId, datasets);
         } catch (BigQueryException e) {
             Logger.log(
-                String.format("Project \"%s\" does not contain any datasets.", gcpDefaultUserProjectId),
+                String.format("Project \"%s\" does not contain any datasets.", gcpDefaultProjectId),
                 Logger.LogType.ERROR
             );
             Logger.log(e.getMessage(), Logger.LogType.ERROR);
@@ -123,7 +123,7 @@ public class BigQueryService {
      */
     public void getDatasetInfo() {
         try {
-            DatasetId datasetId = DatasetId.of(gcpDefaultUserProjectId, gcpDefaultUserDataset);
+            DatasetId datasetId = DatasetId.of(gcpDefaultProjectId, gcpDefaultDataset);
             Dataset dataset = bigQuery.getDataset(datasetId);
 
             // View dataset properties
@@ -133,7 +133,7 @@ public class BigQueryService {
             // View tables in the dataset
             // For more information on listing tables see:
             // https://javadoc.io/static/com.google.cloud/google-cloud-bigquery/0.22.0-beta/com/google/cloud/bigquery/BigQuery.html
-            Page<Table> tables = bigQuery.listTables(gcpDefaultUserDataset, BigQuery.TableListOption.pageSize(100));
+            Page<Table> tables = bigQuery.listTables(gcpDefaultDataset, BigQuery.TableListOption.pageSize(100));
 
             tables.iterateAll().forEach(table -> Logger.log(table.getTableId().getTable() + "\n", Logger.LogType.INFO));
 
