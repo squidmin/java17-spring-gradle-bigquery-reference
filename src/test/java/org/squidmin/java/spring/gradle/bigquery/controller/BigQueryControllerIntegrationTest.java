@@ -86,14 +86,13 @@ public class BigQueryControllerIntegrationTest {
     }
 
     private MockHttpServletResponse callApi(String endpoint, ExampleRequest request) throws Exception {
-        String content = mapper.writeValueAsString(request);
         return mockMvc.perform(
             MockMvcRequestBuilders
                 .post(endpoint)
-                .header(Constants.HttpHeaders.GCP_ACCESS_TOKEN, gcpTokenService.generateAccessToken())
+                .header(Constants.HttpHeaders.GCP_ACCESS_TOKEN, "access_token")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(content)
+                .content(mapper.writeValueAsString(request))
         ).andReturn().getResponse();
     }
 
