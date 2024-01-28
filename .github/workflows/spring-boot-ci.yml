@@ -43,4 +43,6 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew clean build -DPROFILE=integration -DGCP_ACCESS_TOKEN="$GCP_ACCESS_TOKEN"
+          ./gradlew clean build -DPROFILE=integration \
+            -DGCP_ACCESS_TOKEN="$(gcloud auth print-access-token)" \
+            -DGCP_SA_KEY_PATH="$PWD/gcloud-service-key.json"

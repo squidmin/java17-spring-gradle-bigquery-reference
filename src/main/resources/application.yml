@@ -8,6 +8,7 @@ spring:
     gcp:
       config:
         credentials:
+#          location: /Users/admin/.config/gcloud/sa-private-key.json
           location: /Users/admin/.config/gcloud/sa-private-key.json
   jackson:
     default-property-inclusion: non_null
