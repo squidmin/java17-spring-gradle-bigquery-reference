@@ -371,7 +371,7 @@ public class BigQueryService {
      * @param query A Google SQL query string.
      * @return TableResult The rows returned from the query.
      */
-    public TableResult query(String gcpToken, String query) throws IOException {
+    public TableResult query(String gcpAccessToken, String query) throws IOException {
         try {
             // Set optional job resource properties.
             QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query)
@@ -382,9 +382,8 @@ public class BigQueryService {
             String jobName = "jobId_" + UUID.randomUUID();
             JobId jobId = JobId.newBuilder().setLocation("us").setJob(jobName).build();
 
-//            String bigQueryApiToken = bigQueryConfig.getGcpAccessToken();
-//            Logger.log(String.format("BIGQUERY API TOKEN == %s", bigQueryApiToken), Logger.LogType.CYAN);
-            bigQueryConfig.setGcpCredentials(gcpToken);
+//            Logger.log(String.format("GCP ACCESS TOKEN == %s", gcpAccessToken), Logger.LogType.CYAN);
+            bigQueryConfig.setGcpCredentials(gcpAccessToken);
 
             bigQuery.create(JobInfo.of(jobId, queryConfig));  // Create a job with job ID.
 
@@ -462,20 +461,22 @@ public class BigQueryService {
     }
 
 
-    private HttpHeaders getHttpHeaders(String gcpToken) {
+    private HttpHeaders getHttpHeaders(String gcpAccessToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        String gcpAdcAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
-        String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
-        if (StringUtils.isNotEmpty(gcpAdcAccessToken)) {
-            if (StringUtils.isNotEmpty(gcpToken)) {
-                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpToken));
+        String systemArgGcpAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
+        String systemArgGcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
+
+        // By default, use the access token passed from HTTP headers. Give priority to the GCP_ACCESS_TOKEN system argument.
+        if (StringUtils.isNotEmpty(systemArgGcpAccessToken)) {
+            if (StringUtils.isNotEmpty(gcpAccessToken)) {
+                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpAccessToken));
             } else {
-                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpAdcAccessToken));
+                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(systemArgGcpAccessToken));
             }
-        } else if (StringUtils.isNotEmpty(gcpSaAccessToken)) {
-            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpSaAccessToken));
+        } else if (StringUtils.isNotEmpty(systemArgGcpSaAccessToken)) { // Similar logic as above.
+            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpAccessToken));
         } else {
-            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpToken));
+            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(systemArgGcpSaAccessToken));
         }
         httpHeaders.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
