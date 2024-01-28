@@ -41,6 +41,9 @@ public class BigQueryControllerIntegrationTest {
     private final String QUERY_ENDPOINT = "/bigquery/query";
 
     @Autowired
+    private String gcpSaKeyPath;
+
+    @Autowired
     private WebApplicationContext context;
     private MockMvc mockMvc;
 
@@ -65,8 +68,7 @@ public class BigQueryControllerIntegrationTest {
 
     @Test
     void contextLoads() {
-        Assertions.assertNotNull(System.getProperty("GOOGLE_APPLICATION_CREDENTIALS"));
-        Assertions.assertNotNull(gcsConfig.getGcpSaKeyPath());
+        Assertions.assertNotNull(gcpSaKeyPath);
     }
 
     @Test
