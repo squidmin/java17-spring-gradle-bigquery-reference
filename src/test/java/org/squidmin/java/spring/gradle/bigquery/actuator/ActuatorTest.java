@@ -117,7 +117,7 @@ class ActuatorTest {
         @Bean
         public BigQueryConfig bigQueryConfig() throws IOException {
             bigQueryConfig = new BigQueryConfig(
-                gcpSaKeyPath,
+//                gcpSaKeyPath,
                 gcpDefaultProjectId,
                 gcpDefaultDataset,
                 gcpDefaultTable,

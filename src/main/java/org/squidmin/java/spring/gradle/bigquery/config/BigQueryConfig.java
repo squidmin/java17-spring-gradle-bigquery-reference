@@ -31,7 +31,7 @@ public class BigQueryConfig {
     private final String gcpAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
     private final String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
 
-    private final String gcpSaKeyPath;
+//    private final String gcpSaKeyPath;
 
     private final String gcpDefaultProjectId;
     private final String gcpDefaultDataset;
@@ -54,7 +54,8 @@ public class BigQueryConfig {
     private BigQuery bigQuery;
 
     @Autowired
-    public BigQueryConfig(@Value("${spring.cloud.gcp.config.credentials.location}") String gcpSaKeyPath,
+    public BigQueryConfig(
+//        @Value("${spring.cloud.gcp.config.credentials.location}") String gcpSaKeyPath,
                           @Value("${bigquery.application-default.project-id}") String gcpDefaultProjectId,
                           @Value("${bigquery.application-default.dataset}") String gcpDefaultDataset,
                           @Value("${bigquery.application-default.table}") String gcpDefaultTable,
@@ -69,7 +70,7 @@ public class BigQueryConfig {
                           Exclusions exclusions,
                           @Value("${bigquery.select-all}") boolean selectAll) {
 
-        this.gcpSaKeyPath = gcpSaKeyPath;
+//        this.gcpSaKeyPath = gcpSaKeyPath;
 
         this.gcpDefaultProjectId = gcpDefaultProjectId;
         this.gcpDefaultDataset = gcpDefaultDataset;
@@ -90,7 +91,7 @@ public class BigQueryConfig {
         this.selectAll = selectAll;
 
         this.bigQuery = BigQueryServiceFactory.defaultInstance(
-            gcpSaKeyPath,
+//            gcpSaKeyPath,
             gcpAccessToken,
             gcpSaAccessToken,
             gcpDefaultProjectId

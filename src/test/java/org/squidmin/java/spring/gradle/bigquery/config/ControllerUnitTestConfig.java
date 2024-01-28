@@ -102,7 +102,7 @@ public class ControllerUnitTestConfig {
     @Qualifier("bigQueryConfig_controllerUnitTest")
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
-            gcpSaKeyPath,
+//            gcpSaKeyPath,
             gcpDefaultUserProjectId,
             gcpDefaultUserDataset,
             gcpDefaultUserTable,

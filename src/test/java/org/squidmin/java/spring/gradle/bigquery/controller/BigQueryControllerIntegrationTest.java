@@ -66,7 +66,7 @@ public class BigQueryControllerIntegrationTest {
 
     @Test
     void contextLoads() {
-        Assertions.assertNotNull(bigQueryConfig.getGcpSaKeyPath());
+        Assertions.assertNotNull(System.getProperty("GOOGLE_APPLICATION_CREDENTIALS"));
         Assertions.assertNotNull(gcsConfig.getGcpSaKeyPath());
     }
 

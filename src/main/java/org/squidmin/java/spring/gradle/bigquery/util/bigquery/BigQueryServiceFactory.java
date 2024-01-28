@@ -16,13 +16,14 @@ import java.io.IOException;
 public class BigQueryServiceFactory {
 
     public static BigQuery defaultInstance(
-        String gcpSaKeyPath,
+//        String gcpSaKeyPath,
         String gcpAccessToken,
         String gcpSaAccessToken,
         String gcpDefaultUserProjectId) {
 
-        Logger.log(String.format("BQ JDK: GCP_SA_KEY_PATH == %s", gcpSaKeyPath), Logger.LogType.CYAN);
-        File serviceAccountKey = readServiceAccountKeyFile(gcpSaKeyPath);
+        String credentialsPath = System.getProperty("GOOGLE_APPLICATION_CREDENTIALS");
+        Logger.log(String.format("BQ JDK: GCP_SA_KEY_PATH == %s", credentialsPath), Logger.LogType.CYAN);
+        File serviceAccountKey = readServiceAccountKeyFile(credentialsPath);
         Logger.log(String.format("GCP_ACCESS_TOKEN == %s", StringUtils.isNotEmpty(gcpAccessToken) ? gcpAccessToken.substring(0, 16) + "..." : ""), Logger.LogType.CYAN);
         Logger.log(String.format("GCP_SA_ACCESS_TOKEN == %s", StringUtils.isNotEmpty(gcpSaAccessToken) ? gcpSaAccessToken.substring(0, 16) + "..." : ""), Logger.LogType.CYAN);
 

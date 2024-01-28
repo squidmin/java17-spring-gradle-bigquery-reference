@@ -23,12 +23,12 @@ import java.io.IOException;
 @ActiveProfiles("integration")
 public class IntegrationTestConfig {
 
-    private final String systemArgGcpSaKeyPath = System.getProperty("GCP_SA_KEY_PATH");
+    private final String googleApplicationCredentialsPath = System.getProperty("GCP_SA_KEY_PATH");
     private final String gcpAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
     private final String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
 
-    @Value("${spring.cloud.gcp.config.credentials.location}")
-    private String gcpSaKeyPath;
+//    @Value("${spring.cloud.gcp.config.credentials.location}")
+//    private String gcpSaKeyPath;
 
     @Value("${bigquery.application-default.project-id}")
     private String gcpDefaultProjectId;
@@ -69,11 +69,11 @@ public class IntegrationTestConfig {
     private final Storage gcsStorageMock = Mockito.mock(Storage.class);
     private GcsService gcsService;
 
-    @Bean
-    @Qualifier("gcpSaKeyPath_integrationTest")
-    public String gcpSaKeyPath() {
-        return gcpSaKeyPath;
-    }
+//    @Bean
+//    @Qualifier("gcpSaKeyPath_integrationTest")
+//    public String gcpSaKeyPath() {
+//        return gcpSaKeyPath;
+//    }
 
     @Bean
     @Qualifier("gcpDefaultUserProjectId_integrationTest")
@@ -121,7 +121,7 @@ public class IntegrationTestConfig {
     @Qualifier("bigQueryConfig_integrationTest")
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
-            gcpSaKeyPath,
+//            gcpSaKeyPath,
             gcpDefaultProjectId,
             gcpDefaultDataset,
             gcpDefaultTable,
@@ -142,7 +142,12 @@ public class IntegrationTestConfig {
     @Bean
     @Qualifier("bigQuery_integrationTest")
     public BigQuery bigQuery() {
-        return TestUtil.defaultBigQueryInstance(gcpSaKeyPath, gcpAccessToken, gcpSaAccessToken, gcpDefaultProjectId);
+        return TestUtil.defaultBigQueryInstance(
+//            gcpSaKeyPath,
+            gcpAccessToken,
+            gcpSaAccessToken,
+            gcpDefaultProjectId
+        );
     }
 
     @Bean
@@ -176,14 +181,14 @@ public class IntegrationTestConfig {
     @Bean
     @Qualifier("gcsConfig_integrationTest")
     public GcsConfig gcsConfig() {
-        gcsConfig = new GcsConfig(gcpDefaultProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath, gcsStorageMock);
+        gcsConfig = new GcsConfig(gcpDefaultProjectId, gcsBucketName, gcsFilename, googleApplicationCredentialsPath, gcsStorageMock);
         return gcsConfig;
     }
 
     @Bean
     @Qualifier("gcsService_integrationTest")
     public GcsService gcsService() {
-        gcsService = new GcsService(new GcsConfig(gcpDefaultProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath, gcsStorageMock));
+        gcsService = new GcsService(new GcsConfig(gcpDefaultProjectId, gcsBucketName, gcsFilename, googleApplicationCredentialsPath, gcsStorageMock));
         return gcsService;
     }
 

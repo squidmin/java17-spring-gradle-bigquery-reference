@@ -137,7 +137,7 @@ public class ControllerIntegrationTestConfig {
     @Qualifier("bigQueryConfig_controllerIntegrationTest")
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
-            gcpSaKeyPath,
+//            gcpSaKeyPath,
             gcpDefaultProjectId,
             gcpDefaultDataset,
             gcpDefaultTable,
@@ -158,7 +158,12 @@ public class ControllerIntegrationTestConfig {
     @Bean
     @Qualifier("bigQuery_controllerIntegrationTest")
     public BigQuery bigQuery() {
-        return TestUtil.defaultBigQueryInstance(gcpSaKeyPath, gcpAccessToken, gcpSaAccessToken, gcpDefaultProjectId);
+        return TestUtil.defaultBigQueryInstance(
+//            gcpSaKeyPath,
+            gcpAccessToken,
+            gcpSaAccessToken,
+            gcpDefaultProjectId
+        );
     }
 
     @Bean
