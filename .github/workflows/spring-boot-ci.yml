@@ -39,4 +39,4 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew clean build -DPROFILE=integration -DGCP_ACCESS_TOKEN="$GCLOUD_SERVICE_KEY"
+        run: ./gradlew clean build -DPROFILE=integration -DGCP_ACCESS_TOKEN="$GCP_ACCESS_TOKEN"
