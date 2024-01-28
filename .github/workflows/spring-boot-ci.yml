@@ -27,10 +27,11 @@ jobs:
           GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
 
       - name: Authenticate with Google Cloud
+        env:
+          GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
         run: |
-          echo "$GCLOUD_SERVICE_KEY" > gcloud-service-key.json
+          echo "$GCLOUD_SERVICE_KEY" | tr -d '\r' > gcloud-service-key.json
           gcloud auth activate-service-account --key-file=gcloud-service-key.json
-          export GCP_ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
 
       # Use GCP_ACCESS_TOKEN as needed for your tasks
       # For example, set it as an environment variable for other steps or use it directly
