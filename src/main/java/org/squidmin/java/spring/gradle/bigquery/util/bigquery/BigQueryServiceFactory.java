@@ -22,7 +22,7 @@ public class BigQueryServiceFactory {
         String gcpDefaultProjectId) {
 
         File serviceAccountKey = readServiceAccountKeyFile(gcpSaKeyPath);
-        Logger.log(String.format("GCP_SA_KEY_PATH == %s", StringUtils.isNotEmpty(gcpSaKeyPath)), Logger.LogType.CYAN);
+        Logger.log(String.format("GCP_SA_KEY_PATH == %s", StringUtils.isNotEmpty(gcpSaKeyPath) ? gcpSaKeyPath : ""), Logger.LogType.CYAN);
         Logger.log(String.format("GCP_ACCESS_TOKEN == %s", StringUtils.isNotEmpty(gcpAccessToken) ? gcpAccessToken.substring(0, 16) + "..." : ""), Logger.LogType.CYAN);
         Logger.log(String.format("GCP_SA_ACCESS_TOKEN == %s", StringUtils.isNotEmpty(gcpSaAccessToken) ? gcpSaAccessToken.substring(0, 16) + "..." : ""), Logger.LogType.CYAN);
 
