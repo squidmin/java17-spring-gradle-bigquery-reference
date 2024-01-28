@@ -3,6 +3,7 @@ package org.squidmin.java.spring.gradle.bigquery.config;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.storage.Storage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -88,7 +89,7 @@ public class ControllerIntegrationTestConfig {
     @Qualifier("gcpSaKeyPath_controllerIntegrationTest")
     public String gcpSaKeyPath() {
 //        Logger.log("gcpSaKeyPath == " + gcpSaKeyPath, Logger.LogType.CYAN);
-        return systemArgGcpSaKeyPath;
+        return StringUtils.isEmpty(systemArgGcpSaKeyPath) ? gcpSaKeyPath : systemArgGcpSaKeyPath;
     }
 
     @Bean
@@ -137,8 +138,7 @@ public class ControllerIntegrationTestConfig {
     @Qualifier("bigQueryConfig_controllerIntegrationTest")
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
-//            gcpSaKeyPath,
-            systemArgGcpSaKeyPath,
+            StringUtils.isEmpty(systemArgGcpSaKeyPath) ? gcpSaKeyPath : systemArgGcpSaKeyPath,
             gcpDefaultProjectId,
             gcpDefaultDataset,
             gcpDefaultTable,
@@ -160,8 +160,7 @@ public class ControllerIntegrationTestConfig {
     @Qualifier("bigQuery_controllerIntegrationTest")
     public BigQuery bigQuery() {
         return TestUtil.defaultBigQueryInstance(
-//            gcpSaKeyPath,
-            systemArgGcpSaKeyPath,
+            StringUtils.isEmpty(systemArgGcpSaKeyPath) ? gcpSaKeyPath : systemArgGcpSaKeyPath,
             gcpAccessToken,
             gcpSaAccessToken,
             gcpDefaultProjectId
