@@ -32,6 +32,7 @@ jobs:
         run: |
           echo "$GCLOUD_SERVICE_KEY" | tr -d '\r' > gcloud-service-key.json
           gcloud auth activate-service-account --key-file=gcloud-service-key.json
+          export GCP_ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
 
       # Use GCP_ACCESS_TOKEN as needed for your tasks
       # For example, set it as an environment variable for other steps or use it directly
@@ -41,5 +42,4 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          export GCP_ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
           ./gradlew clean build -DPROFILE=integration -DGCP_ACCESS_TOKEN="$GCP_ACCESS_TOKEN"
