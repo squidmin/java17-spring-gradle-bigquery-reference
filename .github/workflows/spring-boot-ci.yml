@@ -32,6 +32,7 @@ jobs:
         run: |
           echo "$GCLOUD_SERVICE_KEY" | tr -d '\r' > gcloud-service-key.json
           gcloud auth activate-service-account --key-file=gcloud-service-key.json
+          export GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcloud-service-key.json
           export GCP_ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
 
       # Use GCP_ACCESS_TOKEN as needed for your tasks
