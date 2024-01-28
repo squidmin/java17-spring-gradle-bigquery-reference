@@ -64,7 +64,7 @@ class ActuatorTest {
         @Value("${spring.cloud.gcp.config.credentials.location}")
         private String gcpSaKeyPath;
 
-        private final String systemArgGcpSaKeyPath = System.getProperty("GOOGLE_APPLICATION_CREDENTIALS");
+        private final String systemArgGcpSaKeyPath = System.getProperty("GCP_SA_KEY_PATH");
 
         @Value("${bigquery.application-default.project-id}")
         private String gcpDefaultProjectId;
