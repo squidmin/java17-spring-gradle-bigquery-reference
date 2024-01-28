@@ -8,9 +8,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    container:
-      image: google/cloud-sdk:latest
-
     steps:
       - uses: actions/checkout@v2
 
@@ -20,22 +17,26 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Authenticate with Google Cloud
+      # Setup Google Cloud SDK (skip if already installed in the environment)
+      - name: Setup Google Cloud SDK
+        run: |
+          if ! gcloud --version; then
+            curl -sSL https://sdk.cloud.google.com | bash
+          fi
         env:
           GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
+
+      - name: Authenticate with Google Cloud
         run: |
           echo "$GCLOUD_SERVICE_KEY" | gcloud auth activate-service-account --key-file=-
-
-      - name: Generate GCP Access Token
-        run: |
-          gcloud auth print-access-token > gcp-token.txt
+          gcloud auth application-default print-access-token > gcp-token.txt
           export GCP_ACCESS_TOKEN=$(cat gcp-token.txt)
+
+      # Use GCP_ACCESS_TOKEN as needed for your tasks
+      # For example, set it as an environment variable for other steps or use it directly
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
-
-      - name: Run Tests
-        run: ./gradlew test
+        run: ./gradlew clean build -DPROFILE=integration -DGCP_ACCESS_TOKEN="$GCLOUD_SERVICE_KEY"
