@@ -1,5 +1,5 @@
 #!/bin/bash
 
 docker build \
-  --build-arg GCP_DEFAULT_PROJECT_ID=lofty-root-378503 \
+  --build-arg GCP_PROJECT_ID=${GCP_PROJECT_ID} \
   -t java17-spring-gradle-bigquery-reference .

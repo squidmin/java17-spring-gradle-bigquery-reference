@@ -104,14 +104,10 @@ public class ControllerUnitTestConfig {
     @Qualifier("bigQueryConfig_controllerUnitTest")
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
-//            gcpSaKeyPath,
             googleApplicationCredentialsPath,
             gcpDefaultProjectId,
             gcpDefaultDataset,
             gcpDefaultTable,
-            gcpSaProjectId,
-            gcpSaDataset,
-            gcpSaTable,
             queryUri,
             BigQueryFunctionalTestFixture.validSchemaDefault(),
             BigQueryFunctionalTestFixture.validDataTypes(),

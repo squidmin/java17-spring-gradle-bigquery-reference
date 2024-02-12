@@ -13,9 +13,7 @@ Made with:
 
 </details>
 
-
 ---
-
 
 ## Install & build
 
@@ -34,7 +32,6 @@ gcloud init
 
 </details>
 
-
 <details>
 <summary>gcloud CLI: Application Default Credentials (ADC) usage</summary>
 
@@ -44,7 +41,6 @@ gcloud auth application-default login
 ```
 
 </details>
-
 
 <details>
 <summary>gcloud CLI: Generate an Application Default Credentials (ADC) access token</summary>
@@ -61,14 +57,13 @@ export GCP_ACCESS_TOKEN="$(gcloud auth application-default print-access-token)"
 
 </details>
 
-
 <details>
 <summary>gcloud CLI: Generate an access token for service account impersonation</summary>
 
 Run this command to generate an access token for a specific GCP service account:
 
 ```shell
-export GCP_SA_ACCESS_TOKEN=$(gcloud auth print-access-token --impersonate-service-account='GCP_SA_EMAIL_ADDRESS')
+export GCP_ACCESS_TOKEN=$(gcloud auth print-access-token --impersonate-service-account='GCP_SA_EMAIL_ADDRESS')
 ```
 
 **Replace the following**:
@@ -77,11 +72,10 @@ export GCP_SA_ACCESS_TOKEN=$(gcloud auth print-access-token --impersonate-servic
 Example:
 
 ```shell
-export GCP_SA_ACCESS_TOKEN=$(gcloud auth print-access-token --impersonate-service-account='sa-developer@your-sa-name.iam.gserviceaccount.com')
+export GCP_ACCESS_TOKEN=$(gcloud auth print-access-token --impersonate-service-account='gcp-tekton-sa@lift-with-your-legs-123456.iam.gserviceaccount.com')
 ```
 
 </details>
-
 
 <details>
 <summary>Create and store a service account key</summary>
@@ -112,15 +106,11 @@ the command to run the container instance would be:
 
 ```shell
 docker run --rm -it \
-  -e GCP_SA_KEY_PATH=$GCP_SA_KEY_PATH \
-  -e GCP_ACCESS_TOKEN=$GCP_ACCESS_TOKEN \
-  -e GCP_SA_ACCESS_TOKEN=$GCP_SA_ACCESS_TOKEN \
-  -e GCP_DEFAULT_PROJECT_ID=$GCP_DEFAULT_PROJECT_ID \
-  -e GCP_DEFAULT_DATASET=$GCP_DEFAULT_DATASET \
-  -e GCP_DEFAULT_TABLE=$GCP_DEFAULT_TABLE \
-  -e GCP_SA_PROJECT_ID=$GCP_SA_PROJECT_ID \
-  -e GCP_SA_DATASET=$GCP_SA_DATASET \
-  -e GCP_SA_TABLE=$GCP_SA_TABLE \
+  -e GCP_SA_KEY_PATH=${GCP_SA_KEY_PATH} \
+  -e GCP_ACCESS_TOKEN=${GCP_ACCESS_TOKEN} \
+  -e GCP_PROJECT_ID=${GCP_PROJECT_ID} \
+  -e BQ_DATASET=${BQ_DATASET} \
+  -e BQ_TABLE=${BQ_TABLE} \
   -v ${LOCAL_GCLOUD_AUTH_DIRECTORY}:${CONTAINER_GCLOUD_AUTH_DIRECTORY} \
   -v ${LOCAL_MAVEN_REPOSITORY}:${CONTAINER_MAVEN_REPOSITORY} \
   java17-spring-gradle-bigquery-reference
@@ -140,12 +130,11 @@ Read <a href="">here</a> for more information about run config CLI arguments.
 
 </details>
 
-
 <details>
 <summary>Activate GCP service account</summary>
 
 ```shell
-gcloud auth activate-service-account --key-file=GCP_SA_KEY_PATH
+gcloud auth activate-service-account --key-file=${GCP_SA_KEY_PATH}
 ```
 
 **Replace the following**:
@@ -159,16 +148,14 @@ gcloud auth activate-service-account --key-file='/Users/squidmin/.config/gcloud/
 
 </details>
 
-
 <details>
 <summary>Set the active GCP project</summary>
 
 ```shell
-gcloud config set project ${GCP_DEFAULT_USER_PROJECT_ID}
+gcloud config set project ${GCP_PROJECT_ID}
 ```
 
 </details>
-
 
 <details>
 <summary>List available gcloud SDK components</summary>
@@ -179,7 +166,6 @@ gcloud components list
 
 </details>
 
-
 <details>
 <summary>Update gcloud SDK components</summary>
 
@@ -189,14 +175,12 @@ gcloud components update
 
 </details>
 
-
 <details>
 <summary>CLI reference table: Run configuration</summary>
 
-
+TODO
 
 </details>
-
 
 <details>
 <summary>Build JAR</summary>
@@ -215,19 +199,17 @@ gcloud components update
 
 </details>
 
-
 <details>
 <summary>Add manifest file</summary>
 
 ```shell
 jar -cmvf \
   ./build/tmp/jar/MANIFEST.MF \
-  ./build/libs/java17-spring-gradle-bigquery-reference-0.0.1-SNAPSHOT.jar \
+  ./build/libs/java17-spring-gradle-bigquery-reference-${REVISION}.jar \
   ./build/classes/java/main/org/squidmin/java/spring/gradle/bigquery/Java17SpringGradleBigQueryReferenceApplication.class
 ```
 
 </details>
-
 
 <details>
 <summary>Build container image</summary>
@@ -235,22 +217,17 @@ jar -cmvf \
 ```shell
 docker build \
   --build-arg GCP_SA_KEY_PATH=${GCP_SA_KEY_PATH} \
-  --build-arg GCP_DEFAULT_USER_PROJECT_ID=${GCP_DEFAULT_USER_PROJECT_ID} \
-  --build-arg GCP_DEFAULT_USER_DATASET=${GCP_DEFAULT_USER_DATASET} \
-  --build-arg GCP_DEFAULT_USER_TABLE=${GCP_DEFAULT_USER_TABLE}
+  --build-arg GCP_PROJECT_ID=${GCP_PROJECT_ID} \
+  --build-arg BQ_DATASET=${BQ_DATASET} \
+  --build-arg BQ_TABLE=${BQ_TABLE}
   -t java17-spring-gradle-bigquery-reference .
 ```
 
-
-
 </details>
-
 
 ---
 
-
 ## Commands
-
 
 ### Java application
 
@@ -259,15 +236,11 @@ docker build \
 
 ```shell
 docker run --rm -it \
-  -e GCP_SA_KEY_PATH=$GCP_SA_KEY_PATH \
-  -e GCP_ACCESS_TOKEN=$GCP_ACCESS_TOKEN \
-  -e GCP_SA_ACCESS_TOKEN=$GCP_SA_ACCESS_TOKEN \
-  -e GCP_DEFAULT_PROJECT_ID=$GCP_DEFAULT_PROJECT_ID \
-  -e GCP_DEFAULT_DATASET=$GCP_DEFAULT_DATASET \
-  -e GCP_DEFAULT_TABLE=$GCP_DEFAULT_TABLE \
-  -e GCP_SA_PROJECT_ID=$GCP_SA_PROJECT_ID \
-  -e GCP_SA_DATASET=$GCP_SA_DATASET \
-  -e GCP_SA_TABLE=$GCP_SA_TABLE \
+  -e GCP_SA_KEY_PATH=${GCP_SA_KEY_PATH} \
+  -e GCP_ACCESS_TOKEN=${GCP_ACCESS_TOKEN} \
+  -e GCP_PROJECT_ID=${GCP_PROJECT_ID} \
+  -e BQ_DATASET=${BQ_DATASET} \
+  -e BQ_TABLE=${BQ_TABLE} \
   -v ${LOCAL_GCLOUD_AUTH_DIRECTORY}:${CONTAINER_GCLOUD_AUTH_DIRECTORY} \
   -v ${LOCAL_MAVEN_REPOSITORY}:${CONTAINER_MAVEN_REPOSITORY} \
   java17-spring-gradle-bigquery-reference
@@ -275,18 +248,26 @@ docker run --rm -it \
 
 </details>
 
-
 <details>
 <summary>Run jar</summary>
 
 ```shell
 exec java -jar \
   -Dspring.profiles.active=local \
-  ./build/libs/java17-spring-gradle-bigquery-reference-0.0.1-SNAPSHOT.jar
+  ./build/libs/java17-spring-gradle-bigquery-reference-${REVISION}.jar
 ```
 
-</details>
+> **Why use `exec` with Java applications?**
+> 
+> **In Docker containers**: Commonly seen in Dockerfiles for Java applications.
+> It ensures that the Java application receives Unix signals directly because it's running as the container's PID 1 process.
+> This is important for graceful shutdown and handling other system signals.
+> 
+> **In scripts**: To ensure that the Java application is the only running process and to handle signals and exit codes directly, without a shell in between.
+> 
+> In summary, `exec java -jar` os a powerful combination used to execute Java applications packaged as JAR files directly as the main process, ensuring that they handle system signals directly and that their lifecycle is tightly coupled with the lifecycle of the shell or container they're running in.
 
+</details>
 
 ### `bq` CLI
 
@@ -295,15 +276,15 @@ exec java -jar \
 
 ```shell
 bq ls --filter labels.key:value \
-  --max_results integer \
+  --max_results ${MAX_RESULTS} \
   --format=prettyjson \
-  --project_id project_id
+  --project_id ${GCP_PROJECT_ID}
 ```
 
 **Replace the following**:
 - `key:value`: a label key and value, if applicable.
-- `integer`: an integer representing the number of datasets to list.
-- `project_id`: the name of the GCP project to target.
+- `MAX_RESULTS`: an integer representing the number of datasets to list.
+- `GCP_PROJECT_ID`: the name of the GCP project to target.
 
 **Examples**:
 
@@ -312,7 +293,6 @@ bq ls --format=pretty
 ```
 
 </details>
-
 
 <details>
 <summary>Create a dataset</summary>
@@ -331,7 +311,7 @@ bq --location=us mk \
   --label=test_label_2:test_value_2 \
   --max_time_travel_hours=168 \
   --storage_billing_model=LOGICAL \
-  lofty-root-378503:test_dataset_integration
+  ${GCP_PROJECT_ID}:${BQ_DATASET}
 ```
 
 The Cloud Key Management Service (KMS) key parameter (`KMS_KEY_NAME`) can be specified.
@@ -341,13 +321,12 @@ You cannot create a Google-encrypted table in a dataset with this parameter set.
 ```shell
 bq --location=us mk \
   --dataset \
-  --default_kms_key=KMS_KEY_NAME \
-  ...
-  lofty-root-378503:test_dataset_integration
+  --default_kms_key=${KMS_KEY_NAME} \
+  ... \
+  ${GCP_PROJECT_ID}:${BQ_DATASET}
 ```
 
 </details>
-
 
 <details>
 <summary>Delete a dataset</summary>
@@ -359,11 +338,10 @@ Refer to the <a href="https://cloud.google.com/bigquery/docs/managing-datasets#d
 Remove all tables in the dataset (`-r` flag):
 
 ```shell
-bq rm -r -f -d lofty-root-378503:test_dataset_integration
+bq rm -r -f -d ${GCP_PROJECT_ID}:${BQ_TABLE}
 ```
 
 </details>
-
 
 <details>
 <summary>Create a table with a configured schema</summary>
@@ -371,20 +349,20 @@ bq rm -r -f -d lofty-root-378503:test_dataset_integration
 **Create an empty table with an inline schema definition**
 
 ```shell
-bq mk --table project_id:dataset.table schema
+bq mk --table ${GCP_PROJECT_ID}:${BQ_DATASET}.${BQ_TABLE} ${SCHEMA}
 ```
 
 **Replace the following**:
-- `project_id`: the name of the GCP project to target.
-- `dataset`: the name of the BigQuery dataset to target.
-- `table`: the name of the BigQuery table to target.
-- `schema`: an inline schema definition.
+- `GCP_PROJECT_ID`: the name of the GCP project to target.
+- `BQ_DATASET`: the name of the BigQuery dataset to target.
+- `BQ_TABLE`: the name of the BigQuery table to target.
+- `SCHEMA`: an inline schema definition.
 
 Example:
 
 ```shell
 bq mk --table \
-  lofty-root-378503:test_dataset_integration.test_table_integration \
+  example-project-id:test_dataset_integration.test_table_integration \
   id:STRING,creation_timestamp:DATETIME,last_update_timestamp:DATETIME,column_a:STRING,column_b:BOOL
 ```
 
@@ -396,7 +374,7 @@ For an example JSON schema file, refer to: `/schema/example.json`.
 
 ```shell
 bq mk --table \
-  project_id:dataset.table \
+  ${GCP_PROJECT_ID}:${BQ_DATASET}.${BQ_TABLE} \
   path_to_schema_file
 ```
 
@@ -404,7 +382,7 @@ Example:
 
 ```shell
 bq mk --table \
-  lofty-root-378503:test_dataset_integration.test_table_integration \
+  example-project-id:test_dataset_integration.test_table_integration \
   ./schema/example.json
 ```
 
@@ -412,8 +390,8 @@ bq mk --table \
 
 ```shell
 bq --location=location load \
-  --source_format=format \
-  project_id:dataset.table \
+  --source_format=${FORMAT} \
+  ${GCP_PROJECT_ID}:${BQ_DATASET}.${BQ_TABLE} \
   path_to_data_file \
   path_to_schema_file
 ```
@@ -423,7 +401,7 @@ Example:
 ```shell
 bq --location=us load \
   --source_format=CSV \
-  lofty-root-378503:test_dataset_integration.test_table_integration \
+  example-project-id:test_dataset_integration.test_table_integration \
   ./csv/example.csv \
   ./schema/example.json
 ```
@@ -432,16 +410,14 @@ Refer to the BigQuery documentation: <a href="https://cloud.google.com/bigquery/
 
 </details>
 
-
 <details>
 <summary>Delete a table</summary>
 
 ```shell
-bq rm --table test_dataset_integration.test_table_integration
+bq rm --table ${BQ_DATASET}.${BQ_TABLE}
 ```
 
 </details>
-
 
 <details>
 <summary>Show table schema</summary>
@@ -452,7 +428,7 @@ Example:
 bq show \
   --schema \
   --format=prettyjson \
-  lofty-root-378503:test_dataset_integration.test_table_integration
+  example-project-id:test_dataset_integration.test_table_integration
 ```
 
 The table schema can be written to a file:
@@ -461,25 +437,23 @@ The table schema can be written to a file:
 bq show \
   --schema \
   --format=prettyjson \
-  lofty-root-378503:test_dataset_integration.test_table_integration \ > ./schema/example_show-write.json
+  example-project-id:test_dataset_integration.test_table_integration \ > ./schema/example_show-write.json
 ```
 
 </details>
-
 
 <details>
 <summary>Modify table schemas</summary>
 
 ```shell
 bq update \
-  lofty-root-378503:test_dataset_integration.test_table_integration \
+  ${GCP_PROJECT_ID}:test_dataset_integration.test_table_integration \
   ./schema/example_update.json
 ```
 
 Refer to the <a href="https://cloud.google.com/bigquery/docs/managing-table-schemas">GCP documentation on modifying table schemas.</a>.
 
 </details>
-
 
 <details>
 <summary>Insert data into a table</summary>
@@ -501,10 +475,9 @@ bq insert --ignore_unknown_values \
   ./json/example.json
 ```
 
-Refer to the <a href="">`bq insert` documentation</a>.
+Refer to the <a href="https://cloud.google.com/bigquery/docs/reference/bq-cli-reference#bq_insert">`bq insert` documentation</a>.
 
 </details>
-
 
 <details>
 <summary>Run an interactive query</summary>
@@ -523,7 +496,7 @@ bq query \
   'SELECT
     id, fieldC
   FROM
-    `lofty-root-378503.test_dataset_integration.test_table_integration`
+    `example-project-id.test_dataset_integration.test_table_integration`
   LIMIT
     3;'
 ```

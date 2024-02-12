@@ -47,12 +47,9 @@ import java.util.*;
 @Slf4j
 public class BigQueryService {
 
-    private final String gcpDefaultProjectId;
-    private final String gcpDefaultDataset;
-    private final String gcpDefaultTable;
-    private final String gcpSaProjectId;
-    private final String gcpSaDataset;
-    private final String gcpSaTable;
+    private final String gcpProjectId;
+    private final String gcpDataset;
+    private final String gcpTable;
 
     private final boolean shouldUploadBqResponseToGcs = true;
     private final int responseSizeLimit;
@@ -79,12 +76,9 @@ public class BigQueryService {
         this.responseSizeLimit = responseSizeLimit;
         this.bigQueryConfig = bigQueryConfig;
         this.bigQuery = bigQueryConfig.getBigQuery();
-        this.gcpDefaultProjectId = bigQueryConfig.getGcpDefaultProjectId();
-        this.gcpDefaultDataset = bigQueryConfig.getGcpDefaultDataset();
-        this.gcpDefaultTable = bigQueryConfig.getGcpDefaultTable();
-        this.gcpSaProjectId = bigQueryConfig.getGcpSaProjectId();
-        this.gcpSaDataset = bigQueryConfig.getGcpSaDataset();
-        this.gcpSaTable = bigQueryConfig.getGcpSaTable();
+        this.gcpProjectId = bigQueryConfig.getGcpProjectId();
+        this.gcpDataset = bigQueryConfig.getGcpDataset();
+        this.gcpTable = bigQueryConfig.getGcpTable();
         this.bigQueryUtil = bigQueryUtil;
         this.bigQueryHttpUtil = bigQueryHttpUtil;
         this.gcsService = gcsService;
@@ -98,19 +92,19 @@ public class BigQueryService {
     public List<String> listDatasets() {
         List<String> datasetsList = new ArrayList<>();
         try {
-            Page<Dataset> datasets = bigQuery.listDatasets(gcpDefaultProjectId, BigQuery.DatasetListOption.pageSize(100));
+            Page<Dataset> datasets = bigQuery.listDatasets(gcpProjectId, BigQuery.DatasetListOption.pageSize(100));
             if (null == datasets) {
                 Logger.log(
-                    String.format("Dataset \"%s\" does not contain any models.", gcpDefaultDataset),
+                    String.format("Dataset \"%s\" does not contain any models.", gcpDataset),
                     Logger.LogType.ERROR
                 );
                 return new ArrayList<>();
             }
             datasets.iterateAll().forEach(dataset -> datasetsList.add(dataset.getFriendlyName()));
-            LoggerUtil.logDatasets(gcpDefaultProjectId, datasets);
+            LoggerUtil.logDatasets(gcpProjectId, datasets);
         } catch (BigQueryException e) {
             Logger.log(
-                String.format("Project \"%s\" does not contain any datasets.", gcpDefaultProjectId),
+                String.format("Project \"%s\" does not contain any datasets.", gcpProjectId),
                 Logger.LogType.ERROR
             );
             Logger.log(e.getMessage(), Logger.LogType.ERROR);
@@ -123,7 +117,7 @@ public class BigQueryService {
      */
     public void getDatasetInfo() {
         try {
-            DatasetId datasetId = DatasetId.of(gcpDefaultProjectId, gcpDefaultDataset);
+            DatasetId datasetId = DatasetId.of(gcpProjectId, gcpDataset);
             Dataset dataset = bigQuery.getDataset(datasetId);
 
             // View dataset properties
@@ -133,7 +127,7 @@ public class BigQueryService {
             // View tables in the dataset
             // For more information on listing tables see:
             // https://javadoc.io/static/com.google.cloud/google-cloud-bigquery/0.22.0-beta/com/google/cloud/bigquery/BigQuery.html
-            Page<Table> tables = bigQuery.listTables(gcpDefaultDataset, BigQuery.TableListOption.pageSize(100));
+            Page<Table> tables = bigQuery.listTables(gcpDataset, BigQuery.TableListOption.pageSize(100));
 
             tables.iterateAll().forEach(table -> Logger.log(table.getTableId().getTable() + "\n", Logger.LogType.INFO));
 
@@ -464,7 +458,6 @@ public class BigQueryService {
     private HttpHeaders getHttpHeaders(String gcpAccessToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
         String systemArgGcpAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
-        String systemArgGcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
 
         // By default, use the access token passed from HTTP headers. Give priority to the GCP_ACCESS_TOKEN system argument.
         if (StringUtils.isNotEmpty(systemArgGcpAccessToken)) {
@@ -473,10 +466,6 @@ public class BigQueryService {
             } else {
                 httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(systemArgGcpAccessToken));
             }
-        } else if (StringUtils.isNotEmpty(systemArgGcpSaAccessToken)) { // Similar logic as above.
-            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpAccessToken));
-        } else {
-            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(systemArgGcpSaAccessToken));
         }
         httpHeaders.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);

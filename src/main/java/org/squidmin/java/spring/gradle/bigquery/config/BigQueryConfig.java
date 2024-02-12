@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SchemaDefault;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SelectFieldsDefault;
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.WhereFieldsDefault;
-import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryServiceFactory;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryInstanceProvider;
 
 import java.io.IOException;
 
@@ -30,17 +30,12 @@ public class BigQueryConfig {
 
     private final String systemArgGcpSaKeyPath = System.getProperty("GCP_SA_KEY_PATH");
     private final String gcpAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
-    private final String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
 
     private final String gcpSaKeyPath;
 
-    private final String gcpDefaultProjectId;
-    private final String gcpDefaultDataset;
-    private final String gcpDefaultTable;
-
-    private final String gcpSaProjectId;
-    private final String gcpSaDataset;
-    private final String gcpSaTable;
+    private final String gcpProjectId;
+    private final String gcpDataset;
+    private final String gcpTable;
 
     private final String queryUri;
 
@@ -57,12 +52,9 @@ public class BigQueryConfig {
     @Autowired
     public BigQueryConfig(
         @Value("${spring.cloud.gcp.config.credentials.location}") String gcpSaKeyPath,
-        @Value("${bigquery.application-default.project-id}") String gcpDefaultProjectId,
-        @Value("${bigquery.application-default.dataset}") String gcpDefaultDataset,
-        @Value("${bigquery.application-default.table}") String gcpDefaultTable,
-        @Value("${bigquery.service-account.project-id}") String gcpSaProjectId,
-        @Value("${bigquery.service-account.dataset}") String gcpSaDataset,
-        @Value("${bigquery.service-account.table}") String gcpSaTable,
+        @Value("${bigquery.application-default.project-id}") String gcpProjectId,
+        @Value("${bigquery.application-default.dataset}") String gcpDataset,
+        @Value("${bigquery.application-default.table}") String gcpTable,
         @Value("${bigquery.uri.queries}") String queryUri,
         SchemaDefault schemaDefault,
         DataTypes dataTypes,
@@ -73,13 +65,9 @@ public class BigQueryConfig {
 
         this.gcpSaKeyPath = StringUtils.isEmpty(systemArgGcpSaKeyPath) ? gcpSaKeyPath : systemArgGcpSaKeyPath;
 
-        this.gcpDefaultProjectId = gcpDefaultProjectId;
-        this.gcpDefaultDataset = gcpDefaultDataset;
-        this.gcpDefaultTable = gcpDefaultTable;
-
-        this.gcpSaProjectId = gcpSaProjectId;
-        this.gcpSaDataset = gcpSaDataset;
-        this.gcpSaTable = gcpSaTable;
+        this.gcpProjectId = gcpProjectId;
+        this.gcpDataset = gcpDataset;
+        this.gcpTable = gcpTable;
 
         this.queryUri = queryUri;
 
@@ -91,18 +79,17 @@ public class BigQueryConfig {
 
         this.selectAll = selectAll;
 
-        this.bigQuery = BigQueryServiceFactory.defaultInstance(
+        this.bigQuery = BigQueryInstanceProvider.defaultInstance(
             this.gcpSaKeyPath,
             gcpAccessToken,
-            gcpSaAccessToken,
-            gcpDefaultProjectId
+            gcpProjectId
         );
 
     }
 
     public void setGcpCredentials(String gcpToken) throws IOException {
         BigQueryOptions.Builder bqOptionsBuilder = BigQueryOptions.newBuilder();
-        bqOptionsBuilder.setProjectId(gcpDefaultProjectId).setLocation("us");
+        bqOptionsBuilder.setProjectId(gcpProjectId).setLocation("us");
         GoogleCredentials credentials = GoogleCredentials.newBuilder()
             .setAccessToken(AccessToken.newBuilder().setTokenValue(gcpToken).build())
             .build();

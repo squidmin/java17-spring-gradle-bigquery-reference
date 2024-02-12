@@ -67,22 +67,13 @@ class ActuatorTest {
         private final String systemArgGcpSaKeyPath = System.getProperty("GCP_SA_KEY_PATH");
 
         @Value("${bigquery.application-default.project-id}")
-        private String gcpDefaultProjectId;
+        private String gcpProjectId;
 
         @Value("${bigquery.application-default.dataset}")
-        private String gcpDefaultDataset;
+        private String gcpDataset;
 
         @Value("${bigquery.application-default.table}")
-        private String gcpDefaultTable;
-
-        @Value("${bigquery.service-account.project-id}")
-        private String gcpSaProjectId;
-
-        @Value("${bigquery.service-account.dataset}")
-        private String gcpSaDataset;
-
-        @Value("${bigquery.service-account.table}")
-        private String gcpSaTable;
+        private String gcpTable;
 
         @Value("${bigquery.uri.queries}")
         private String queryUri;
@@ -121,12 +112,9 @@ class ActuatorTest {
         public BigQueryConfig bigQueryConfig() throws IOException {
             bigQueryConfig = new BigQueryConfig(
                 StringUtils.isEmpty(systemArgGcpSaKeyPath) ? gcpSaKeyPath : systemArgGcpSaKeyPath,
-                gcpDefaultProjectId,
-                gcpDefaultDataset,
-                gcpDefaultTable,
-                gcpSaProjectId,
-                gcpSaDataset,
-                gcpSaTable,
+                gcpProjectId,
+                gcpDataset,
+                gcpTable,
                 queryUri,
                 BigQueryFunctionalTestFixture.validSchemaDefault(),
                 BigQueryFunctionalTestFixture.validDataTypes(),

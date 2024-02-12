@@ -34,7 +34,6 @@ public class ControllerIntegrationTestConfig {
 
     private final String systemArgGcpSaKeyPath = System.getProperty("GCP_SA_KEY_PATH");
     private final String gcpAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
-    private final String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
 
     @Value("${gcp.service-account}")
     private String gcpServiceAccount;
@@ -43,22 +42,13 @@ public class ControllerIntegrationTestConfig {
     private String gcpSaKeyPath;
 
     @Value("${bigquery.application-default.project-id}")
-    private String gcpDefaultProjectId;
+    private String gcpProjectId;
 
     @Value("${bigquery.application-default.dataset}")
-    private String gcpDefaultDataset;
+    private String gcpDataset;
 
     @Value("${bigquery.application-default.table}")
-    private String gcpDefaultTable;
-
-    @Value("${bigquery.service-account.project-id}")
-    private String gcpSaProjectId;
-
-    @Value("${bigquery.service-account.dataset}")
-    private String gcpSaDataset;
-
-    @Value("${bigquery.service-account.table}")
-    private String gcpSaTable;
+    private String gcpTable;
 
     @Value("${bigquery.uri.queries}")
     private String queryUri;
@@ -76,7 +66,7 @@ public class ControllerIntegrationTestConfig {
 
     private BigQueryUtil bigQueryUtil;
     private BigQueryHttpUtil bigQueryHttpUtil;
-    private BigQueryHttpUtil bigQueryHttpUtilMock = Mockito.mock(BigQueryHttpUtil.class);
+//    private BigQueryHttpUtil bigQueryHttpUtilMock = Mockito.mock(BigQueryHttpUtil.class);
     private BigQueryTimeUtil bigQueryTimeUtil;
 
     private GcpTokenService gcpTokenService;
@@ -90,44 +80,25 @@ public class ControllerIntegrationTestConfig {
     @Bean
     @Qualifier("gcpSaKeyPath_controllerIntegrationTest")
     public String gcpSaKeyPath() {
-//        Logger.log("gcpSaKeyPath == " + gcpSaKeyPath, Logger.LogType.CYAN);
         return StringUtils.isEmpty(systemArgGcpSaKeyPath) ? gcpSaKeyPath : systemArgGcpSaKeyPath;
     }
 
     @Bean
     @Qualifier("gcpDefaultProjectId_controllerIntegrationTest")
     public String gcpDefaultProjectId() {
-        return gcpDefaultProjectId;
+        return gcpProjectId;
     }
 
     @Bean
     @Qualifier("gcpDefaultDataset_controllerIntegrationTest")
     public String gcpDefaultDataset() {
-        return gcpDefaultDataset;
+        return gcpDataset;
     }
 
     @Bean
     @Qualifier("gcpDefaultTable_controllerIntegrationTest")
     public String gcpDefaultTable() {
-        return gcpDefaultTable;
-    }
-
-    @Bean
-    @Qualifier("gcpSaProjectId_controllerIntegrationTest")
-    public String gcpSaProjectId() {
-        return gcpSaProjectId;
-    }
-
-    @Bean
-    @Qualifier("gcpSaDataset_controllerIntegrationTest")
-    public String gcpSaDataset() {
-        return gcpSaDataset;
-    }
-
-    @Bean
-    @Qualifier("gcpSaTable_controllerIntegrationTest")
-    public String gcpSaTable() {
-        return gcpSaTable;
+        return gcpTable;
     }
 
     @Bean
@@ -141,12 +112,9 @@ public class ControllerIntegrationTestConfig {
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
             StringUtils.isEmpty(systemArgGcpSaKeyPath) ? gcpSaKeyPath : systemArgGcpSaKeyPath,
-            gcpDefaultProjectId,
-            gcpDefaultDataset,
-            gcpDefaultTable,
-            gcpSaProjectId,
-            gcpSaDataset,
-            gcpSaTable,
+            gcpProjectId,
+            gcpDataset,
+            gcpTable,
             queryUri,
             BigQueryFunctionalTestFixture.validSchemaDefault(),
             BigQueryFunctionalTestFixture.validDataTypes(),
@@ -164,8 +132,7 @@ public class ControllerIntegrationTestConfig {
         return TestUtil.defaultBigQueryInstance(
             StringUtils.isEmpty(systemArgGcpSaKeyPath) ? gcpSaKeyPath : systemArgGcpSaKeyPath,
             gcpAccessToken,
-            gcpSaAccessToken,
-            gcpDefaultProjectId
+            gcpProjectId
         );
     }
 
@@ -199,7 +166,7 @@ public class ControllerIntegrationTestConfig {
 
     @Bean
     @Qualifier("gcpTokenGeneratorService_controllerIntegrationTest")
-    public GcpTokenService gcpTokenGeneratorService() throws IOException {
+    public GcpTokenService gcpTokenGeneratorService() {
         gcpTokenService = new GcpTokenService(gcpServiceAccount, new RestTemplate());
         return gcpTokenService;
     }
@@ -223,7 +190,7 @@ public class ControllerIntegrationTestConfig {
     @Bean
     @Qualifier("gcsConfig_controllerIntegrationTest")
     public GcsConfig gcsConfig() {
-        return new GcsConfig(gcpDefaultProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath, gcsStorageMock);
+        return new GcsConfig(gcpProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath, gcsStorageMock);
     }
 
     @Bean

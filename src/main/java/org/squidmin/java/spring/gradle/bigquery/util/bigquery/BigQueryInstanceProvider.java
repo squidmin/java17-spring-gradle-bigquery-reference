@@ -13,22 +13,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class BigQueryServiceFactory {
+public class BigQueryInstanceProvider {
 
-    public static BigQuery defaultInstance(
-        String gcpSaKeyPath,
-        String gcpAccessToken,
-        String gcpSaAccessToken,
-        String gcpDefaultProjectId) {
-
+    public static BigQuery defaultInstance(String gcpSaKeyPath, String gcpAccessToken, String gcpProjectId) {
         File serviceAccountKey = readServiceAccountKeyFile(gcpSaKeyPath);
         Logger.log(String.format("GCP_SA_KEY_PATH == %s", StringUtils.isNotEmpty(gcpSaKeyPath) ? gcpSaKeyPath : ""), Logger.LogType.CYAN);
         Logger.log(String.format("GCP_ACCESS_TOKEN == %s", StringUtils.isNotEmpty(gcpAccessToken) ? gcpAccessToken.substring(0, 16) + "..." : ""), Logger.LogType.CYAN);
-        Logger.log(String.format("GCP_SA_ACCESS_TOKEN == %s", StringUtils.isNotEmpty(gcpSaAccessToken) ? gcpSaAccessToken.substring(0, 16) + "..." : ""), Logger.LogType.CYAN);
 
         BigQueryOptions.Builder bqOptionsBuilder = BigQueryOptions.newBuilder();
         boolean isBqJdkAuthenticatedUsingSaKeyFile = setServiceAccountCredentials(
-            bqOptionsBuilder, gcpDefaultProjectId, serviceAccountKey
+            bqOptionsBuilder, gcpProjectId, serviceAccountKey
         );
 
         LoggerUtil.logSaKeyFileAuth(isBqJdkAuthenticatedUsingSaKeyFile);
@@ -46,15 +40,14 @@ public class BigQueryServiceFactory {
             bigQuery = bqOptionsBuilder.build().getService();
         }
         return bigQuery;
-
     }
 
     private static File readServiceAccountKeyFile(String gcpSaKeyPath) {
         return new File(StringUtils.isNotEmpty(gcpSaKeyPath) ? gcpSaKeyPath : "");
     }
 
-    private static boolean setServiceAccountCredentials(BigQueryOptions.Builder bqOptionsBuilder, String gcpDefaultProjectId, File serviceAccountKey) {
-        bqOptionsBuilder.setProjectId(gcpDefaultProjectId).setLocation("us");
+    private static boolean setServiceAccountCredentials(BigQueryOptions.Builder bqOptionsBuilder, String gcpProjectId, File serviceAccountKey) {
+        bqOptionsBuilder.setProjectId(gcpProjectId).setLocation("us");
         GoogleCredentials credentials;
         boolean isBqJdkAuthenticatedUsingSaKeyFile;
         try (FileInputStream stream = new FileInputStream(serviceAccountKey)) {

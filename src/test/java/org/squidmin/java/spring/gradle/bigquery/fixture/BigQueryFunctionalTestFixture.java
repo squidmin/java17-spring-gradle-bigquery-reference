@@ -50,14 +50,13 @@ public abstract class BigQueryFunctionalTestFixture {
     );
 
     public enum CLI_ARG_KEYS {
-        GCP_ACCESS_TOKEN, GCP_SA_ACCESS_TOKEN,
-        GCP_DEFAULT_PROJECT_ID, GCP_DEFAULT_DATASET, GCP_DEFAULT_TABLE,
-        GCP_SA_PROJECT_ID, GCP_SA_DATASET, GCP_SA_TABLE,
+        GCP_ACCESS_TOKEN,
+        GCP_PROJECT_ID, BQ_DATASET, BQ_TABLE,
         SCHEMA
     }
 
     @Value("${spring.cloud.gcp.project-id}")
-    private String gcpDefaultProjectId;
+    private String gcpProjectId;
 
     public static final Supplier<List<RecordExample>> DEFAULT_ROWS = () -> IntStream.range(0, 5)
         .mapToObj(i -> {
@@ -81,21 +80,6 @@ public abstract class BigQueryFunctionalTestFixture {
 
     public static String validQueryString(String projectId, String dataset, String table) {
         return String.format("SELECT * FROM `%s.%s.%s` LIMIT 10", projectId, dataset, table);
-    }
-
-    // TODO
-    public static String getCurrentDateTime() {
-        return null;
-    }
-
-    // TODO
-    public static String getStartOfCurrentDateTime() {
-        return null;
-    }
-
-    // TODO
-    public static String getEndOfCurrentDateTime() {
-        return null;
     }
 
     public static ExampleRequest validExampleRequest() throws IOException {
@@ -174,19 +158,11 @@ public abstract class BigQueryFunctionalTestFixture {
         return exclusions;
     }
 
-    public static HttpEntity<String> validHttpEntity(String gcpDefaultProjectId,
-                                                     String gcpDefaultDataset,
-                                                     String gcpDefaultTable) {
-
+    public static HttpEntity<String> validHttpEntity(String gcpProjectId, String gcpDataset, String gcpTable) {
         return new HttpEntity<>(
-            BigQueryFunctionalTestFixture.validQueryString(
-                gcpDefaultProjectId,
-                gcpDefaultDataset,
-                gcpDefaultTable
-            ),
+            BigQueryFunctionalTestFixture.validQueryString(gcpProjectId, gcpDataset, gcpTable),
             BigQueryFunctionalTestFixture.validHttpHeaders()
         );
-
     }
 
     public static HttpHeaders validHttpHeaders() {

@@ -45,20 +45,18 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
 
     @Test
     void createDataset() {
-        bigQueryService.createDataset(GCP_DEFAULT_DATASET);
+        bigQueryService.createDataset(BQ_DATASET);
     }
 
     @Test
     void deleteDataset() {
-        bigQueryService.deleteDataset(GCP_DEFAULT_PROJECT_ID, GCP_DEFAULT_DATASET);
+        bigQueryService.deleteDataset(GCP_PROJECT_ID, BQ_DATASET);
     }
 
     @Test
     void createTableWithDefaultSchema() {
         LoggerUtil.logBqProperties(runEnvironment, LoggerUtil.ProfileOption.ACTIVE);
-        Assertions.assertTrue(
-            bigQueryService.createTable(GCP_DEFAULT_DATASET, GCP_DEFAULT_TABLE)
-        );
+        Assertions.assertTrue(bigQueryService.createTable(BQ_DATASET, BQ_TABLE));
     }
 
     @Test
@@ -66,8 +64,8 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
         LoggerUtil.logBqProperties(runEnvironment, LoggerUtil.ProfileOption.ACTIVE);
         Assertions.assertTrue(
             bigQueryService.createTable(
-                GCP_DEFAULT_DATASET,
-                GCP_DEFAULT_TABLE,
+                BQ_DATASET,
+                BQ_TABLE,
                 BigQueryUtil.InlineSchemaTranslator.translate(schemaOverrideString, bigQueryConfig.getDataTypes())
             )
         );
@@ -75,19 +73,15 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
 
     @Test
     void deleteTable() {
-        bigQueryService.deleteTable(
-            GCP_DEFAULT_PROJECT_ID,
-            GCP_DEFAULT_DATASET,
-            GCP_DEFAULT_TABLE
-        );
+        bigQueryService.deleteTable(GCP_PROJECT_ID, BQ_DATASET, BQ_TABLE);
     }
 
     @Test
     void insert() {
         List<InsertAllRequest.RowToInsert> rowsInserted = bigQueryService.insert(
-            GCP_DEFAULT_PROJECT_ID,
-            GCP_DEFAULT_DATASET,
-            GCP_DEFAULT_TABLE,
+            GCP_PROJECT_ID,
+            BQ_DATASET,
+            BQ_TABLE,
             BigQueryFunctionalTestFixture.DEFAULT_ROWS.get()
         );
         Assertions.assertTrue(0 < rowsInserted.size());
@@ -98,11 +92,7 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
     void query_givenValidQueryString_whenCallingBigQueryViaJdk_andQueryMatchesRows_thenReturnValidResponse() throws IOException {
         TableResult tableResult = bigQueryService.query(
             GCP_ACCESS_TOKEN,
-            BigQueryFunctionalTestFixture.validQueryString(
-                GCP_DEFAULT_PROJECT_ID,
-                GCP_DEFAULT_DATASET,
-                GCP_DEFAULT_TABLE
-            )
+            BigQueryFunctionalTestFixture.validQueryString(GCP_PROJECT_ID, BQ_DATASET, BQ_TABLE)
         );
         Assertions.assertTrue(0 < tableResult.getTotalRows());
     }

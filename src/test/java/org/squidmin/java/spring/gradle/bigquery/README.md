@@ -9,12 +9,12 @@
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.controller.BigQueryControllerIntegrationTest.query_givenClientRequest_whenCalled_thenReturnOkResponse \
-  -DPROFILE=integration \
+  -DAPP_PROFILE=integration \
   -DGCP_SA_KEY_PATH=${GCP_SA_KEY_PATH} \
   -DGCP_ACCESS_TOKEN="$(gcloud auth application-default print-access-token)" \
-  -DGCP_DEFAULT_PROJECT_ID="lofty-root-378503" \
-  -DGCP_DEFAULT_DATASET="test_dataset_integration" \
-  -DGCP_DEFAULT_TABLE="test_table_integration"
+  -DGCP_PROJECT_ID="example-project-id" \
+  -DBQ_DATASET="test_dataset_integration" \
+  -DBQ_TABLE="test_table_integration"
 ```
 
 </details>
@@ -29,13 +29,13 @@
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.echoBigQueryResourceConfig \
-  -DPROFILE=${PROFILE} \
-  -DGCP_DEFAULT_PROJECT_ID=${GCP_DEFAULT_PROJECT_ID}
+  -DAPP_PROFILE=${APP_PROFILE} \
+  -DGCP_PROJECT_ID=${GCP_PROJECT_ID}
 ```
 
 **Replace the following**:
-- `PROFILE`: the application profile.
-- `GCP_DEFAULT_PROJECT_ID`: the GCP project ID.
+- `APP_PROFILE`: the application profile.
+- `GCP_PROJECT_ID`: the GCP project ID.
 
 For example, assuming the name of the profile to activate is `integration`:
 
@@ -43,8 +43,8 @@ For example, assuming the name of the profile to activate is `integration`:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.echoBigQueryResourceConfig \
-  -DPROFILE=integration \
-  -DGCP_DEFAULT_PROJECT_ID=lofty-root-378503
+  -DAPP_PROFILE=integration \
+  -DGCP_PROJECT_ID=example-project-id
 ```
 
 </details>
@@ -57,13 +57,13 @@ For example, assuming the name of the profile to activate is `integration`:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.listDatasets \
-  -DPROFILE=${PROFILE} \
-  -DGCP_DEFAULT_PROJECT_ID=${GCP_DEFAULT_PROJECT_ID}
+  -DAPP_PROFILE=${APP_PROFILE} \
+  -DGCP_PROJECT_ID=${GCP_PROJECT_ID}
 ```
 
 **Replace the following**:
-- `PROFILE`: the application profile.
-- `GCP_DEFAULT_PROJECT_ID`: the GCP project ID.
+- `APP_PROFILE`: the application profile.
+- `GCP_PROJECT_ID`: the GCP project ID.
 
 Example:
 
@@ -71,8 +71,8 @@ Example:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.listDatasets \
-  -DPROFILE=integration \
-  -DGCP_DEFAULT_PROJECT_ID="lofty-root-378503"
+  -DAPP_PROFILE=integration \
+  -DGCP_PROJECT_ID="example-project-id"
 ```
 
 </details>
@@ -85,15 +85,15 @@ Example:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.datasetExists \
-  -DPROFILE=${PROFILE} \
-  -DGCP_DEFAULT_PROJECT_ID=${GCP_DEFAULT_PROJECT_ID} \
-  -DGCP_DEFAULT_DATASET=${GCP_DEFAULT_DATASET}
+  -DAPP_PROFILE=${APP_PROFILE} \
+  -DGCP_PROJECT_ID=${GCP_PROJECT_ID} \
+  -DBQ_DATASET=${BQ_DATASET}
 ```
 
 **Replace the following**:
-- `PROFILE`: the application profile.
-- `GCP_DEFAULT_PROJECT_ID`: the GCP project ID.
-- `GCP_DEFAULT_DATASET`: the name of the dataset.
+- `APP_PROFILE`: the application profile.
+- `GCP_PROJECT_ID`: the GCP project ID.
+- `BQ_DATASET`: the name of the BigQuery dataset.
 
 Example:
 
@@ -101,9 +101,9 @@ Example:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.datasetExists \
-  -DPROFILE=integration \
-  -DGCP_DEFAULT_PROJECT_ID="lofty-root-378503" \
-  -DGCP_DEFAULT_DATASET="test_dataset_integration"
+  -DAPP_PROFILE=integration \
+  -DGCP_PROJECT_ID="example-project-id" \
+  -DBQ_DATASET="test_dataset_integration"
 ```
 
 </details>
@@ -116,15 +116,15 @@ Example:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.createDataset \
-  -DPROFILE=${PROFILE} \
-  -DGCP_DEFAULT_PROJECT_ID=${GCP_DEFAULT_PROJECT_ID} \
-  -DGCP_DEFAULT_DATASET=${GCP_DEFAULT_DATASET}
+  -DAPP_PROFILE=${APP_PROFILE} \
+  -DGCP_PROJECT_ID=${GCP_PROJECT_ID} \
+  -DBQ_DATASET=${BQ_DATASET}
 ```
 
 **Replace the following**:
-- `PROFILE`: the application profile.
-- `GCP_DEFAULT_PROJECT_ID`: the GCP project ID.
-- `GCP_DEFAULT_DATASET`: the name of the dataset.
+- `APP_PROFILE`: the application profile.
+- `GCP_PROJECT_ID`: the GCP project ID.
+- `BQ_DATASET`: the name of the BigQuery dataset.
 
 Example:
 
@@ -132,9 +132,9 @@ Example:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.createDataset \
-  -DPROFILE=integration \
-  -DGCP_DEFAULT_PROJECT_ID="lofty-root-378503" \
-  -DGCP_DEFAULT_DATASET="test_dataset_name_integration"
+  -DAPP_PROFILE=integration \
+  -DGCP_PROJECT_ID="example-project-id" \
+  -DBQ_DATASET="test_dataset_integration"
 ```
 
 </details>
@@ -147,15 +147,15 @@ Example:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.deleteDataset \
-  -DPROFILE=${PROFILE} \
-  -DGCP_DEFAULT_PROJECT_ID=${GCP_DEFAULT_PROJECT_ID} \
-  -DGCP_DEFAULT_DATASET=${GCP_DEFAULT_DATASET}
+  -DAPP_PROFILE=${APP_PROFILE} \
+  -DGCP_PROJECT_ID=${GCP_PROJECT_ID} \
+  -DBQ_DATASET=${BQ_DATASET}
 ```
 
 **Replace the following**:
-- `PROFILE`: the application profile.
-- `GCP_DEFAULT_PROJECT_ID`: the GCP project ID.
-- `GCP_DEFAULT_DATASET`: the name of the dataset.
+- `APP_PROFILE`: the application profile.
+- `GCP_PROJECT_ID`: the GCP project ID.
+- `BQ_DATASET`: the name of the BigQuery dataset.
 
 Example:
 
@@ -163,9 +163,9 @@ Example:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.deleteDataset \
-  -DPROFILE=integration \
-  -DGCP_DEFAULT_PROJECT_ID="lofty-root-378503" \
-  -DGCP_DEFAULT_DATASET="test_dataset_integration"
+  -DAPP_PROFILE=integration \
+  -DGCP_PROJECT_ID="example-project-id" \
+  -DBQ_DATASET="test_dataset_integration"
 ```
 
 </details>
@@ -178,15 +178,15 @@ Example:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.deleteDatasetAndContents \
-  -DPROFILE=${PROFILE} \
-  -DGCP_DEFAULT_PROJECT_ID=${GCP_DEFAULT_PROJECT_ID} \
-  -DGCP_DEFAULT_DATASET=${GCP_DEFAULT_DATASET}
+  -DAPP_PROFILE=${APP_PROFILE} \
+  -DGCP_PROJECT_ID=${GCP_PROJECT_ID} \
+  -DBQ_DATASET=${BQ_DATASET}
 ```
 
 **Replace the following**:
-- `PROFILE`: the application profile.
-- `GCP_DEFAULT_PROJECT_ID`: the GCP project ID.
-- `GCP_DEFAULT_DATASET`: the name of the dataset.
+- `APP_PROFILE`: the application profile.
+- `GCP_PROJECT_ID`: the GCP project ID.
+- `BQ_DATASET`: the name of the BigQuery dataset.
 
 Example:
 
@@ -194,9 +194,9 @@ Example:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.deleteDatasetAndContents \
-  -DPROFILE=integration \
-  -DGCP_DEFAULT_PROJECT_ID="lofty-root-378503" \
-  -DGCP_DEFAULT_DATASET="test_dataset_integration"
+  -DAPP_PROFILE=integration \
+  -DGCP_PROJECT_ID="example-project-id" \
+  -DBQ_DATASET="test_dataset_integration"
 ```
 
 </details>
@@ -211,17 +211,17 @@ This command creates a table using the default schema configured in the Spring a
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.createTableWithDefaultSchema \
-  -DPROFILE=${PROFILE} \
-  -DGCP_DEFAULT_PROJECT_ID=${GCP_DEFAULT_PROJECT_ID} \
-  -DGCP_DEFAULT_DATASET=${GCP_DEFAULT_DATASET} \
-  -DGCP_DEFAULT_TABLE=${GCP_DEFAULT_TABLE}
+  -DAPP_PROFILE=${APP_PROFILE} \
+  -DGCP_PROJECT_ID=${GCP_PROJECT_ID} \
+  -DBQ_DATASET=${BQ_DATASET} \
+  -DBQ_TABLE=${BQ_TABLE}
 ```
 
 **Replace the following**:
-- `PROFILE`: the application profile.
-- `GCP_DEFAULT_PROJECT_ID`: the GCP project ID.
-- `GCP_DEFAULT_DATASET`: the name of the BigQuery dataset.
-- `GCP_DEFAULT_TABLE`: the name of the BigQuery table.
+- `APP_PROFILE`: the application profile.
+- `GCP_PROJECT_ID`: the GCP project ID.
+- `BQ_DATASET`: the name of the BigQuery dataset.
+- `BQ_TABLE`: the name of the BigQuery table.
 
 Example using the `integration` profile:
 
@@ -229,10 +229,10 @@ Example using the `integration` profile:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.createTableWithDefaultSchema \
-  -DPROFILE=integration \
-  -DGCP_DEFAULT_PROJECT_ID="lofty-root-378503" \
-  -DGCP_DEFAULT_DATASET="test_dataset_integration" \
-  -DGCP_DEFAULT_TABLE="test_table_integration"
+  -DAPP_PROFILE=integration \
+  -DGCP_PROJECT_ID="example-project-id" \
+  -DBQ_DATASET="test_dataset_integration" \
+  -DBQ_TABLE="test_table_integration"
 ```
 
 </details>
@@ -245,18 +245,18 @@ Example using the `integration` profile:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.createTableWithCustomSchema \
-  -DPROFILE=${PROFILE} \
-  -DGCP_DEFAULT_PROJECT_ID=${GCP_DEFAULT_PROJECT_ID} \
-  -DGCP_DEFAULT_DATASET=${GCP_DEFAULT_DATASET} \
-  -DGCP_DEFAULT_TABLE=${GCP_DEFAULT_TABLE} \
+  -DAPP_PROFILE=${APP_PROFILE} \
+  -DGCP_PROJECT_ID=${GCP_PROJECT_ID} \
+  -DBQ_DATASET=${BQ_DATASET} \
+  -DBQ_TABLE=${BQ_TABLE} \
   -DSCHEMA="name_1:datatype_1,name_2:datatype_2,[...],name_n:datatype_n"
 ```
 
 **Replace the following**:
-- `PROFILE`: the application profile.
-- `GCP_DEFAULT_PROJECT_ID`: the GCP project ID.
-- `GCP_DEFAULT_DATASET`: the name of the BigQuery dataset.
-- `GCP_DEFAULT_TABLE`: the name of the BigQuery table.
+- `APP_PROFILE`: the application profile.
+- `GCP_PROJECT_ID`: the GCP project ID.
+- `BQ_DATASET`: the name of the BigQuery dataset.
+- `BQ_TABLE`: the name of the BigQuery table.
 - `name_1:datatype_1,name_2:datatype_2,[...],name_n:datatype_n`: a database schema declaration.
 
 Example:
@@ -265,10 +265,10 @@ Example:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.createTableWithCustomSchema \
-  -DPROFILE=integration \
-  -DGCP_DEFAULT_PROJECT_ID="lofty-root-378503" \
-  -DGCP_DEFAULT_DATASET="test_dataset_integration" \
-  -DGCP_DEFAULT_TABLE="test_table_integration" \
+  -DAPP_PROFILE=integration \
+  -DGCP_PROJECT_ID="example-project-id" \
+  -DBQ_DATASET="test_dataset_integration" \
+  -DBQ_TABLE="test_table_integration" \
   -DSCHEMA="id:STRING,creation_timestamp:DATETIME,last_update_timestamp:DATETIME,column_a:STRING,column_b:BOOL"
 ```
 
@@ -282,17 +282,17 @@ Example:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.deleteTable \
-  -DPROFILE=${PROFILE} \
-  -DGCP_DEFAULT_PROJECT_ID=${GCP_DEFAULT_PROJECT_ID} \
-  -DGCP_DEFAULT_DATASET=${GCP_DEFAULT_DATASET} \
-  -DGCP_DEFAULT_TABLE=${GCP_DEFAULT_TABLE}
+  -DAPP_PROFILE=${APP_PROFILE} \
+  -DGCP_PROJECT_ID=${GCP_PROJECT_ID} \
+  -DBQ_DATASET=${BQ_DATASET} \
+  -DBQ_TABLE=${BQ_TABLE}
 ```
 
 **Replace the following**:
-- `PROFILE`: the application profile.
-- `GCP_DEFAULT_PROJECT_ID`: the GCP project ID.
-- `GCP_DEFAULT_DATASET`: the name of the BigQuery dataset.
-- `GCP_DEFAULT_TABLE`: the name of the BigQuery table.
+- `APP_PROFILE`: the application profile.
+- `GCP_PROJECT_ID`: the GCP project ID.
+- `BQ_DATASET`: the name of the BigQuery dataset.
+- `BQ_TABLE`: the name of the BigQuery table.
 
 Example:
 
@@ -300,10 +300,10 @@ Example:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.deleteTable \
-  -DPROFILE=integration \
-  -DGCP_DEFAULT_PROJECT_ID="lofty-root-378503" \
-  -DGCP_DEFAULT_DATASET="test_dataset_integration" \
-  -DGCP_DEFAULT_TABLE="test_table_integration"
+  -DAPP_PROFILE=integration \
+  -DGCP_PROJECT_ID="example-project-id" \
+  -DBQ_DATASET="test_dataset_integration" \
+  -DBQ_TABLE="test_table_integration"
 ```
 
 </details>
@@ -318,17 +318,17 @@ To test row insertion, run the following command:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.insert \
-  -DPROFILE=PROFILE \
-  -DGCP_DEFAULT_PROJECT_ID=${GCP_DEFAULT_PROJECT_ID} \
-  -DGCP_DEFAULT_DATASET=${GCP_DEFAULT_DATASET} \
-  -DGCP_DEFAULT_TABLE=${GCP_DEFAULT_TABLE}
+  -DAPP_PROFILE=APP_PROFILE \
+  -DGCP_PROJECT_ID=${GCP_PROJECT_ID} \
+  -DBQ_DATASET=${BQ_DATASET} \
+  -DBQ_TABLE=${BQ_TABLE}
 ```
 
 **Replace the following**:
-- `PROFILE`: the application profile.
-- `GCP_DEFAULT_PROJECT_ID`: the GCP project ID.
-- `GCP_DEFAULT_DATASET`: the name of the BigQuery dataset.
-- `GCP_DEFAULT_TABLE`: the name of the BigQuery table.
+- `APP_PROFILE`: the application profile.
+- `GCP_PROJECT_ID`: the GCP project ID.
+- `BQ_DATASET`: the name of the BigQuery dataset.
+- `BQ_TABLE`: the name of the BigQuery table.
 
 Example using the `integration` profile:
 
@@ -336,10 +336,10 @@ Example using the `integration` profile:
 ./gradlew cleanTest test \
   --no-build-cache \
   --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.insert \
-  -DPROFILE=integration \
-  -DGCP_DEFAULT_PROJECT_ID="lofty-root-378503" \
-  -DGCP_DEFAULT_DATASET="test_dataset_integration" \
-  -DGCP_DEFAULT_TABLE="test_table_integration"
+  -DAPP_PROFILE=integration \
+  -DGCP_PROJECT_ID="example-project-id" \
+  -DBQ_DATASET="test_dataset_integration" \
+  -DBQ_TABLE="test_table_integration"
 ```
 
 </details>

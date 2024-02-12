@@ -28,16 +28,16 @@ import java.util.List;
 public class BigQueryUtilUnitTest extends UnitTest {
 
     @Autowired
-    @Qualifier("gcpDefaultProjectId_unitTest")
-    private String gcpDefaultProjectId;
+    @Qualifier("gcpProjectId_unitTest")
+    private String gcpProjectId;
 
     @Autowired
-    @Qualifier("gcpDefaultDataset_unitTest")
-    private String gcpDefaultDataset;
+    @Qualifier("gcpDataset_unitTest")
+    private String gcpDataset;
 
     @Autowired
-    @Qualifier("gcpDefaultTable_unitTest")
-    private String gcpDefaultTable;
+    @Qualifier("gcpTable_unitTest")
+    private String gcpTable;
 
     @Autowired
     @Qualifier("queryUri_unitTest")
@@ -52,9 +52,9 @@ public class BigQueryUtilUnitTest extends UnitTest {
     public void beforeEach() {
         setUp(
             bigQueryConfigMock,
-            gcpDefaultProjectId,
-            gcpDefaultDataset,
-            gcpDefaultTable,
+            gcpProjectId,
+            gcpDataset,
+            gcpTable,
             queryUri
         );
         bigQueryUtil = new BigQueryUtil(templateCompilerMock);
@@ -85,14 +85,6 @@ public class BigQueryUtilUnitTest extends UnitTest {
     @Test
     void toList_withTableResult() {
         TableResult tableResult = Mockito.mock(TableResult.class);
-        List<Field> schemaFields = List.of(
-            Field.of("id", LegacySQLTypeName.STRING),
-            Field.of("creation_timestamp", LegacySQLTypeName.STRING),
-            Field.of("last_update_timestamp", LegacySQLTypeName.STRING),
-            Field.of("column_a", LegacySQLTypeName.STRING),
-            Field.of("column_b", LegacySQLTypeName.STRING)
-        );
-        Schema schema = Schema.of(schemaFields);
 
         Mockito.when(tableResult.getTotalRows()).thenReturn(1L);
 

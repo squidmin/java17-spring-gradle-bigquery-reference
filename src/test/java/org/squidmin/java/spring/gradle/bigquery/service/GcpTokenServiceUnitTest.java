@@ -23,7 +23,7 @@ public class GcpTokenServiceUnitTest {
     private static final String TOKEN = "test_token";
 
     @Autowired
-    private String gcpDefaultProjectId;
+    private String gcpProjectId;
 
     @Autowired
     private RestTemplate restTemplateMock;
@@ -32,7 +32,7 @@ public class GcpTokenServiceUnitTest {
 
     @BeforeEach
     void beforeEach() {
-        gcpTokenService = new GcpTokenService(gcpDefaultProjectId, restTemplateMock);
+        gcpTokenService = new GcpTokenService(gcpProjectId, restTemplateMock);
         Mockito.when(
             restTemplateMock.exchange(
                 ArgumentMatchers.any(RequestEntity.class),

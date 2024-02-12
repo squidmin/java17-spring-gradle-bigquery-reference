@@ -100,16 +100,12 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 
-    systemProperty 'spring.profiles.active', System.getProperty('PROFILE')
+    systemProperty 'spring.profiles.active', System.getProperty('APP_PROFILE')
     systemProperty 'GCP_SA_KEY_PATH', System.getProperty('GCP_SA_KEY_PATH')
     systemProperty 'GCP_ACCESS_TOKEN', System.getProperty('GCP_ACCESS_TOKEN')
-    systemProperty 'GCP_SA_ACCESS_TOKEN', System.getProperty('GCP_SA_ACCESS_TOKEN')
-    systemProperty 'GCP_DEFAULT_PROJECT_ID', System.getProperty('GCP_DEFAULT_PROJECT_ID')
-    systemProperty 'GCP_DEFAULT_DATASET', System.getProperty('GCP_DEFAULT_DATASET')
-    systemProperty 'GCP_DEFAULT_TABLE', System.getProperty('GCP_DEFAULT_TABLE')
-    systemProperty 'GCP_SA_PROJECT_ID', System.getProperty('GCP_SA_PROJECT_ID')
-    systemProperty 'GCP_SA_DATASET', System.getProperty('GCP_SA_DATASET')
-    systemProperty 'GCP_SA_TABLE', System.getProperty('GCP_SA_TABLE')
+    systemProperty 'GCP_PROJECT_ID', System.getProperty('GCP_PROJECT_ID')
+    systemProperty 'BQ_DATASET', System.getProperty('BQ_DATASET')
+    systemProperty 'BQ_TABLE', System.getProperty('BQ_TABLE')
 
     systemProperty 'SCHEMA', System.getProperty('SCHEMA')
 
@@ -124,14 +120,10 @@ tasks.named('test') {
 }
 
 tasks.named('bootRun') {
-    systemProperty 'spring.profiles.active', System.getProperty('PROFILE')
+    systemProperty 'spring.profiles.active', System.getProperty('APP_PROFILE')
     systemProperty 'GCP_SA_KEY_PATH', System.getProperty('GCP_SA_KEY_PATH')
     systemProperty 'GCP_ACCESS_TOKEN', System.getProperty('GCP_ACCESS_TOKEN')
-    systemProperty 'GCP_SA_ACCESS_TOKEN', System.getProperty('GCP_SA_ACCESS_TOKEN')
-    systemProperty 'GCP_DEFAULT_PROJECT_ID', System.getProperty('GCP_DEFAULT_PROJECT_ID')
-    systemProperty 'GCP_SA_PROJECT_ID', System.getProperty('GCP_SA_PROJECT_ID')
-    systemProperty 'GCP_DEFAULT_DATASET', System.getProperty('GCP_DEFAULT_DATASET')
-    systemProperty 'GCP_SA_DATASET', System.getProperty('GCP_SA_DATASET')
-    systemProperty 'GCP_DEFAULT_TABLE', System.getProperty('GCP_DEFAULT_TABLE')
-    systemProperty 'GCP_SA_TABLE', System.getProperty('GCP_SA_TABLE')
+    systemProperty 'GCP_PROJECT_ID', System.getProperty('GCP_PROJECT_ID')
+    systemProperty 'BQ_DATASET', System.getProperty('BQ_DATASET')
+    systemProperty 'BQ_TABLE', System.getProperty('BQ_TABLE')
 }

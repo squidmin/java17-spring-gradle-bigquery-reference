@@ -15,60 +15,35 @@ public class LoggerUtil {
 
     public static void logBqProperties(RunEnvironment runEnvironment, ProfileOption profileOption) {
         Logger.echoHorizontalLine(Logger.LogType.INFO);
+        String gcpProjectIdDefault = runEnvironment.getGcpProjectIdDefault();
+        String gcpDatasetDefault = runEnvironment.getGcpDatasetDefault();
+        String gcpTableDefault = runEnvironment.getGcpTableDefault();
         if (profileOption == ProfileOption.DEFAULT) {
             Logger.log("--- BigQuery default properties ---", Logger.LogType.CYAN);
-            logBqProperties(
-                runEnvironment.getGcpDefaultProjectIdDefault(),
-                runEnvironment.getGcpDefaultDatasetDefault(),
-                runEnvironment.getGcpDefaultTableDefault(),
-                runEnvironment.getGcpSaProjectIdDefault(),
-                runEnvironment.getGcpSaDatasetDefault(),
-                runEnvironment.getGcpSaTableDefault()
-            );
+            logBqProperties(gcpProjectIdDefault, gcpDatasetDefault, gcpTableDefault);
         } else if (profileOption == ProfileOption.OVERRIDDEN) {
             Logger.log("--- BigQuery overridden properties ---", Logger.LogType.CYAN);
-            logBqProperties(
-                runEnvironment.getGcpDefaultProjectIdOverride(),
-                runEnvironment.getGcpDefaultDatasetOverride(),
-                runEnvironment.getGcpDefaultTableOverride(),
-                runEnvironment.getGcpSaProjectIdOverride(),
-                runEnvironment.getGcpSaDatasetOverride(),
-                runEnvironment.getGcpSaTableOverride()
-            );
+            logBqProperties(gcpProjectIdDefault, gcpDatasetDefault, gcpTableDefault);
         } else if (profileOption == ProfileOption.ACTIVE) {
             Logger.log("BigQuery resource properties currently configured:", Logger.LogType.CYAN);
-            logBqProperties(
-                runEnvironment.getGcpDefaultProjectId(),
-                runEnvironment.getGcpDefaultDataset(),
-                runEnvironment.getGcpDefaultTable(),
-                runEnvironment.getGcpSaProjectId(),
-                runEnvironment.getGcpSaDataset(),
-                runEnvironment.getGcpSaTable()
-            );
+            logBqProperties(gcpProjectIdDefault, gcpDatasetDefault, gcpTableDefault);
         } else {
             log.error("Error: IntegrationTest.echoBigQueryResourceMetadata(): Invalid option specified.");
         }
         Logger.echoHorizontalLine(Logger.LogType.INFO);
     }
 
-    public static void logBqProperties(
-        String gcpDefaultProjectId, String gcpDefaultDataset, String gcpDefaultTable,
-        String gcpSaProjectId, String gcpSaDataset, String gcpSaTable) {
-
+    public static void logBqProperties(String gcpDefaultProjectId, String gcpDefaultDataset, String gcpDefaultTable) {
         Logger.log(String.format("Default Project ID: %s", gcpDefaultProjectId), Logger.LogType.INFO);
         Logger.log(String.format("Default Dataset name: %s", gcpDefaultDataset), Logger.LogType.INFO);
         Logger.log(String.format("Default Table name: %s", gcpDefaultTable), Logger.LogType.INFO);
-
-        Logger.log(String.format("Service account Project ID: %s", gcpSaProjectId), Logger.LogType.INFO);
-        Logger.log(String.format("Service account Dataset name: %s", gcpSaDataset), Logger.LogType.INFO);
-        Logger.log(String.format("Service account Table name: %s", gcpSaTable), Logger.LogType.INFO);
     }
 
     public static void logRunConfig() {
         Logger.echoHorizontalLine(Logger.LogType.CYAN);
         Logger.log("Run config:", Logger.LogType.CYAN);
         Logger.echoHorizontalLine(Logger.LogType.CYAN);
-        Logger.log(String.format("PROFILE                         %s", System.getProperty("PROFILE")), Logger.LogType.CYAN);
+        Logger.log(String.format("APP_PROFILE                     %s", System.getProperty("APP_PROFILE")), Logger.LogType.CYAN);
         Logger.log(String.format("GCP_SA_KEY_PATH                 %s", System.getProperty("GCP_SA_KEY_PATH")), Logger.LogType.CYAN);
         String adcAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
         if (StringUtils.isNotEmpty(adcAccessToken)) {
@@ -76,18 +51,9 @@ public class LoggerUtil {
         } else {
             Logger.log(String.format("GCP_ACCESS_TOKEN            %s", "Not specified"), Logger.LogType.CYAN);
         }
-        String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
-        if (StringUtils.isNotEmpty(gcpSaAccessToken)) {
-            Logger.log(String.format("GCP_SA_ACCESS_TOKEN             %s", gcpSaAccessToken).substring(0, 9).concat("..."), Logger.LogType.CYAN);
-        } else {
-            Logger.log(String.format("GCP_SA_ACCESS_TOKEN             %s", "Not specified"), Logger.LogType.CYAN);
-        }
-        Logger.log(String.format("GCP_DEFAULT_PROJECT_ID     %s", System.getProperty("GCP_DEFAULT_PROJECT_ID")), Logger.LogType.CYAN);
-        Logger.log(String.format("GCP_DEFAULT_DATASET        %s", System.getProperty("GCP_DEFAULT_DATASET")), Logger.LogType.CYAN);
-        Logger.log(String.format("GCP_DEFAULT_TABLE          %s", System.getProperty("GCP_DEFAULT_TABLE")), Logger.LogType.CYAN);
-        Logger.log(String.format("GCP_SA_PROJECT_ID               %s", System.getProperty("GCP_SA_PROJECT_ID")), Logger.LogType.CYAN);
-        Logger.log(String.format("GCP_SA_DATASET                  %s", System.getProperty("GCP_SA_DATASET")), Logger.LogType.CYAN);
-        Logger.log(String.format("GCP_SA_TABLE                    %s", System.getProperty("GCP_SA_TABLE")), Logger.LogType.CYAN);
+        Logger.log(String.format("GCP_PROJECT_ID     %s", System.getProperty("GCP_PROJECT_ID")), Logger.LogType.CYAN);
+        Logger.log(String.format("BQ_DATASET        %s", System.getProperty("BQ_DATASET")), Logger.LogType.CYAN);
+        Logger.log(String.format("BQ_TABLE          %s", System.getProperty("BQ_TABLE")), Logger.LogType.CYAN);
         Logger.echoHorizontalLine(Logger.LogType.CYAN);
     }
 

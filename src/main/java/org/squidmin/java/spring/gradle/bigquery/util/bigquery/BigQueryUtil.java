@@ -108,22 +108,6 @@ public class BigQueryUtil {
 
     }
 
-    private static void addResponseItems(
-        ExampleResponseItem responseItem,
-        List<BigQueryRowValue> f,
-        BigQueryConfig bigQueryConfig,
-        List<String> excludeFields) {
-
-        List<String> selectFields = bigQueryConfig.getSelectFieldsDefault().getFields();
-        for (int j = 0; j < selectFields.size(); j++) {
-            String name = selectFields.get(j);
-            if (!excludeFields.contains(name)) {
-                setResponseItem(responseItem, f, j, name);
-            }
-        }
-
-    }
-
     public static class InlineSchemaTranslator {
         public static Schema translate(SchemaDefault schemaDefault, DataTypes dataTypes) {
             Logger.log(String.format("Generating Schema object using: \"%s\"...", schemaDefault.getFields()), Logger.LogType.CYAN);
