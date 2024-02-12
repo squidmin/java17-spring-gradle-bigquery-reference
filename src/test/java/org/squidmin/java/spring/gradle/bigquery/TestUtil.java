@@ -46,30 +46,24 @@ public class TestUtil {
             .replaceAll("\\p{Zs}+", " ");
     }
 
-    public static BigQuery defaultBigQueryInstance(
-        String gcpSaKeyPath,
-        String gcpAdcAccessToken,
-        String gcpSaAccessToken,
-        String gcpDefaultUserProjectId) {
-
+    public static BigQuery defaultBigQueryInstance(String gcpSaKeyPath, String gcpAccessToken, String gcpProjectId) {
         Logger.log(String.format("BQ JDK: GCP_SA_KEY_PATH == %s", gcpSaKeyPath), Logger.LogType.CYAN);
         File serviceAccountKey = readServiceAccountKeyFile(gcpSaKeyPath);
-        Logger.log(String.format("GCP_ADC_ACCESS_TOKEN == %s", gcpAdcAccessToken), Logger.LogType.CYAN);
-        Logger.log(String.format("GCP_SA_ACCESS_TOKEN == %s", gcpSaAccessToken), Logger.LogType.CYAN);
+        Logger.log(String.format("GCP_ACCESS_TOKEN == %s", StringUtils.isNotEmpty(gcpAccessToken) ? gcpAccessToken.substring(0, 16) + "..." : ""), Logger.LogType.CYAN);
 
         BigQueryOptions.Builder bqOptionsBuilder = BigQueryOptions.newBuilder();
         boolean isBqJdkAuthenticatedUsingSaKeyFile = setServiceAccountCredentials(
-            bqOptionsBuilder, gcpDefaultUserProjectId, serviceAccountKey
+            bqOptionsBuilder, gcpProjectId, serviceAccountKey
         );
 
         LoggerUtil.logSaKeyFileAuth(isBqJdkAuthenticatedUsingSaKeyFile);
 
         BigQuery bigQuery;
-        if (!isBqJdkAuthenticatedUsingSaKeyFile && StringUtils.isNotEmpty(gcpAdcAccessToken)) {
+        if (!isBqJdkAuthenticatedUsingSaKeyFile && StringUtils.isNotEmpty(gcpAccessToken)) {
             Logger.log("Authenticated successfully using Application Default Credentials (ADC) access token.", Logger.LogType.INFO);
             bigQuery = bqOptionsBuilder.setCredentials(
                 GoogleCredentials.newBuilder()
-                    .setAccessToken(AccessToken.newBuilder().setTokenValue(gcpAdcAccessToken).build())
+                    .setAccessToken(AccessToken.newBuilder().setTokenValue(gcpAccessToken).build())
                     .build()
             ).build().getService();
         } else {
@@ -77,7 +71,6 @@ public class TestUtil {
             bigQuery = bqOptionsBuilder.build().getService();
         }
         return bigQuery;
-
     }
 
     private static File readServiceAccountKeyFile(String gcpSaKeyPath) {
@@ -90,13 +83,13 @@ public class TestUtil {
         return serviceAccountKey;
     }
 
-    private static boolean setServiceAccountCredentials(BigQueryOptions.Builder bqOptionsBuilder, String gcpDefaultUserProjectId, File serviceAccountKey) {
-        bqOptionsBuilder.setProjectId(gcpDefaultUserProjectId).setLocation("us");
+    private static boolean setServiceAccountCredentials(BigQueryOptions.Builder bqOptionsBuilder, String gcpProjectId, File serviceAccountKey) {
+        bqOptionsBuilder.setProjectId(gcpProjectId).setLocation("us");
         GoogleCredentials credentials;
         boolean isBqJdkAuthenticatedUsingSaKeyFile;
         try (FileInputStream stream = new FileInputStream(serviceAccountKey)) {
             credentials = ServiceAccountCredentials.fromStream(stream);
-            Logger.log("BQ JDK: SETTING SERVICE ACCOUNT CREDENTIALS (GOOGLE_APPLICATION_CREDENTIALS) TO BQ OPTIONS.", Logger.LogType.CYAN);
+            Logger.log("BQ JDK: Setting service account credentials (GOOGLE_APPLICATION_CREDENTIALS) to BQ options.", Logger.LogType.CYAN);
             bqOptionsBuilder.setCredentials(credentials);
             isBqJdkAuthenticatedUsingSaKeyFile = true;
         } catch (IOException e) {
@@ -104,7 +97,7 @@ public class TestUtil {
             if (e.getMessage().contains("'type' value 'authorized_user' not recognized. Expecting 'service_account'")) {
                 Logger.log("If you're trying to use Application Default Credentials (ADC), use the command:", Logger.LogType.ERROR);
                 Logger.log("    gcloud auth application-default print-access-token", Logger.LogType.ERROR);
-                Logger.log("to generate a GCP access token and set the output of the command to the \"GCP_ADC_ACCESS_TOKEN\" environment variable.", Logger.LogType.ERROR);
+                Logger.log("to generate a GCP access token and set the output of the command to the \"GCP_ACCESS_TOKEN\" environment variable.", Logger.LogType.ERROR);
             }
             isBqJdkAuthenticatedUsingSaKeyFile = false;
         }

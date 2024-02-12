@@ -1,6 +1,7 @@
 package org.squidmin.java.spring.gradle.bigquery.config;
 
 import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.storage.Storage;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,10 +12,10 @@ import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.TestUtil;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.service.GcsService;
+import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryHttpUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryTimeUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryUtil;
-import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 
 import java.io.IOException;
 
@@ -23,29 +24,19 @@ import java.io.IOException;
 public class IntegrationTestConfig {
 
     private final String systemArgGcpSaKeyPath = System.getProperty("GCP_SA_KEY_PATH");
-    private final String gcpAdcAccessToken = System.getProperty("GCP_ADC_ACCESS_TOKEN");
-    private final String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
+    private final String gcpAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
 
-    @Value("${spring.cloud.gcp.config.credentials.location}")
-    private String gcpSaKeyPath;
+//    @Value("${spring.cloud.gcp.config.credentials.location}")
+//    private String gcpSaKeyPath;
 
     @Value("${bigquery.application-default.project-id}")
-    private String gcpDefaultUserProjectId;
+    private String gcpProjectId;
 
     @Value("${bigquery.application-default.dataset}")
-    private String gcpDefaultUserDataset;
+    private String gcpDataset;
 
     @Value("${bigquery.application-default.table}")
-    private String gcpDefaultUserTable;
-
-    @Value("${bigquery.service-account.project-id}")
-    private String gcpSaProjectId;
-
-    @Value("${bigquery.service-account.dataset}")
-    private String gcpSaDataset;
-
-    @Value("${bigquery.service-account.table}")
-    private String gcpSaTable;
+    private String gcpTable;
 
     @Value("${bigquery.uri.queries}")
     private String queryUri;
@@ -65,49 +56,25 @@ public class IntegrationTestConfig {
     private BigQueryTimeUtil bigQueryTimeUtil;
 
     private GcsConfig gcsConfig;
+    private final Storage gcsStorageMock = Mockito.mock(Storage.class);
     private GcsService gcsService;
 
     @Bean
-    @Qualifier("gcpSaKeyPath_integrationTest")
-    public String gcpSaKeyPath() {
-//        Logger.log("gcpSaKeyPath == " + gcpSaKeyPath, Logger.LogType.CYAN);
-        return gcpSaKeyPath;
+    @Qualifier("gcpProjectId_integrationTest")
+    public String gcpProjectId() {
+        return gcpProjectId;
     }
 
     @Bean
-    @Qualifier("gcpDefaultUserProjectId_integrationTest")
-    public String gcpDefaultUserProjectId() {
-        return gcpDefaultUserProjectId;
+    @Qualifier("gcpDataset_integrationTest")
+    public String gcpDataset() {
+        return gcpDataset;
     }
 
     @Bean
-    @Qualifier("gcpDefaultUserDataset_integrationTest")
-    public String gcpDefaultUserDataset() {
-        return gcpDefaultUserDataset;
-    }
-
-    @Bean
-    @Qualifier("gcpDefaultUserTable_integrationTest")
-    public String gcpDefaultUserTable() {
-        return gcpDefaultUserTable;
-    }
-
-    @Bean
-    @Qualifier("gcpSaProjectId_integrationTest")
-    public String gcpSaProjectId() {
-        return gcpSaProjectId;
-    }
-
-    @Bean
-    @Qualifier("gcpSaDataset_integrationTest")
-    public String gcpSaDataset() {
-        return gcpSaDataset;
-    }
-
-    @Bean
-    @Qualifier("gcpSaTable_integrationTest")
-    public String gcpSaTable() {
-        return gcpSaTable;
+    @Qualifier("gcpTable_integrationTest")
+    public String gcpTable() {
+        return gcpTable;
     }
 
     @Bean
@@ -120,13 +87,10 @@ public class IntegrationTestConfig {
     @Qualifier("bigQueryConfig_integrationTest")
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
-            gcpSaKeyPath,
-            gcpDefaultUserProjectId,
-            gcpDefaultUserDataset,
-            gcpDefaultUserTable,
-            gcpSaProjectId,
-            gcpSaDataset,
-            gcpSaTable,
+            systemArgGcpSaKeyPath,
+            gcpProjectId,
+            gcpDataset,
+            gcpTable,
             queryUri,
             BigQueryFunctionalTestFixture.validSchemaDefault(),
             BigQueryFunctionalTestFixture.validDataTypes(),
@@ -141,7 +105,7 @@ public class IntegrationTestConfig {
     @Bean
     @Qualifier("bigQuery_integrationTest")
     public BigQuery bigQuery() {
-        return TestUtil.defaultBigQueryInstance(gcpSaKeyPath, gcpAdcAccessToken, gcpSaAccessToken, gcpDefaultUserProjectId);
+        return TestUtil.defaultBigQueryInstance(systemArgGcpSaKeyPath, gcpAccessToken, gcpProjectId);
     }
 
     @Bean
@@ -174,15 +138,15 @@ public class IntegrationTestConfig {
 
     @Bean
     @Qualifier("gcsConfig_integrationTest")
-    public GcsConfig gcsConfig() throws IOException {
-        gcsConfig = new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath);
+    public GcsConfig gcsConfig() {
+        gcsConfig = new GcsConfig(gcpProjectId, gcsBucketName, gcsFilename, systemArgGcpSaKeyPath, gcsStorageMock);
         return gcsConfig;
     }
 
     @Bean
     @Qualifier("gcsService_integrationTest")
-    public GcsService gcsService() throws IOException {
-        gcsService = new GcsService(new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath));
+    public GcsService gcsService() {
+        gcsService = new GcsService(new GcsConfig(gcpProjectId, gcsBucketName, gcsFilename, systemArgGcpSaKeyPath, gcsStorageMock));
         return gcsService;
     }
 

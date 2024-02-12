@@ -14,8 +14,8 @@ import org.squidmin.java.spring.gradle.bigquery.CliConfig;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
-import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryUtil;
 import org.squidmin.java.spring.gradle.bigquery.logger.LoggerUtil;
+import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,20 +45,18 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
 
     @Test
     void createDataset() {
-        bigQueryService.createDataset(GCP_DEFAULT_USER_DATASET);
+        bigQueryService.createDataset(BQ_DATASET);
     }
 
     @Test
     void deleteDataset() {
-        bigQueryService.deleteDataset(GCP_DEFAULT_USER_PROJECT_ID, GCP_DEFAULT_USER_DATASET);
+        bigQueryService.deleteDataset(GCP_PROJECT_ID, BQ_DATASET);
     }
 
     @Test
     void createTableWithDefaultSchema() {
         LoggerUtil.logBqProperties(runEnvironment, LoggerUtil.ProfileOption.ACTIVE);
-        Assertions.assertTrue(
-            bigQueryService.createTable(GCP_DEFAULT_USER_DATASET, GCP_DEFAULT_USER_TABLE)
-        );
+        Assertions.assertTrue(bigQueryService.createTable(BQ_DATASET, BQ_TABLE));
     }
 
     @Test
@@ -66,8 +64,8 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
         LoggerUtil.logBqProperties(runEnvironment, LoggerUtil.ProfileOption.ACTIVE);
         Assertions.assertTrue(
             bigQueryService.createTable(
-                GCP_DEFAULT_USER_DATASET,
-                GCP_DEFAULT_USER_TABLE,
+                BQ_DATASET,
+                BQ_TABLE,
                 BigQueryUtil.InlineSchemaTranslator.translate(schemaOverrideString, bigQueryConfig.getDataTypes())
             )
         );
@@ -75,19 +73,15 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
 
     @Test
     void deleteTable() {
-        bigQueryService.deleteTable(
-            GCP_DEFAULT_USER_PROJECT_ID,
-            GCP_DEFAULT_USER_DATASET,
-            GCP_DEFAULT_USER_TABLE
-        );
+        bigQueryService.deleteTable(GCP_PROJECT_ID, BQ_DATASET, BQ_TABLE);
     }
 
     @Test
     void insert() {
         List<InsertAllRequest.RowToInsert> rowsInserted = bigQueryService.insert(
-            GCP_DEFAULT_USER_PROJECT_ID,
-            GCP_DEFAULT_USER_DATASET,
-            GCP_DEFAULT_USER_TABLE,
+            GCP_PROJECT_ID,
+            BQ_DATASET,
+            BQ_TABLE,
             BigQueryFunctionalTestFixture.DEFAULT_ROWS.get()
         );
         Assertions.assertTrue(0 < rowsInserted.size());
@@ -95,14 +89,10 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
     }
 
     @Test
-    void query_givenValidQueryString_whenCallingBigQueryViaJdk_andQueryMatchesRows_thenReturnValidResponse() {
+    void query_givenValidQueryString_whenCallingBigQueryViaJdk_andQueryMatchesRows_thenReturnValidResponse() throws IOException {
         TableResult tableResult = bigQueryService.query(
-            GCP_ADC_ACCESS_TOKEN,
-            BigQueryFunctionalTestFixture.validQueryString(
-                GCP_DEFAULT_USER_PROJECT_ID,
-                GCP_DEFAULT_USER_DATASET,
-                GCP_DEFAULT_USER_TABLE
-            )
+            GCP_ACCESS_TOKEN,
+            BigQueryFunctionalTestFixture.validQueryString(GCP_PROJECT_ID, BQ_DATASET, BQ_TABLE)
         );
         Assertions.assertTrue(0 < tableResult.getTotalRows());
     }
@@ -110,7 +100,7 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
     @Test
     void query_givenValidExampleRequest_whenCallingBigQueryViaJdk_andRequestMatchesRows_thenReturnValidResponse() throws IOException {
         TableResult tableResult = bigQueryService.query(
-            GCP_ADC_ACCESS_TOKEN,
+            GCP_ACCESS_TOKEN,
             BigQueryFunctionalTestFixture.validExampleRequest()
         );
         Assertions.assertTrue(0 < tableResult.getTotalRows());
@@ -118,7 +108,7 @@ public class BigQueryServiceEndToEndTest extends CliConfig {
 
     @Test
     void query_givenValidExampleRequest_whenCallingBigQueryViaRestfulServices_andRequestMatchesRows_thenReturnValidResponse() throws IOException {
-        ResponseEntity<ExampleResponse> responseEntity = bigQueryService.query(BigQueryFunctionalTestFixture.validExampleRequest(), GCP_ADC_ACCESS_TOKEN);
+        ResponseEntity<ExampleResponse> responseEntity = bigQueryService.query(BigQueryFunctionalTestFixture.validExampleRequest(), GCP_ACCESS_TOKEN);
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assertions.assertNotNull(responseEntity.getBody());
         Assertions.assertTrue(0 < responseEntity.getBody().getRows().size());

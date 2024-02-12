@@ -21,23 +21,16 @@ public class UnitTestConfig {
     @Value("${spring.cloud.gcp.config.credentials.location}")
     private String gcpSaKeyPath;
 
+    private final String systemArgGcpSaKeyPath = System.getProperty("GOOGLE_APPLICATION_CREDENTIALS");
+
     @Value("${bigquery.application-default.project-id}")
-    private String gcpDefaultUserProjectId;
+    private String gcpProjectId;
 
     @Value("${bigquery.application-default.dataset}")
-    private String gcpDefaultUserDataset;
+    private String gcpDataset;
 
     @Value("${bigquery.application-default.table}")
-    private String gcpDefaultUserTable;
-
-    @Value("${bigquery.service-account.project-id}")
-    private String gcpSaProjectId;
-
-    @Value("${bigquery.service-account.dataset}")
-    private String gcpSaDataset;
-
-    @Value("${bigquery.service-account.table}")
-    private String gcpSaTable;
+    private String gcpTable;
 
     @Value("${bigquery.uri.queries}")
     private String queryUri;
@@ -56,39 +49,21 @@ public class UnitTestConfig {
     public String gcpSaKeyPath() { return gcpSaKeyPath; }
 
     @Bean
-    @Qualifier("gcpDefaultUserProjectId_unitTest")
-    public String gcpDefaultUserProjectId() {
-        return gcpDefaultUserProjectId;
+    @Qualifier("gcpProjectId_unitTest")
+    public String gcpProjectId() {
+        return gcpProjectId;
     }
 
     @Bean
-    @Qualifier("gcpDefaultUserDataset_unitTest")
-    public String gcpDefaultUserDataset() {
-        return gcpDefaultUserDataset;
+    @Qualifier("gcpDataset_unitTest")
+    public String gcpDataset() {
+        return gcpDataset;
     }
 
     @Bean
-    @Qualifier("gcpDefaultUserTable_unitTest")
-    public String gcpDefaultUserTable() {
-        return gcpDefaultUserTable;
-    }
-
-    @Bean
-    @Qualifier("gcpSaProjectId_unitTest")
-    public String gcpSaProjectId() {
-        return gcpSaProjectId;
-    }
-
-    @Bean
-    @Qualifier("gcpSaDataset_unitTest")
-    public String gcpSaDataset() {
-        return gcpSaDataset;
-    }
-
-    @Bean
-    @Qualifier("gcpSaTable_unitTest")
-    public String gcpSaTable() {
-        return gcpSaTable;
+    @Qualifier("gcpTable_unitTest")
+    public String gcpTable() {
+        return gcpTable;
     }
 
     @Bean
@@ -103,13 +78,11 @@ public class UnitTestConfig {
     @Qualifier("bigQueryConfig_unitTest")
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
-            gcpSaKeyPath,
-            gcpDefaultUserProjectId,
-            gcpDefaultUserDataset,
-            gcpDefaultUserTable,
-            gcpSaProjectId,
-            gcpSaDataset,
-            gcpSaTable,
+//            gcpSaKeyPath,
+            systemArgGcpSaKeyPath,
+            gcpProjectId,
+            gcpDataset,
+            gcpTable,
             queryUri,
             BigQueryFunctionalTestFixture.validSchemaDefault(),
             BigQueryFunctionalTestFixture.validDataTypes(),

@@ -4,18 +4,16 @@ import com.google.auth.oauth2.GoogleCredentials;
 import lombok.Getter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 import java.io.IOException;
 
 @Configuration
-@Profile("!integration")
 @Getter
+@Profile("!integration")
 public class GoogleCredentialsConfig {
 
     @Bean
-    @Primary
     public GoogleCredentials googleCredentials() throws IOException {
         GoogleCredentials googleCredentials = GoogleCredentials.getApplicationDefault()
             .createScoped("https://www.googleapis.com/auth/cloud-platform");

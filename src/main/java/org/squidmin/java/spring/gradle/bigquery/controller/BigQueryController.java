@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequest;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
 import org.squidmin.java.spring.gradle.bigquery.repository.ExampleRepositoryImpl;
+import org.squidmin.java.spring.gradle.bigquery.util.Constants;
 
 import java.io.IOException;
 
@@ -29,10 +30,10 @@ public class BigQueryController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<ExampleResponse> query(
-        @RequestHeader("gcp-token") String gcpToken,
+        @RequestHeader(Constants.HttpHeaders.GCP_ACCESS_TOKEN) String gcpAccessToken,
         @Valid @RequestBody ExampleRequest request) throws IOException {
 
-        return exampleRepository.query(request, gcpToken);
+        return exampleRepository.query(request, gcpAccessToken);
 
     }
 

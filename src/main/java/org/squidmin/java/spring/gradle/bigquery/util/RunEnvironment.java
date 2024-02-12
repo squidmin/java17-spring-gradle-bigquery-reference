@@ -9,33 +9,21 @@ import lombok.Data;
 public class RunEnvironment {
 
     // Default profile values
-    private String gcpDefaultUserProjectIdDefault;
-    private String gcpDefaultUserDatasetDefault;
-    private String gcpDefaultUserTableDefault;
-
-    private String gcpSaProjectIdDefault;
-    private String gcpSaDatasetDefault;
-    private String gcpSaTableDefault;
+    private String gcpProjectIdDefault;
+    private String gcpDatasetDefault;
+    private String gcpTableDefault;
     //
 
     // Overridden values
-    private String gcpDefaultUserProjectIdOverride;
-    private String gcpDefaultUserDatasetOverride;
-    private String gcpDefaultUserTableOverride;
-
-    private String gcpSaProjectIdOverride;
-    private String gcpSaDatasetOverride;
-    private String gcpSaTableOverride;
+    private String gcpProjectIdOverride;
+    private String gcpDatasetOverride;
+    private String gcpTableOverride;
     //
 
     // Active profile values
-    private String gcpDefaultUserProjectId;
-    private String gcpDefaultUserDataset;
-    private String gcpDefaultUserTable;
-
-    private String gcpSaProjectId;
-    private String gcpSaDataset;
-    private String gcpSaTable;
+    private String gcpProjectId;
+    private String gcpDataset;
+    private String gcpTable;
     //
 
     private Schema schema;

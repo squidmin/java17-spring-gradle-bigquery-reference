@@ -18,17 +18,19 @@ import java.io.IOException;
 @ActiveProfiles("integration")
 public class ControllerUnitTestConfig {
 
+    private final String googleApplicationCredentialsPath = System.getProperty("GOOGLE_APPLICATION_CREDENTIALS");
+
     @Value("${spring.cloud.gcp.config.credentials.location}")
     private String gcpSaKeyPath;
 
     @Value("${bigquery.application-default.project-id}")
-    private String gcpDefaultUserProjectId;
+    private String gcpDefaultProjectId;
 
     @Value("${bigquery.application-default.dataset}")
-    private String gcpDefaultUserDataset;
+    private String gcpDefaultDataset;
 
     @Value("${bigquery.application-default.table}")
-    private String gcpDefaultUserTable;
+    private String gcpDefaultTable;
 
     @Value("${bigquery.service-account.project-id}")
     private String gcpSaProjectId;
@@ -58,18 +60,18 @@ public class ControllerUnitTestConfig {
     }
 
     @Bean
-    public String gcpDefaultUserProjectId() {
-        return gcpDefaultUserProjectId;
+    public String gcpDefaultProjectId() {
+        return gcpDefaultProjectId;
     }
 
     @Bean
-    public String gcpDefaultUserDataset() {
-        return gcpDefaultUserDataset;
+    public String gcpDefaultDataset() {
+        return gcpDefaultDataset;
     }
 
     @Bean
-    public String gcpDefaultUserTable() {
-        return gcpDefaultUserTable;
+    public String gcpDefaultTable() {
+        return gcpDefaultTable;
     }
 
     @Bean
@@ -102,13 +104,10 @@ public class ControllerUnitTestConfig {
     @Qualifier("bigQueryConfig_controllerUnitTest")
     public BigQueryConfig bigQueryConfig() throws IOException {
         bigQueryConfig = new BigQueryConfig(
-            gcpSaKeyPath,
-            gcpDefaultUserProjectId,
-            gcpDefaultUserDataset,
-            gcpDefaultUserTable,
-            gcpSaProjectId,
-            gcpSaDataset,
-            gcpSaTable,
+            googleApplicationCredentialsPath,
+            gcpDefaultProjectId,
+            gcpDefaultDataset,
+            gcpDefaultTable,
             queryUri,
             BigQueryFunctionalTestFixture.validSchemaDefault(),
             BigQueryFunctionalTestFixture.validDataTypes(),

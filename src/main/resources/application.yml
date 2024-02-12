@@ -8,7 +8,7 @@ spring:
     gcp:
       config:
         credentials:
-          location: /Users/admin/.config/gcloud/sa-private-key.json
+          location: /home/runner/work/java17-spring-gradle-bigquery-reference/java17-spring-gradle-bigquery-reference/gcloud-service-key.json
   jackson:
     default-property-inclusion: non_null
     deserialization:

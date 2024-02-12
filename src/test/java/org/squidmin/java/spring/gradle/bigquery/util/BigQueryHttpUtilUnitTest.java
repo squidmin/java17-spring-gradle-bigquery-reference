@@ -24,13 +24,13 @@ import java.io.IOException;
 public class BigQueryHttpUtilUnitTest extends UnitTest {
 
     @Value("${bigquery.application-default.project-id}")
-    private String gcpDefaultUserProjectId;
+    private String gcpDefaultProjectId;
 
     @Value("${bigquery.application-default.dataset}")
-    private String gcpDefaultUserDataset;
+    private String gcpDefaultDataset;
 
     @Value("${bigquery.application-default.table}")
-    private String gcpDefaultUserTable;
+    private String gcpDefaultTable;
 
     @Value("${bigquery.uri.queries}")
     private String queryUri;
@@ -45,9 +45,9 @@ public class BigQueryHttpUtilUnitTest extends UnitTest {
     void beforeEach() {
         UnitTest.setUp(
             bigQueryConfigMock,
-            gcpDefaultUserProjectId,
-            gcpDefaultUserDataset,
-            gcpDefaultUserTable,
+            gcpDefaultProjectId,
+            gcpDefaultDataset,
+            gcpDefaultTable,
             queryUri
         );
         bigQueryHttpUtil = new BigQueryHttpUtil(restTemplateMock);
@@ -62,9 +62,9 @@ public class BigQueryHttpUtilUnitTest extends UnitTest {
     void callBigQueryApi_givenValidParameters_thenReturnHttpStatusOk() throws IOException {
         String responseFixture = BigQueryFunctionalTestFixture.validBigQueryRestServiceResponse();
         HttpEntity<String> request = BigQueryFunctionalTestFixture.validHttpEntity(
-            gcpDefaultUserProjectId,
-            gcpDefaultUserDataset,
-            gcpDefaultUserTable
+            gcpDefaultProjectId,
+            gcpDefaultDataset,
+            gcpDefaultTable
         );
         bigQueryApiReturnsResponse(
             mapper.readValue(

@@ -21,14 +21,15 @@ import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.SelectFiel
 import org.squidmin.java.spring.gradle.bigquery.config.tables.sandbox.WhereFieldsDefault;
 import org.squidmin.java.spring.gradle.bigquery.dao.RecordExample;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequest;
+import org.squidmin.java.spring.gradle.bigquery.dto.ExampleRequestItem;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponse;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponseItem;
 import org.squidmin.java.spring.gradle.bigquery.dto.bigquery.Query;
 import org.squidmin.java.spring.gradle.bigquery.exception.CustomJobException;
 import org.squidmin.java.spring.gradle.bigquery.logger.Logger;
+import org.squidmin.java.spring.gradle.bigquery.logger.LoggerUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryHttpUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryUtil;
-import org.squidmin.java.spring.gradle.bigquery.logger.LoggerUtil;
 
 import java.io.IOException;
 import java.net.URL;
@@ -46,14 +47,12 @@ import java.util.*;
 @Slf4j
 public class BigQueryService {
 
-    private final String gcpDefaultUserProjectId;
-    private final String gcpDefaultUserDataset;
-    private final String gcpDefaultUserTable;
-    private final String gcpSaProjectId;
-    private final String gcpSaDataset;
-    private final String gcpSaTable;
+    private final String gcpProjectId;
+    private final String gcpDataset;
+    private final String gcpTable;
 
-    private int responseSizeLimit;
+    private final boolean shouldUploadBqResponseToGcs = true;
+    private final int responseSizeLimit;
 
     private final BigQueryUtil bigQueryUtil;
 
@@ -77,12 +76,9 @@ public class BigQueryService {
         this.responseSizeLimit = responseSizeLimit;
         this.bigQueryConfig = bigQueryConfig;
         this.bigQuery = bigQueryConfig.getBigQuery();
-        this.gcpDefaultUserProjectId = bigQueryConfig.getGcpDefaultUserProjectId();
-        this.gcpDefaultUserDataset = bigQueryConfig.getGcpDefaultUserDataset();
-        this.gcpDefaultUserTable = bigQueryConfig.getGcpDefaultUserTable();
-        this.gcpSaProjectId = bigQueryConfig.getGcpSaProjectId();
-        this.gcpSaDataset = bigQueryConfig.getGcpSaDataset();
-        this.gcpSaTable = bigQueryConfig.getGcpSaTable();
+        this.gcpProjectId = bigQueryConfig.getGcpProjectId();
+        this.gcpDataset = bigQueryConfig.getGcpDataset();
+        this.gcpTable = bigQueryConfig.getGcpTable();
         this.bigQueryUtil = bigQueryUtil;
         this.bigQueryHttpUtil = bigQueryHttpUtil;
         this.gcsService = gcsService;
@@ -96,19 +92,19 @@ public class BigQueryService {
     public List<String> listDatasets() {
         List<String> datasetsList = new ArrayList<>();
         try {
-            Page<Dataset> datasets = bigQuery.listDatasets(gcpDefaultUserProjectId, BigQuery.DatasetListOption.pageSize(100));
+            Page<Dataset> datasets = bigQuery.listDatasets(gcpProjectId, BigQuery.DatasetListOption.pageSize(100));
             if (null == datasets) {
                 Logger.log(
-                    String.format("Dataset \"%s\" does not contain any models.", gcpDefaultUserDataset),
+                    String.format("Dataset \"%s\" does not contain any models.", gcpDataset),
                     Logger.LogType.ERROR
                 );
                 return new ArrayList<>();
             }
             datasets.iterateAll().forEach(dataset -> datasetsList.add(dataset.getFriendlyName()));
-            LoggerUtil.logDatasets(gcpDefaultUserProjectId, datasets);
+            LoggerUtil.logDatasets(gcpProjectId, datasets);
         } catch (BigQueryException e) {
             Logger.log(
-                String.format("Project \"%s\" does not contain any datasets.", gcpDefaultUserProjectId),
+                String.format("Project \"%s\" does not contain any datasets.", gcpProjectId),
                 Logger.LogType.ERROR
             );
             Logger.log(e.getMessage(), Logger.LogType.ERROR);
@@ -121,7 +117,7 @@ public class BigQueryService {
      */
     public void getDatasetInfo() {
         try {
-            DatasetId datasetId = DatasetId.of(gcpDefaultUserProjectId, gcpDefaultUserDataset);
+            DatasetId datasetId = DatasetId.of(gcpProjectId, gcpDataset);
             Dataset dataset = bigQuery.getDataset(datasetId);
 
             // View dataset properties
@@ -131,7 +127,7 @@ public class BigQueryService {
             // View tables in the dataset
             // For more information on listing tables see:
             // https://javadoc.io/static/com.google.cloud/google-cloud-bigquery/0.22.0-beta/com/google/cloud/bigquery/BigQuery.html
-            Page<Table> tables = bigQuery.listTables(gcpDefaultUserDataset, BigQuery.TableListOption.pageSize(100));
+            Page<Table> tables = bigQuery.listTables(gcpDataset, BigQuery.TableListOption.pageSize(100));
 
             tables.iterateAll().forEach(table -> Logger.log(table.getTableId().getTable() + "\n", Logger.LogType.INFO));
 
@@ -274,34 +270,50 @@ public class BigQueryService {
     }
 
     public ResponseEntity<ExampleResponse> query(ExampleRequest request, String gcpToken) throws IOException {
-        if (request.getSubqueries().isEmpty()) {
+        List<ExampleRequestItem> subqueries = request.getSubqueries();
+        if (subqueries.isEmpty()) {
             return new ResponseEntity<>(ExampleResponse.builder().build(), HttpStatus.OK);
         }
+
+        final int batchSize = 200;
         ExampleResponse response = BigQueryHttpUtil.initExampleResponse();
-        ResponseEntity<ExampleResponse> responseEntity = query(
-            Query.builder().query(buildQueryString(request)).useLegacySql(false).build(),
-            gcpToken
-        );
-        if (!BigQueryHttpUtil.isOkExampleResponse(responseEntity)) {
-            return buildErrorExampleResponse(responseEntity);
-        } else {
-            ExampleResponse body = responseEntity.getBody();
-            if (null != body && null != body.getRows()) {
-                List<ExampleResponseItem> responseBody = body.getRows();
-                int numberOfRows = responseBody.size();
-                if (responseSizeLimit < numberOfRows) {
-                    URL url = gcsService.upload(responseBody);
-                    response.setQueryUrl(url.toString());
-                } else {
-                    response.getRows().addAll(responseBody);
+        for (int i = 0; i < subqueries.size(); i += batchSize) {
+            List<ExampleRequestItem> batch = subqueries.subList(i, Math.min(i + batchSize, subqueries.size()));
+            ResponseEntity<ExampleResponse> responseEntity = query(
+                Query.builder()
+                    .query(buildQueryString(ExampleRequest.builder().subqueries(batch).build()))
+                    .useLegacySql(false)
+                    .build(),
+                gcpToken
+            );
+            if (!BigQueryHttpUtil.isOkExampleResponse(responseEntity)) {
+                return buildErrorExampleResponse(responseEntity);
+            } else {
+                ExampleResponse body = responseEntity.getBody();
+                if (null != body && null != body.getRows()) {
+                    List<ExampleResponseItem> responseBody = body.getRows();
+                    int numberOfRows = responseBody.size();
+                    if (shouldUploadBqResponseToGcs && responseSizeLimit >= numberOfRows) {
+                        URL url = gcsService.upload(responseBody);
+                        response.setQueryUrl(url.toString());
+                    } else if (responseSizeLimit < numberOfRows) {
+                        log.error("Number of rows in BQ response exceeded size limit.");
+                        log.error("TODO: Implement logic to handle this scenario.");
+                    } else {
+                        response.getRows().addAll(responseBody);
+                    }
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 }
-                return new ResponseEntity<>(response, HttpStatus.OK);
             }
         }
+
         return new ResponseEntity<>(
             ExampleResponse.builder().rows(new ArrayList<>()).build(),
             HttpStatus.ACCEPTED
         );
+    }
+
+    private void handleResponse(ResponseEntity<ExampleResponse> responseEntity, ExampleResponse response) {
     }
 
     private ResponseEntity<ExampleResponse> handleIOException(IOException e) {
@@ -330,12 +342,12 @@ public class BigQueryService {
     }
 
     private ResponseEntity<ExampleResponse> buildErrorExampleResponse(ResponseEntity<ExampleResponse> responseEntity) {
-        return new ResponseEntity<>(
-            ExampleResponse.builder()
-                .errors(responseEntity.getBody().getErrors())
-                .build(),
-            responseEntity.getStatusCode()
-        );
+        ExampleResponse.ExampleResponseBuilder responseBuilder = ExampleResponse.builder();
+        ExampleResponse responseBody = responseEntity.getBody();
+        if (null != responseBody) {
+            responseBuilder.errors(responseBody.getErrors());
+        }
+        return new ResponseEntity<>(responseBuilder.build(), responseEntity.getStatusCode());
     }
 
     private ResponseEntity<ExampleResponse> buildClientErrorExampleResponse(HttpClientErrorException e) {
@@ -353,7 +365,7 @@ public class BigQueryService {
      * @param query A Google SQL query string.
      * @return TableResult The rows returned from the query.
      */
-    public TableResult query(String gcpToken, String query) {
+    public TableResult query(String gcpAccessToken, String query) throws IOException {
         try {
             // Set optional job resource properties.
             QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query)
@@ -364,9 +376,8 @@ public class BigQueryService {
             String jobName = "jobId_" + UUID.randomUUID();
             JobId jobId = JobId.newBuilder().setLocation("us").setJob(jobName).build();
 
-            String bigQueryApiToken = bigQueryConfig.getGcpAdcAccessToken();
-            Logger.log(String.format("BIGQUERY API TOKEN == %s", bigQueryApiToken), Logger.LogType.CYAN);
-            bigQueryConfig.refreshGcpCredentials(gcpToken);
+//            Logger.log(String.format("GCP ACCESS TOKEN == %s", gcpAccessToken), Logger.LogType.CYAN);
+            bigQueryConfig.setGcpCredentials(gcpAccessToken);
 
             bigQuery.create(JobInfo.of(jobId, queryConfig));  // Create a job with job ID.
 
@@ -444,20 +455,17 @@ public class BigQueryService {
     }
 
 
-    private HttpHeaders getHttpHeaders(String gcpToken) {
+    private HttpHeaders getHttpHeaders(String gcpAccessToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        String gcpAdcAccessToken = System.getProperty("GCP_ADC_ACCESS_TOKEN");
-        String gcpSaAccessToken = System.getProperty("GCP_SA_ACCESS_TOKEN");
-        if (StringUtils.isNotEmpty(gcpAdcAccessToken)) {
-            if (StringUtils.isNotEmpty(gcpToken)) {
-                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpToken));
+        String systemArgGcpAccessToken = System.getProperty("GCP_ACCESS_TOKEN");
+
+        // By default, use the access token passed from HTTP headers. Give priority to the GCP_ACCESS_TOKEN system argument.
+        if (StringUtils.isNotEmpty(systemArgGcpAccessToken)) {
+            if (StringUtils.isNotEmpty(gcpAccessToken)) {
+                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpAccessToken));
             } else {
-                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpAdcAccessToken));
+                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(systemArgGcpAccessToken));
             }
-        } else if (StringUtils.isNotEmpty(gcpSaAccessToken)) {
-            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpSaAccessToken));
-        } else {
-            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ".concat(gcpToken));
         }
         httpHeaders.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);

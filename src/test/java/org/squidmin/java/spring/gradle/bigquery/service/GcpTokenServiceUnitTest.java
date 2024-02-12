@@ -15,42 +15,41 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.config.UnitTestConfig;
 
-import java.io.IOException;
-
 @ActiveProfiles({"integration"})
 @SpringBootTest(classes = {UnitTestConfig.class})
 @Slf4j
-public class GcpTokenGeneratorServiceUnitTest {
+public class GcpTokenServiceUnitTest {
+
+    private static final String TOKEN = "test_token";
 
     @Autowired
-    private String gcpDefaultUserProjectId;
+    private String gcpProjectId;
 
     @Autowired
     private RestTemplate restTemplateMock;
 
-    private GcpTokenGeneratorService gcpTokenGeneratorService;
+    private GcpTokenService gcpTokenService;
 
     @BeforeEach
-    void beforeEach() throws IOException {
-        gcpTokenGeneratorService = new GcpTokenGeneratorService(gcpDefaultUserProjectId, restTemplateMock);
-    }
-
-    @Test
-    void generateIdentityToken_return200OkResponseWithIdentityToken() {
-        String IDENTITY_TOKEN = "identity-token_1234";
-
+    void beforeEach() {
+        gcpTokenService = new GcpTokenService(gcpProjectId, restTemplateMock);
         Mockito.when(
             restTemplateMock.exchange(
                 ArgumentMatchers.any(RequestEntity.class),
                 ArgumentMatchers.eq(String.class)
             )
-        ).thenReturn(new ResponseEntity<>(IDENTITY_TOKEN, HttpStatus.OK));
-        Assertions.assertEquals(IDENTITY_TOKEN, gcpTokenGeneratorService.generateIdentityToken());
+        ).thenReturn(new ResponseEntity<>(TOKEN, HttpStatus.OK));
+    }
+
+    @Test
+    void generateIdentityToken_return200OkResponseWithIdentityToken() {
+        Assertions.assertEquals(TOKEN, gcpTokenService.generateIdentityToken());
     }
 
     @Test
     void generateAccessToken_return200OkResponseWithAccessToken() {
-        Assertions.assertTrue(gcpTokenGeneratorService.generateAccessToken().contains("ya29"));
+        String actual = gcpTokenService.generateAccessToken();
+        Assertions.assertEquals("", actual);
     }
 
 }

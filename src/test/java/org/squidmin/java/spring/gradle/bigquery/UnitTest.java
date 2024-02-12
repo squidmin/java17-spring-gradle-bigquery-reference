@@ -36,14 +36,14 @@ public abstract class UnitTest {
     }
 
     protected static void setUp(BigQueryConfig bigQueryConfigMock,
-                                String gcpDefaultUserProjectId,
-                                String gcpDefaultUserDataset,
-                                String gcpDefaultUserTable,
+                                String gcpProjectId,
+                                String gcpDataset,
+                                String gcpTable,
                                 String queryUri) {
 
-        Mockito.when(bigQueryConfigMock.getGcpDefaultUserProjectId()).thenReturn(gcpDefaultUserProjectId);
-        Mockito.when(bigQueryConfigMock.getGcpDefaultUserDataset()).thenReturn(gcpDefaultUserDataset);
-        Mockito.when(bigQueryConfigMock.getGcpDefaultUserTable()).thenReturn(gcpDefaultUserTable);
+        Mockito.when(bigQueryConfigMock.getGcpProjectId()).thenReturn(gcpProjectId);
+        Mockito.when(bigQueryConfigMock.getGcpDataset()).thenReturn(gcpDataset);
+        Mockito.when(bigQueryConfigMock.getGcpTable()).thenReturn(gcpTable);
         Mockito.when(bigQueryConfigMock.getQueryUri()).thenReturn(queryUri);
 
         Mockito.when(bigQueryConfigMock.getSelectFieldsDefault())

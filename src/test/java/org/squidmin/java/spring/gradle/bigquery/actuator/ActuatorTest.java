@@ -1,8 +1,10 @@
 package org.squidmin.java.spring.gradle.bigquery.actuator;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,16 +17,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 import org.squidmin.java.spring.gradle.bigquery.config.BigQueryConfig;
-import org.squidmin.java.spring.gradle.bigquery.config.GcsConfig;
 import org.squidmin.java.spring.gradle.bigquery.controller.BigQueryController;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.repository.ExampleRepositoryImpl;
 import org.squidmin.java.spring.gradle.bigquery.service.BigQueryService;
 import org.squidmin.java.spring.gradle.bigquery.service.GcsService;
+import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryHttpUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryTimeUtil;
 import org.squidmin.java.spring.gradle.bigquery.util.bigquery.BigQueryUtil;
-import org.squidmin.java.spring.gradle.bigquery.util.TemplateCompiler;
 
 import java.io.IOException;
 
@@ -63,23 +64,16 @@ class ActuatorTest {
         @Value("${spring.cloud.gcp.config.credentials.location}")
         private String gcpSaKeyPath;
 
+        private final String systemArgGcpSaKeyPath = System.getProperty("GCP_SA_KEY_PATH");
+
         @Value("${bigquery.application-default.project-id}")
-        private String gcpDefaultUserProjectId;
+        private String gcpProjectId;
 
         @Value("${bigquery.application-default.dataset}")
-        private String gcpDefaultUserDataset;
+        private String gcpDataset;
 
         @Value("${bigquery.application-default.table}")
-        private String gcpDefaultUserTable;
-
-        @Value("${bigquery.service-account.project-id}")
-        private String gcpSaProjectId;
-
-        @Value("${bigquery.service-account.dataset}")
-        private String gcpSaDataset;
-
-        @Value("${bigquery.service-account.table}")
-        private String gcpSaTable;
+        private String gcpTable;
 
         @Value("${bigquery.uri.queries}")
         private String queryUri;
@@ -90,14 +84,12 @@ class ActuatorTest {
         @Value("${gcs.filename}")
         private String gcsFilename;
 
-        private RestTemplate restTemplate;
-
         private BigQueryConfig bigQueryConfig;
 
         private BigQueryUtil bigQueryUtil;
         private BigQueryHttpUtil bigQueryHttpUtil;
 
-        private GcsService gcsService;
+        private final GcsService gcsServiceMock = Mockito.mock(GcsService.class);
 
         @Bean
         public BigQueryUtil bigQueryUtil() {
@@ -107,7 +99,7 @@ class ActuatorTest {
 
         @Bean
         public BigQueryHttpUtil bigQueryHttpUtil() {
-            bigQueryHttpUtil = new BigQueryHttpUtil(restTemplate);
+            bigQueryHttpUtil = new BigQueryHttpUtil(new RestTemplate());
             return bigQueryHttpUtil;
         }
 
@@ -117,28 +109,12 @@ class ActuatorTest {
         }
 
         @Bean
-        public GcsConfig gcsConfig() throws IOException {
-            return new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath);
-        }
-
-        @Bean
-        public GcsService gcsService() throws IOException {
-            gcsService = new GcsService(
-                new GcsConfig(gcpDefaultUserProjectId, gcsBucketName, gcsFilename, gcpSaKeyPath)
-            );
-            return gcsService;
-        }
-
-        @Bean
         public BigQueryConfig bigQueryConfig() throws IOException {
             bigQueryConfig = new BigQueryConfig(
-                gcpSaKeyPath,
-                gcpDefaultUserProjectId,
-                gcpDefaultUserDataset,
-                gcpDefaultUserTable,
-                gcpSaProjectId,
-                gcpSaDataset,
-                gcpSaTable,
+                StringUtils.isEmpty(systemArgGcpSaKeyPath) ? gcpSaKeyPath : systemArgGcpSaKeyPath,
+                gcpProjectId,
+                gcpDataset,
+                gcpTable,
                 queryUri,
                 BigQueryFunctionalTestFixture.validSchemaDefault(),
                 BigQueryFunctionalTestFixture.validDataTypes(),
@@ -159,21 +135,10 @@ class ActuatorTest {
                         bigQueryUtil,
                         bigQueryHttpUtil,
                         bigQueryConfig,
-                        gcsService
+                        gcsServiceMock
                     )
                 )
             );
-        }
-
-        @Bean
-        public RestTemplate restTemplate() {
-            restTemplate = new RestTemplate();
-            return restTemplate;
-        }
-
-        @Bean
-        public TestRestTemplate testRestTemplate() {
-            return new TestRestTemplate();
         }
 
     }

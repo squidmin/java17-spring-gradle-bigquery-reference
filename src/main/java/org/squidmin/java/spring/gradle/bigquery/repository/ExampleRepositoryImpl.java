@@ -39,8 +39,7 @@ public class ExampleRepositoryImpl implements ExampleRepository {
                 HttpStatus.OK
             );
         }
-        ResponseEntity<ExampleResponse> responseEntity = bigQueryService.query(request, gcpToken);
-        return responseEntity;
+        return bigQueryService.query(request, gcpToken);
     }
 
     @Override

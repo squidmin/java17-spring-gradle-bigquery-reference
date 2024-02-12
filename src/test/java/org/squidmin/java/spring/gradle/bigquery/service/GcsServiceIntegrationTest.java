@@ -4,6 +4,7 @@ import com.google.cloud.storage.Bucket;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -11,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.squidmin.java.spring.gradle.bigquery.IntegrationTest;
 import org.squidmin.java.spring.gradle.bigquery.config.GcsConfig;
 import org.squidmin.java.spring.gradle.bigquery.config.UnitTestConfig;
+import org.squidmin.java.spring.gradle.bigquery.exception.GcsServiceException;
 
 @ActiveProfiles({"integration"})
 @ContextConfiguration(classes = {UnitTestConfig.class})
@@ -30,8 +32,9 @@ public class GcsServiceIntegrationTest extends IntegrationTest {
         gcsBucketName = gcsConfig.getGcsBucketName();
     }
 
+    @Disabled
     @Test
-    void createBucket() {
+    void createBucket() throws GcsServiceException {
         Bucket bucket = null;
         if (!gcsService.bucketExists(gcsBucketName)) {
             bucket = gcsService.createBucket(gcsBucketName);

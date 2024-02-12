@@ -2,6 +2,6 @@
 
 ./gradlew cleanTest test \
   --no-build-cache \
-  --tests=org.squidmin.spring.rest.springrestlabs.service.BigQueryAdminClientIntegrationTest.listDatasets \
-  -Dprofile=integration \
-  -DprojectId="lofty-root-378503"
+  --tests=org.squidmin.java.spring.gradle.bigquery.service.BigQueryServiceEndToEndTest.listDatasets \
+  -DAPP_PROFILE=integration \
+  -DGCP_PROJECT_ID=${GCP_PROJECT_ID}

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.squidmin.java.spring.gradle.bigquery.CliConfig;
 import org.squidmin.java.spring.gradle.bigquery.dto.ExampleResponseItem;
+import org.squidmin.java.spring.gradle.bigquery.exception.GcsServiceException;
 import org.squidmin.java.spring.gradle.bigquery.fixture.BigQueryFunctionalTestFixture;
 import org.squidmin.java.spring.gradle.bigquery.logger.LoggerUtil;
 
@@ -24,7 +25,7 @@ public class GcsServiceEndToEndTest extends CliConfig {
     }
 
     @Test
-    void createBucket_givenValidParameters_thenCreateBucket() {
+    void createBucket_givenValidParameters_thenCreateBucket() throws GcsServiceException {
         Bucket bucket = gcsService.createBucket("lofty_root_test_bucket");
         Assertions.assertNotNull(bucket);
     }

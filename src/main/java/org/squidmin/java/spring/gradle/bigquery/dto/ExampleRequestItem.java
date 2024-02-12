@@ -51,7 +51,7 @@ public class ExampleRequestItem {
     public boolean isBlank() {
         for (Field field : this.getClass().getDeclaredFields()) {
             try {
-                field.setAccessible(true);
+//                field.setAccessible(true);
                 if (field.get(this) != null && field.get(this) != Strings.EMPTY) {
                     return false;
                 }
