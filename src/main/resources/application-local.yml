@@ -2,22 +2,16 @@ spring:
   cloud:
     gcp:
       project-id: lofty-root-378503
-      config:
-        credentials:
-          location: /Users/admin/.config/gcloud/sa-private-key.json
 
 bigquery:
   application-default:
     project-id: ${spring.cloud.gcp.project-id}
     dataset: test_dataset_integration
     table: test_table_integration
-  service-account:
-    project-id: ${spring.cloud.gcp.project-id}
-    dataset: ${bigquery.application-default.dataset}
-    table: ${bigquery.application-default.table}
   uri:
     queries: https://bigquery.googleapis.com/bigquery/v2/projects/${spring.cloud.gcp.project-id}/queries
 
 gcp:
 #  service-account: tekton-pipeline@${spring.cloud.gcp.project-id}.iam.gserviceaccount.com
-  service-account: 9644524330-compute@developer.gserviceaccount.com
+#  service-account: 9644524330-compute@developer.gserviceaccount.com
+  service-account: gh-actions-pipeline@${spring.cloud.gcp.project-id}.iam.gserviceaccount.com

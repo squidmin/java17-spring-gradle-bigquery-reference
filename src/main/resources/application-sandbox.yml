@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    gcp:
+      project-id: lofty-root-378503
+
+bigquery:
+  application-default:
+    project-id: ${spring.cloud.gcp.project-id}
+    dataset: test_dataset_integration
+    table: test_table_integration
+  uri:
+    queries: https://bigquery.googleapis.com/bigquery/v2/projects/${bigquery.application-default.project-id}/queries
+
+gcp:
+  service-account: gh-actions-pipeline@${bigquery.application-default.project-id}.iam.gserviceaccount.com
