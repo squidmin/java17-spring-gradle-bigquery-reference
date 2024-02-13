@@ -13,5 +13,5 @@ bigquery:
 
 gcp:
 #  service-account: tekton-pipeline@${spring.cloud.gcp.project-id}.iam.gserviceaccount.com
-#  service-account: 9644524330-compute@developer.gserviceaccount.com
-  service-account: gh-actions-pipeline@${spring.cloud.gcp.project-id}.iam.gserviceaccount.com
+  service-account: 9644524330-compute@developer.gserviceaccount.com
+#  service-account: gh-actions-pipeline@${spring.cloud.gcp.project-id}.iam.gserviceaccount.com
